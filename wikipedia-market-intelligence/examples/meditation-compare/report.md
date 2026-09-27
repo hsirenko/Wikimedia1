@@ -1,6 +1,6 @@
 # Language Comparison Report: Meditation
 
-_Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T11:22:35+00:00 · source: Wikimedia Analytics API_
+_Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T12:04:53+00:00 · source: Wikimedia Analytics API_
 
 ## 1. Summary
 

@@ -16,6 +16,7 @@ from wiki_market_intel.analytics import demand as demand_kpis
 from wiki_market_intel.analytics import formulas, growth as growth_kpis, quality as quality_kpis
 from wiki_market_intel.analytics import anomalies as anomaly_kpis
 from wiki_market_intel.analytics import localization as localization_kpis
+from wiki_market_intel.analytics import portfolio as portfolio_kpis
 from wiki_market_intel.analytics import signals as signal_kpis
 from wiki_market_intel.analytics import seasonality as seasonality_kpis
 from wiki_market_intel.analytics.periods import build_periods, fetch_window, parse_period
@@ -27,10 +28,11 @@ from wiki_market_intel.config import VERSION, Settings
 from wiki_market_intel.data.cache import JsonFileCache, NullCache
 from wiki_market_intel.data.normalizer import edition_totals, monthly_series, normalize
 from wiki_market_intel.data.raw_store import RawStore
-from wiki_market_intel.errors import AmbiguousTopicError, ArticleMissingError, TopicNotFoundError
+from wiki_market_intel.errors import AmbiguousTopicError, ApiError, ArticleMissingError, TopicNotFoundError
 from wiki_market_intel.i18n import Translator, resolve_report_language
 from wiki_market_intel.models.analysis import (
-    AnalysisResult, ComparisonMetadata, ComparisonResult, Metadata, SourceRecord, TopicSection,
+    AnalysisResult, ComparisonMetadata, ComparisonResult, Metadata, PortfolioFilters, PortfolioMetadata,
+    PortfolioResult, PortfolioRow, PortfolioTopic, SourceRecord, TopicSection,
 )
 from wiki_market_intel.models.metrics import LanguageOpportunityMetrics, Localization
 from wiki_market_intel.models.topic import TopicResolution
@@ -349,3 +351,78 @@ def analyze_cluster(topic: str, language: str, period: str = "3y", *, start: dat
     result.quality.missing_metrics = [m for m in result.quality.missing_metrics
                                       if m.metric != "ecosystem.related_topics"]
     return result
+
+
+# ---------------------------------------------------------------------------
+# portfolio (spec §36-§37)
+# ---------------------------------------------------------------------------
+
+def portfolio(topics: list[str | PortfolioTopic | dict], languages: list[str], period: str = "3y", *,
+              start: date | str | None = None, end: date | str | None = None, question: str | None = None,
+              report_language: str = "auto", min_views: int | None = None, min_growth: float | None = None,
+              categories: list[str] | None = None, name: str | None = None,
+              services: Services | None = None) -> PortfolioResult:
+    """Many topics x many editions (spec §36). Each topic is compared across `languages` (or
+    analysed alone for one language). A topic that cannot be resolved becomes rows with its
+    status and reason; it never stops the rest of the portfolio.
+
+    `min_views` (annual views) and `min_growth` (YoY as a fraction) and `categories` hide rows
+    from the matrix; hidden rows stay in the result with `excluded_by`.
+    """
+    services = services or build_services()
+    items = [t if isinstance(t, PortfolioTopic) else
+             PortfolioTopic(topic=t) if isinstance(t, str) else PortfolioTopic.model_validate(t) for t in topics]
+    if not items or not languages:
+        raise ValueError("portfolio needs at least one topic and one language")
+    end_month, months = _window(period, start, end, services.today)
+    report_lang = resolve_report_language(question, report_language)[1]
+
+    rows: list[PortfolioRow] = []
+    comparisons: dict[str, ComparisonResult] = {}
+    analyses: dict[str, AnalysisResult] = {}
+    notes: list[str] = []
+    for item in items:
+        try:
+            if len(languages) > 1:
+                c = compare_languages(item.topic, languages, start=start, end=end, period=period, question=question,
+                                      report_language=report_lang, services=services)
+                comparisons[item.topic] = c
+                rows += portfolio_kpis.rows_from_comparison(item, c)
+            else:
+                a = analyze(item.topic, languages[0], start=start, end=end, period=period, question=question,
+                            report_language=report_lang, services=services)
+                analyses[item.topic] = a
+                rows.append(portfolio_kpis.row_from_analysis(item, a))
+        except AmbiguousTopicError as exc:
+            candidates = ", ".join(c.title for c in exc.resolution.candidates) or "none"
+            rows += portfolio_kpis.failed_rows(item, languages, "needs_review",
+                                               f"ambiguous topic; candidates: {candidates}")
+            notes.append(f"{item.topic!r} needs review (several concepts match: {candidates}). Rerun with an exact "
+                         f"article title or Wikidata ID.")
+        except TopicNotFoundError:
+            rows += portfolio_kpis.failed_rows(item, languages, "not_found", "no article or Wikidata entity matches")
+            notes.append(f"{item.topic!r} was not found.")
+        except ArticleMissingError as exc:
+            rows += portfolio_kpis.failed_rows(item, languages, "no_article", str(exc))
+        except ApiError as exc:
+            rows += portfolio_kpis.failed_rows(item, languages, "api_error", f"{exc} ({exc.url})")
+            notes.append(f"{item.topic!r}: API error, {exc}.")
+
+    threshold = portfolio_kpis.assign_quadrants(rows)
+    filters = PortfolioFilters(min_views=min_views, min_growth=min_growth, categories=categories or [])
+    portfolio_kpis.apply_filters(rows, filters)
+    notes.append("Country filtering is not available: Wikimedia does not publish per-article pageviews by country.")
+
+    periods = build_periods(end_month, months)
+    retrieved = sorted(x.metadata.data_retrieved_at for c in comparisons.values() for x in c.analyses.values()
+                       if x.metadata.data_retrieved_at)
+    retrieved += sorted(a.metadata.data_retrieved_at for a in analyses.values() if a.metadata.data_retrieved_at)
+    return PortfolioResult(
+        metadata=PortfolioMetadata(
+            name=name or "portfolio", topics=items, languages=languages,
+            period_start=f"{periods['requested'].start:%Y-%m}", period_end=f"{periods['requested'].end:%Y-%m}",
+            generated_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            data_retrieved_at=min(retrieved) if retrieved else None, software_version=VERSION,
+            question=question, report_language=report_lang, filters=filters),
+        rows=rows, comparisons=comparisons, analyses=analyses, demand_threshold=threshold,
+        observations=portfolio_kpis.observations(rows), notes=notes, formulas=formulas.REGISTRY)

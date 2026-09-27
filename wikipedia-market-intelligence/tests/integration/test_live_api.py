@@ -44,3 +44,12 @@ def test_live_topic_ecosystem(live):
     assert eco.computed and 0 < len(eco.related_topics) <= 8
     assert any(t.relationship in ("broader", "narrower", "facet_of") for t in eco.related_topics)
     assert eco.concentration.top_1 is not None
+
+
+def test_live_portfolio(live):
+    from wiki_market_intel import portfolio
+    p = portfolio(["meditation", "yoga"], ["de", "fr"], "3y", services=live)
+    assert [(r.topic, r.language) for r in p.rows] == [("meditation", "de"), ("meditation", "fr"),
+                                                      ("yoga", "de"), ("yoga", "fr")]
+    assert all(r.status == "ok" and r.annual_views for r in p.rows)
+    assert p.demand_threshold and all(r.quadrant for r in p.rows)

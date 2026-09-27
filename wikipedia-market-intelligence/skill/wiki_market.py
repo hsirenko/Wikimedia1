@@ -62,14 +62,24 @@ def main() -> int:
     from wiki_market_intel.cli import main as cli_main   # after the path and dependencies are ready
 
     reports = Path(os.environ["WMI_REPORTS_DIR"])
-    before = set(reports.rglob("analysis.json")) if reports.exists() else set()
+    before = results(reports)
     code = cli_main(sys.argv[1:])
     if code == 0 and OUTPUTS.is_dir():
-        for new in set(reports.rglob("analysis.json")) - before:
-            target = OUTPUTS / "/".join(new.parent.parts[-3:])
-            shutil.copytree(new.parent, target, dirs_exist_ok=True)
+        for path, mtime in results(reports).items():
+            if before.get(path) == mtime:
+                continue                   # unchanged by this run
+            target = OUTPUTS / "/".join(path.parent.parts[-3:])
+            shutil.copytree(path.parent, target, dirs_exist_ok=True)
             print(f"Copied for download: {target}")
     return code
+
+
+def results(reports: Path) -> dict[Path, float]:
+    """{result file: modification time} for every analysis, comparison and portfolio report."""
+    if not reports.exists():
+        return {}
+    return {p: p.stat().st_mtime for name in ("analysis.json", "comparison.json", "portfolio.json")
+            for p in reports.rglob(name)}
 
 
 if __name__ == "__main__":

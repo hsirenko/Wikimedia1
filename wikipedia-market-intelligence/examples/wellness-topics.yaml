@@ -1,0 +1,8 @@
+# Topics for `wiki-market portfolio --topics examples/wellness-topics.yaml --languages de,en,fr,es`.
+# A category is optional; `--category sleep,mindfulness` shows only those.
+topics:
+  - {topic: meditation, category: mindfulness}
+  - {topic: Mindfulness, category: mindfulness}
+  - {topic: yoga, category: movement}
+  - {topic: sleep, category: sleep}
+  - {topic: insomnia, category: sleep}

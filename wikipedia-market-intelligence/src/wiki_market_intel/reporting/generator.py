@@ -6,8 +6,9 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from wiki_market_intel.models.analysis import AnalysisResult, ComparisonResult
-from wiki_market_intel.reporting import charts, comparison, markdown
+from wiki_market_intel.models.analysis import AnalysisResult, ComparisonResult, PortfolioResult
+from wiki_market_intel.reporting import charts, comparison, html, markdown
+from wiki_market_intel.reporting import portfolio as portfolio_report
 
 
 @dataclass
@@ -17,6 +18,7 @@ class ReportFiles:
     markdown: Path
     chart: Path | None
     eco_chart: Path | None = None
+    html: Path | None = None
 
 
 def slug(text: str) -> str:
@@ -40,7 +42,8 @@ def write(result: AnalysisResult, reports_dir: Path, lang: str | None = None) ->
     md_path = directory / "report.md"
     md_path.write_text(markdown.render(result, "charts/trend.png" if chart else None, lang,
                                        "charts/ecosystem.png" if eco_chart else None), "utf-8")
-    return ReportFiles(directory=directory, json=json_path, markdown=md_path, chart=chart, eco_chart=eco_chart)
+    return ReportFiles(directory=directory, json=json_path, markdown=md_path, chart=chart, eco_chart=eco_chart,
+                       html=html.write(md_path, lang))
 
 
 @dataclass
@@ -49,6 +52,7 @@ class ComparisonFiles:
     json: Path
     markdown: Path
     charts: list[Path]
+    html: Path | None = None
 
 
 def write_comparison(result: ComparisonResult, reports_dir: Path, lang: str | None = None) -> ComparisonFiles:
@@ -66,4 +70,19 @@ def write_comparison(result: ComparisonResult, reports_dir: Path, lang: str | No
     md_path.write_text(comparison.render(result, "charts/opportunity.png" if matrix else None,
                                          "charts/penetration.png" if penetration else None, lang), "utf-8")
     return ComparisonFiles(directory=directory, json=json_path, markdown=md_path,
-                           charts=[p for p in (matrix, penetration) if p])
+                           charts=[p for p in (matrix, penetration) if p], html=html.write(md_path, lang))
+
+
+def write_portfolio(result: PortfolioResult, reports_dir: Path, lang: str | None = None) -> ComparisonFiles:
+    """reports/portfolio/{name}/{date}/: portfolio.json, report.md, report.html, charts/portfolio.png."""
+    lang = lang or result.metadata.report_language
+    day = result.metadata.generated_at[:10]
+    directory = Path(reports_dir) / "portfolio" / slug(result.metadata.name) / day
+    directory.mkdir(parents=True, exist_ok=True)
+    json_path = directory / "portfolio.json"
+    json_path.write_text(result.model_dump_json(indent=2), "utf-8")
+    chart = charts.portfolio_chart(result, directory / "charts" / "portfolio.png", lang)
+    md_path = directory / "report.md"
+    md_path.write_text(portfolio_report.render(result, "charts/portfolio.png" if chart else None, lang), "utf-8")
+    return ComparisonFiles(directory=directory, json=json_path, markdown=md_path, charts=[chart] if chart else [],
+                           html=html.write(md_path, lang))

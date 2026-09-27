@@ -33,11 +33,16 @@ PAGES = {
     ("en", "Mindfulness"): (111, "Q1935", False, None),
     ("en", "Mercury"): (222, "Q1", True, None),
     ("en", "Obscurium"): (333, None, False, None),
+    ("en", "sleep"): (27834, "Q35831", False, None),        # a second topic for portfolios
+    ("en", "Sleep"): (27834, "Q35831", False, None),
+    ("de", "Schlaf"): (4321, "Q35831", False, None),
+    ("fr", "Sommeil"): (6543, "Q35831", False, None),
 }
 ENTITIES = {
     "Q108458": {"label": "meditation", "sitelinks": {"enwiki": "Meditation", "dewiki": "Meditation",
                                                      "frwiki": "Méditation", "eswiki": "Meditación"}},
     "Q1935": {"label": "mindfulness", "sitelinks": {"enwiki": "Mindfulness"}},
+    "Q35831": {"label": "sleep", "sitelinks": {"enwiki": "Sleep", "dewiki": "Schlaf", "frwiki": "Sommeil"}},
 }
 SEARCH = {
     "Mercury": [("Mercury (planet)", "Q308", "Smallest planet"), ("Mercury (element)", "Q925", "Chemical element")],
@@ -120,6 +125,9 @@ class FakeWikimedia:
             ("de", "Meditation"): base,
             ("en", "Meditation"): _scaled(base, 12),                 # same shape, bigger edition
             ("fr", "Méditation"): _scaled(base, 0.8, 1.03),          # grows ~3% a month
+            ("en", "Sleep"): _scaled(base, 20),                      # the largest pair in a portfolio
+            ("de", "Schlaf"): _scaled(base, 2, 1.02),                # grows ~2% a month
+            ("fr", "Sommeil"): _scaled(base, 0.5),
         }.get((lang, article))
         if series is None:     # e.g. es: the article exists but the API holds no views
             return httpx.Response(404, json={"type": "not_found", "title": "Not found."})

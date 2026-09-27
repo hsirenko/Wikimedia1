@@ -1,11 +1,11 @@
 ---
 name: wiki-market-intel
-description: KPI reports on reader attention to a topic across Wikipedia language editions, from Wikimedia pageview data. For one edition it covers annual views, year-over-year growth, 3-year CAGR, 3-month momentum, seasonality, anomalies, penetration, data quality and five separate decision signals (market size, growth, momentum, localization, stability). Across editions it adds share, affinity and a demand-by-growth matrix; around a topic it measures related topics and concentration. Output is JSON, a Markdown report and charts. Use when someone asks how much attention a topic gets in a language, whether it is growing, which language markets show the most interest, which related topics draw readers, or wants a reproducible market-intelligence report. It measures attention and does not give buy or invest recommendations.
+description: KPI reports on reader attention to topics across Wikipedia language editions, from Wikimedia pageview data. For one edition it covers annual views, year-over-year growth, 3-year CAGR, momentum, seasonality, anomalies, penetration, data quality and five separate decision signals. Across editions it adds share, affinity and a demand-by-growth matrix; around a topic it measures related topics; for many topics and editions at once it builds a portfolio matrix with filters. Output is JSON, Markdown, a self-contained HTML report and charts. Use when someone asks how much attention a topic gets in a language, whether it is growing, which language markets or product categories show the most interest, which related topics draw readers, or wants a reproducible market-intelligence report. It measures attention and does not give buy or invest recommendations.
 license: MIT
 compatibility: Python 3.10+ and outbound access to wikimedia.org, *.wikipedia.org and www.wikidata.org. Libraries (httpx, pydantic, tenacity, python-dateutil, jinja2, matplotlib, pyyaml) are installed automatically on first run if missing.
 metadata:
   version: "0.1.0"
-  milestone: "4 - decision signals"
+  milestone: "5 - portfolio and HTML reports"
 ---
 
 # Wikipedia Market Intelligence (wiki-market-intel)
@@ -34,8 +34,9 @@ languages get an English report.
   works.
 
 The first run may take about 30 seconds while missing libraries install. Output goes to
-`./wiki_market_reports/<topic>/<language>/<date>/`, containing `analysis.json`, `report.md` and
-`charts/trend.png`. If `/mnt/user-data/outputs` exists, the report is also copied there so the
+`./wiki_market_reports/<topic>/<language>/<date>/`, containing `analysis.json`, `report.md`,
+`report.html` (the same report as one self-contained page, charts included: the easiest file to
+share) and `charts/trend.png`. If `/mnt/user-data/outputs` exists, the report is also copied there so the
 user can download it. Tell the user where the files are.
 
 **Several language editions at once** (which markets, where is the topic relatively strongest):
@@ -67,6 +68,31 @@ python3 <skill-dir>/scripts/wiki_market.py cluster --topic "meditation" --langua
 ```
 
 It prints the usual analysis plus a `RELATED` table.
+
+**Many topics across many editions** (a portfolio: which categories and markets draw attention):
+
+```bash
+python3 <skill-dir>/scripts/wiki_market.py portfolio --topics meditation,yoga,sleep --languages de,fr,es \
+  --question "<the user's request, copied word for word>"
+```
+
+- `--topics` and `--languages` take a comma list or a YAML file. Topics can carry a category:
+  `topics: [{topic: sleep, category: sleep}, ...]`.
+- Filters: `--min-views 20000`, `--min-growth 5` or `--min-growth -10` (percent; with a % sign
+  write `--min-growth=-10%`), `--category sleep,mindfulness`. There is no country filter:
+  Wikimedia publishes no per-article country data.
+- It prints one row per topic and edition, in the order given, then a `READY ANSWER` grouped by
+  quadrant. **Give the `READY ANSWER` to the user as written** (translated if needed). Rows are
+  never sorted by size or growth. Don't sort them yourself, don't pick a "best" topic or market,
+  and don't add a verdict.
+- When the output prints `RANKING REQUEST` (the user asked for a "top 3", the "best" topic or
+  what to build), start your reply with the sentence it gives. Then list the `READY ANSWER` groups
+  as they are: no numbered list, no "top", "best", "primary" or "should build", and no
+  generalisations the rows don't state (such as "German markets are stronger").
+- `HIDDEN` rows were removed by a filter or couldn't be measured (ambiguous topic, no article).
+  Say which ones and why. An ambiguous topic needs an exact title or Wikidata ID; ask the user.
+- Affinity in a portfolio is measured within each topic, across the listed editions.
+- Output goes to `./wiki_market_reports/portfolio/<name>/<date>/` (`--name wellness`).
 - **Each row** gives the related article, its relationship, its views, its size relative to the
   topic, its YoY and its YoY relative to the whole edition, plus a signal.
 - **Relationship values:** `broader`, `narrower`, `facet_of` and `has_facet` come from Wikidata.
@@ -159,14 +185,19 @@ Only resolving a topic, without fetching views:
 
 ## Checking a report
 
-`python3 <skill-dir>/scripts/wiki_market.py validate <path/to/analysis.json>` recomputes every
+`python3 <skill-dir>/scripts/wiki_market.py validate <analysis.json, comparison.json or portfolio.json>` recomputes every
 KPI from the report's own stored monthly data and confirms that the stored numbers match.
 
 ## Current scope
 
-Single-language analysis, language comparison (share, penetration, affinity, opportunity matrix),
-anomaly detection, the topic ecosystem (`cluster`) and decision signals are built. Country breakdowns
-and unique devices are not published per article by Wikimedia, so they are always n/a. Never estimate
-them.
+Everything in the spec's roadmap is built:
+- single-language analysis and language comparison (share, penetration, affinity, opportunity matrix);
+- anomaly detection and the topic ecosystem (`cluster`);
+- decision signals;
+- portfolio mode;
+- HTML reports.
+
+Country breakdowns and unique devices are not published per article by Wikimedia, so they are
+always n/a. Never estimate them.
 
 More detail: `references/README.md` (KPI definitions, formulas, quality rules, data limitations).

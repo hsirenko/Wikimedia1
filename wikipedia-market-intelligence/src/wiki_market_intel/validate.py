@@ -14,9 +14,9 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from wiki_market_intel.analytics import anomalies, demand, growth, localization, seasonality, signals
+from wiki_market_intel.analytics import anomalies, demand, growth, localization, portfolio, seasonality, signals
 from wiki_market_intel.analytics.periods import build_periods
-from wiki_market_intel.models.analysis import AnalysisResult, ComparisonResult
+from wiki_market_intel.models.analysis import AnalysisResult, ComparisonResult, PortfolioResult, PortfolioRow
 from wiki_market_intel.models.metrics import LanguageOpportunityMetrics
 
 
@@ -111,12 +111,44 @@ def _check_comparison(result: ComparisonResult, raw: dict) -> list[str]:
     return problems
 
 
+def _check_portfolio(result: PortfolioResult, raw: dict) -> list[str]:
+    """Every embedded comparison/analysis recomputes, and the rows, split and filters follow from them."""
+    problems = []
+    for topic, c in result.comparisons.items():
+        problems += [f"{topic}: {p}" for p in _check_comparison(c, raw["comparisons"][topic])]
+    for topic, a in result.analyses.items():
+        problems += _check_analysis(a, raw["analyses"][topic], prefix=f"{topic}: ")
+    fresh: list[PortfolioRow] = []
+    for item in result.metadata.topics:
+        if item.topic in result.comparisons:
+            fresh += portfolio.rows_from_comparison(item, result.comparisons[item.topic])
+        elif item.topic in result.analyses:
+            fresh.append(portfolio.row_from_analysis(item, result.analyses[item.topic]))
+        else:
+            fresh += [r.model_copy(update={"quadrant": None, "excluded_by": None})
+                      for r in result.rows if r.topic == item.topic]      # unresolved: status rows only
+    threshold = portfolio.assign_quadrants(fresh)
+    portfolio.apply_filters(fresh, result.metadata.filters)
+    if not _same(result.demand_threshold, threshold):
+        problems.append(f"demand_threshold: stored {result.demand_threshold!r} != recomputed {threshold!r}")
+    if len(fresh) != len(result.rows):
+        return problems + [f"rows: stored {len(result.rows)} != recomputed {len(fresh)}"]
+    for stored, again in zip(result.rows, fresh):
+        for field in ("annual_views", "yoy_growth", "three_month_growth", "topic_affinity", "quadrant", "excluded_by"):
+            if not _same(getattr(stored, field), getattr(again, field)):
+                problems.append(f"{stored.topic} {stored.language}: {field}: stored {getattr(stored, field)!r} "
+                                f"!= recomputed {getattr(again, field)!r}")
+    return problems
+
+
 def validate_file(path: Path) -> list[str]:
     text = Path(path).read_text("utf-8")
     try:
         raw = json.loads(text)
         if Path(path).name == "comparison.json":
             return _check_comparison(ComparisonResult.model_validate(raw), raw)
+        if Path(path).name == "portfolio.json":
+            return _check_portfolio(PortfolioResult.model_validate(raw), raw)
         return _check_analysis(AnalysisResult.model_validate(raw), raw)
     except (ValidationError, ValueError) as exc:
         return [f"schema: {exc}"]
@@ -126,4 +158,4 @@ def find_reports(root: Path) -> list[Path]:
     root = Path(root)
     if root.is_file():
         return [root]
-    return sorted([*root.rglob("analysis.json"), *root.rglob("comparison.json")])
+    return sorted([*root.rglob("analysis.json"), *root.rglob("comparison.json"), *root.rglob("portfolio.json")])

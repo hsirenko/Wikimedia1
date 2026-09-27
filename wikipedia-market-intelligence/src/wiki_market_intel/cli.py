@@ -14,6 +14,7 @@ from pathlib import Path
 
 import yaml
 
+from wiki_market_intel.analytics import portfolio as portfolio_kpis
 from wiki_market_intel.analytics import signals as signal_kpis
 from wiki_market_intel.analytics.summary import compact, pct
 from wiki_market_intel.config import Settings
@@ -22,7 +23,9 @@ from wiki_market_intel.errors import AmbiguousTopicError, ApiError, ArticleMissi
 from wiki_market_intel.analytics.summary import comparison_observations, observations_from_spans
 from wiki_market_intel.i18n import SUPPORTED, Translator, resolve_report_language
 from wiki_market_intel.reporting import generator, markdown
-from wiki_market_intel.service import analyze, analyze_cluster, build_services, compare_languages, resolve_topic
+from wiki_market_intel.service import (
+    analyze, analyze_cluster, build_services, compare_languages, portfolio, resolve_topic,
+)
 from wiki_market_intel.validate import find_reports, validate_file
 
 
@@ -132,7 +135,7 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
               f"and reply to them in their language.")
-    print(f"Wrote {files.json}\n      {files.markdown}" + (f"\n      {files.chart}" if files.chart else "")
+    print(f"Wrote {files.json}\n      {files.markdown}\n      {files.html}" + (f"\n      {files.chart}" if files.chart else "")
           + (f"\n      {files.eco_chart}" if files.eco_chart else ""))
     return 0
 
@@ -204,7 +207,7 @@ def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
               f"and reply to them in their language.")
-    print(f"Wrote {files.json}\n      {files.markdown}" + "".join(f"\n      {c}" for c in files.charts))
+    print(f"Wrote {files.json}\n      {files.markdown}\n      {files.html}" + "".join(f"\n      {c}" for c in files.charts))
     return 0
 
 
@@ -247,6 +250,84 @@ def cmd_validate(args: argparse.Namespace, settings: Settings) -> int:
     return 1 if failed else 0
 
 
+def _list_arg(value: str | None, key: str) -> list:
+    """A comma list, or a YAML file holding a list or {key: [...]} (spec §36: topics.yaml, languages.yaml)."""
+    if not value:
+        return []
+    path = Path(value)
+    if value.endswith((".yaml", ".yml")) or path.is_file():
+        data = yaml.safe_load(path.read_text("utf-8"))
+        items = data.get(key, []) if isinstance(data, dict) else data
+        if not isinstance(items, list):
+            raise ValueError(f"{value}: expected a list of {key}, or '{key}:' with a list")
+        return items
+    return [v.strip() for v in value.split(",") if v.strip()]
+
+
+def _percent(value: str | None) -> float | None:
+    """'5', '5%' or '-10%' -> 0.05 / -0.10."""
+    if value is None:
+        return None
+    return float(value.strip().rstrip("%")) / 100
+
+
+def cmd_portfolio(args: argparse.Namespace, settings: Settings) -> int:
+    topics = _list_arg(args.topics, "topics")
+    languages = [str(l) for l in _list_arg(args.languages, "languages")]
+    categories = [c.strip() for c in (args.category or "").split(",") if c.strip()]
+    wanted, report_lang = resolve_report_language(args.question, args.report_lang)
+    services = build_services(settings, use_cache=not args.no_cache)
+    try:
+        result = portfolio(topics, languages, args.period or "3y", start=args.start, end=args.end,
+                           question=args.question, report_language=report_lang, min_views=args.min_views,
+                           min_growth=_percent(args.min_growth), categories=categories, name=args.name,
+                           services=services)
+    finally:
+        services.http.close()
+    files = generator.write_portfolio(result, settings.reports_dir)
+    if args.json:
+        print(result.model_dump_json(indent=2))
+        return 0
+    print(f"Portfolio '{result.metadata.name}' | {len(result.metadata.topics)} topics x "
+          f"{len(result.metadata.languages)} editions | {result.metadata.period_start}..{result.metadata.period_end}")
+    print(f"  {'topic':<22}{'edition':<15}{'views 12M':>10}{'YoY':>9}{'3M':>9}  {'momentum':<13}{'affinity':>9}  quadrant")
+    for r in result.visible:
+        print(f"  {(r.canonical_topic or r.topic)[:21]:<22}{r.project:<15}{compact(r.annual_views):>10}"
+              f"{pct(r.yoy_growth):>9}{pct(r.three_month_growth):>9}  {(r.momentum or 'n/a'):<13}"
+              f"{(f'{r.topic_affinity:.2f}' if r.topic_affinity is not None else 'n/a'):>9}  {r.quadrant or 'n/a'}")
+    hidden = [r for r in result.rows if r.excluded_by]
+    if hidden:
+        print(f"  HIDDEN ({len(hidden)} rows, kept in portfolio.json): " + "; ".join(
+            f"{r.topic} {r.language}: {r.excluded_by}" + (f" ({r.reason})" if r.reason else "") for r in hidden))
+    if result.demand_threshold is not None:
+        print(f"  Quadrant split: YoY > 0%; demand >= the median of all measured pairs "
+              f"({result.demand_threshold:,.0f} views, before filters).")
+    for observation in result.observations:
+        print(f"  - {observation}")
+    phrase = portfolio_kpis.ranking_phrase(args.question)
+    if phrase:
+        print(f"  RANKING REQUEST: the user asked for {phrase}. Start your reply with this sentence (translated if "
+              f"needed), then give the READY ANSWER groups below without numbering, reordering or picking from them:")
+        print(f"    {portfolio_kpis.RANKING_OPENER.format(phrase=phrase)}")
+    print("  READY ANSWER (give this to the user as written, translated if needed; do not rank topics or markets, "
+          "and do not add a verdict or a 'best' pick):")
+    for line in portfolio_kpis.ready_answer(result.rows):
+        print(f"    {line}")
+    for note in result.notes:
+        print(f"  NOTE {note}")
+    if report_lang != "en":
+        print(f"REPORT_LANGUAGE {report_lang}: report.md, report.html and the chart are in this language. "
+              f"Reply to the user in it too. The same observations in {report_lang}:")
+        for observation in portfolio_kpis.observations(result.rows, Translator(report_lang)):
+            print(f"  - {observation}")
+    elif wanted != "en":
+        print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
+              f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
+              f"and reply to them in their language.")
+    print(f"Wrote {files.json}\n      {files.markdown}\n      {files.html}" + "".join(f"\n      {c}" for c in files.charts))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="wiki-market", description="Wikipedia market-intelligence engine")
     parser.add_argument("-v", "--verbose", action="store_true", help="log every HTTP request")
@@ -287,6 +368,25 @@ def build_parser() -> argparse.ArgumentParser:
     cp.add_argument("--json", action="store_true")
     cp.set_defaults(func=cmd_compare)
 
+    pf = sub.add_parser("portfolio", help="many topics x many language editions: matrix, chart, signals")
+    pf.add_argument("--topics", required=True,
+                    help="comma-separated topics, or a YAML file: a list, or 'topics:' with items "
+                         "'name' or {topic: name, category: label}")
+    pf.add_argument("--languages", required=True, help="comma-separated edition codes, or a YAML file (a list)")
+    pf.add_argument("--name", help="portfolio name, used for the report folder (default: portfolio)")
+    pf.add_argument("--period", help="e.g. 3y, 18m (default 3y)")
+    pf.add_argument("--start")
+    pf.add_argument("--end")
+    pf.add_argument("--min-views", type=int, help="hide pairs with fewer views in the last 12 months")
+    pf.add_argument("--min-growth", help="hide pairs with lower YoY, in percent: 5 or -10 "
+                                         "(with a %% sign, write --min-growth=-10%%)")
+    pf.add_argument("--category", help="show only these categories (comma-separated, from the topics file)")
+    pf.add_argument("--question", help="the user's request in their own words; the report is written in its language")
+    pf.add_argument("--report-lang", default="auto", help=f"auto (default) or one of {', '.join(SUPPORTED)}")
+    pf.add_argument("--no-cache", action="store_true")
+    pf.add_argument("--json", action="store_true")
+    pf.set_defaults(func=cmd_portfolio)
+
     t = sub.add_parser("topic", help="resolve a topic to Wikipedia articles, without fetching pageviews")
     t.add_argument("--topic", required=True)
     t.add_argument("--languages", help="comma-separated, e.g. en,de,fr")
@@ -296,7 +396,8 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("action", choices=["clear"])
     c.set_defaults(func=cmd_cache)
 
-    v = sub.add_parser("validate", help="check saved analysis.json / comparison.json: schema and recomputed KPIs")
+    v = sub.add_parser("validate", help="check saved analysis.json / comparison.json / portfolio.json: schema "
+                                        "and recomputed KPIs")
     v.add_argument("path", nargs="?", help="a file or directory (default: the reports directory)")
     v.set_defaults(func=cmd_validate)
     return parser

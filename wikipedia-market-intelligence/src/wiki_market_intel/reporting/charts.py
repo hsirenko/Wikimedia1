@@ -231,3 +231,72 @@ def ecosystem_chart(result: AnalysisResult, path: Path, lang: str = "en") -> Pat
 def ecosystem_share_adjusted(yoy, edition):
     from wiki_market_intel.analytics.ecosystem import share_adjusted
     return share_adjusted(yoy, edition)
+
+
+MARKERS = ["o", "s", "^", "D", "v", "P", "X", "*"]
+
+
+def portfolio_chart(portfolio, path: Path, lang: str = "en") -> Path | None:
+    """Demand x growth for many (topic, edition) pairs (spec §37). Colour = topic (fixed input order,
+    never cycled: a 9th topic is grey and labelled directly); shape = edition; quadrant names are
+    descriptive."""
+    tr = Translator(lang)
+    points = [r for r in portfolio.visible if r.annual_views and r.yoy_growth is not None]
+    if not points or portfolio.demand_threshold is None:
+        return None
+    topics = [t.topic for t in portfolio.metadata.topics]
+    colour = {t: PALETTE[i] if i < len(PALETTE) else MUTED for i, t in enumerate(topics)}
+    marker = {l: MARKERS[i % len(MARKERS)] for i, l in enumerate(portfolio.metadata.languages)}
+    fig, ax = plt.subplots(figsize=(7.8, 5.0), dpi=150)
+    fig.patch.set_facecolor(SURFACE)
+    _style(ax)
+    ax.set_yscale("log")
+    xs = [r.yoy_growth * 100 for r in points]
+    ys = [r.annual_views for r in points]
+    span = max(10.0, max(abs(x) for x in xs) * 1.3)
+    ax.set_xlim(-span, span)
+    ax.set_ylim(min(ys + [portfolio.demand_threshold]) / 2.5, max(ys + [portfolio.demand_threshold]) * 2.5)
+    ax.axvline(0, color=MUTED, linewidth=1)
+    ax.axhline(portfolio.demand_threshold, color=MUTED, linewidth=1, linestyle=(0, (4, 3)))
+    for name, x, y, ha, va in (("investigate", 0.98, 0.97, "right", "top"), ("explore", 0.98, 0.03, "right", "bottom"),
+                               ("established", 0.02, 0.97, "left", "top"), ("watch", 0.02, 0.03, "left", "bottom")):
+        ax.text(x, y, tr(f"quadrant.{name}").upper(), transform=ax.transAxes, ha=ha, va=va,
+                fontsize=8, color=MUTED, fontweight="bold")
+    for r, x, y in zip(points, xs, ys):
+        ax.scatter([x], [y], s=60, color=colour.get(r.topic, MUTED), marker=marker[r.language],
+                   edgecolor=SURFACE, linewidth=1.2, zorder=3)
+    # Direct labels, biggest first. A label is kept only if its box clears every other marker and
+    # every label already placed; colour and shape (legend) still identify unlabelled points.
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    markers = [ax.transData.transform((x, y)) for x, y in zip(xs, ys)]
+    boxes = []
+    for i in sorted(range(len(points)), key=lambda i: -ys[i]):
+        r = points[i]
+        note = ax.annotate(f"{(r.canonical_topic or r.topic)[:18]} · {r.language}", (xs[i], ys[i]), xytext=(6, 3),
+                           textcoords="offset points", fontsize=7, color=INK2)
+        box = note.get_window_extent(renderer).expanded(1.05, 1.2)
+        hits_marker = any(j != i and box.x0 - 9 <= mx <= box.x1 + 9 and box.y0 - 9 <= my <= box.y1 + 9
+                          for j, (mx, my) in enumerate(markers))
+        if hits_marker or any(box.overlaps(b) for b in boxes):
+            note.remove()
+            continue
+        boxes.append(box)
+    from matplotlib.lines import Line2D
+    shown_topics = [t for t in topics if any(r.topic == t for r in points)]
+    shown_langs = [l for l in portfolio.metadata.languages if any(r.language == l for r in points)]
+    names = {r.topic: r.canonical_topic or r.topic for r in points}
+    handles = ([Line2D([], [], linestyle="", marker="o", color=colour[t], label=names[t]) for t in shown_topics]
+               + [Line2D([], [], linestyle="", marker=marker[l], color=INK2, label=f"{l}.wikipedia") for l in shown_langs])
+    ax.legend(handles=handles, fontsize=7, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.13),
+              ncol=min(5, len(handles)), labelcolor=INK2)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: tr.percent(v / 100)))
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: tr.compact(v)))
+    ax.set_xlabel(tr("chart_matrix_x"), fontsize=8, color=INK2)
+    ax.set_ylabel(tr("chart_matrix_y"), fontsize=8, color=INK2)
+    ax.set_title(tr("pf_chart_title"), fontsize=9, color=INK2, loc="left")
+    fig.tight_layout()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path, facecolor=SURFACE)
+    plt.close(fig)
+    return path

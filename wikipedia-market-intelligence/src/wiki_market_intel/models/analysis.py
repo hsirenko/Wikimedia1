@@ -129,3 +129,80 @@ class ComparisonResult(BaseModel):
     @property
     def summary(self) -> list[str]:
         return self.observations
+
+
+# ---------------------------------------------------------------------------
+# portfolio (spec §36-§37)
+# ---------------------------------------------------------------------------
+
+class PortfolioTopic(BaseModel):
+    topic: str
+    category: str | None = None
+
+
+class PortfolioRow(BaseModel):
+    """One (topic, language) pair. `status` says why values are missing; `excluded_by` names
+    the filter that hid the row from the matrix (it stays in the JSON)."""
+
+    topic: str
+    category: str | None = None
+    canonical_topic: str | None = None
+    wikidata_id: str | None = None
+    language: str
+    project: str
+    article_title: str | None = None
+    status: Literal["ok", "no_article", "no_data", "needs_review", "not_found", "api_error"] = "ok"
+    reason: str | None = None
+    annual_views: int | None = None
+    yoy_growth: float | None = None
+    three_year_cagr: float | None = None
+    three_month_growth: float | None = None
+    momentum: Literal["accelerating", "stable", "decelerating"] | None = None
+    topic_share: float | None = None            # within the topic, across the portfolio's editions
+    topic_affinity: float | None = None
+    topic_penetration: float | None = None
+    signals: Signals | None = None
+    quality_level: Literal["HIGH", "MEDIUM", "LOW"] | None = None
+    anomaly_count: int | None = None
+    quadrant: Literal["investigate", "explore", "established", "watch"] | None = None   # portfolio-wide split
+    excluded_by: str | None = None
+
+
+class PortfolioFilters(BaseModel):
+    min_views: int | None = None
+    min_growth: float | None = None             # fraction, e.g. 0.05 for +5% YoY
+    categories: list[str] = Field(default_factory=list)
+
+
+class PortfolioMetadata(BaseModel):
+    name: str
+    topics: list[PortfolioTopic]
+    languages: list[str]
+    period_start: str
+    period_end: str
+    generated_at: str
+    data_retrieved_at: str | None = None
+    source: str = "Wikimedia"
+    software_version: str
+    question: str | None = None
+    report_language: str = "en"
+    filters: PortfolioFilters = Field(default_factory=PortfolioFilters)
+
+
+class PortfolioResult(BaseModel):
+    """Many topics x many language editions (spec §36). Each topic is a full comparison (or a
+    single analysis for one language), embedded so the portfolio validates itself."""
+
+    metadata: PortfolioMetadata
+    rows: list[PortfolioRow]
+    comparisons: dict[str, ComparisonResult] = Field(default_factory=dict)
+    analyses: dict[str, AnalysisResult] = Field(default_factory=dict)
+    demand_threshold: float | None = None       # median annual views of all measured pairs (before filters)
+    growth_threshold: float = 0.0
+    observations: list[str] = Field(default_factory=list)
+    notes: list[str] = Field(default_factory=list)
+    formulas: list[Formula] = Field(default_factory=list)
+
+    @property
+    def visible(self) -> list[PortfolioRow]:
+        return [r for r in self.rows if r.excluded_by is None]

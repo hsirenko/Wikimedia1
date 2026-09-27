@@ -143,6 +143,46 @@ CATALOG: dict[str, dict[str, str]] = {
         "sigx.stability": "The peak month, {month}, is {ratio}x the average month; {flags}. From {moderate}x the "
                           "topic is moderately seasonal, from {high}x highly seasonal.",
         "sig_missing": "not computed ({reason})",
+        "pf_title": "Portfolio Report: {name}",
+        "pf_meta": "Topics: {topics} · editions: {editions} · period {start} to {end} · generated {generated} · "
+                   "source: Wikimedia Analytics API",
+        "p1": "1. Summary", "p2": "2. Portfolio Matrix", "p3": "3. Decision Signals", "p4": "4. Filters and Excluded Rows",
+        "p5": "5. Topic Definitions", "p6": "6. Data Quality", "p7": "7. Business Implications",
+        "pf_matrix_intro": "One row per topic and edition, in the order given. Share and affinity are measured within "
+                           "each topic, across these editions. Rows are not sorted by any KPI, because that order "
+                           "would read as a ranking.",
+        "pf_split": "Quadrant split: growth above 0% year over year; demand at or above the median of all measured "
+                    "pairs ({threshold} views), taken before filters.",
+        "pf_col_topic": "Topic", "pf_col_category": "Category", "pf_col_reason": "Reason",
+        "pf_col_articles": "Articles",
+        "pf_filters_none": "No filters: every measured pair is shown.",
+        "pf_filters": "Filters applied: {filters}.",
+        "pf_f_min_views": "at least {n} views in the last 12 months",
+        "pf_f_min_growth": "year-over-year change of at least {pct}",
+        "pf_f_categories": "categories {names}",
+        "pf_excluded_intro": "Rows hidden from the matrix and the chart (they stay in portfolio.json):",
+        "pf_no_excluded": "No rows are hidden.",
+        "pf_ex.min_views": "fewer views in the last 12 months than the minimum",
+        "pf_ex.min_growth": "year-over-year change below the minimum, or no year-over-year figure",
+        "pf_ex.category": "category not selected",
+        "pf_ex.status.no_article": "no article about this concept in this edition",
+        "pf_ex.status.no_data": "the article has no pageview data",
+        "pf_ex.status.needs_review": "ambiguous topic: several concepts match; rerun with an exact title or Wikidata ID",
+        "pf_ex.status.not_found": "topic not found",
+        "pf_ex.status.api_error": "API error",
+        "pf_ex.status.ok": "incomplete data for the last 12 months",
+        "pf_country": "Country filtering is not available: Wikimedia does not publish per-article pageviews by country.",
+        "pf_ne_rank": "That one topic or edition is a better market than another: the quadrants describe Wikipedia "
+                      "reading only.",
+        "pf_obs_none": "No topic and edition pair is left after the filters: see section 4.",
+        "pf_obs_count": "{n} topic and edition pairs are shown, across {topics} topics and {editions} editions.",
+        "pf_obs_top": "{label} had the most pageviews: {views} in the last 12 months.",
+        "pf_obs_all_declined": "Every shown pair with a year-over-year figure ({n}) declined year over year.",
+        "pf_obs_more": " and others",
+        "pf_obs_grew": "{n} of {total} shown pairs grew year over year: {names}.",
+        "pf_chart_title": "Portfolio: demand and growth (descriptive quadrants)",
+        "pf_legend_topics": "Topic (colour)", "pf_legend_editions": "Edition (shape)",
+        "pf_alt": "Portfolio matrix",
         "sig_rules": "Rules: market size by views in the last 12 months (very low under 12,000, low under 60,000, "
                      "medium under 300,000, high under 1,500,000); growth by the 3-year CAGR (declining under -3%, "
                      "stable under +3%, growing under +15%); momentum by ±5 points of acceleration; localization by "
@@ -345,6 +385,46 @@ CATALOG: dict[str, dict[str, str]] = {
         "sigx.stability": "Пік — {month}: {ratio}× від середнього місяця; {flags}. Від {moderate}× тема помірно "
                           "сезонна, від {high}× — сильно сезонна.",
         "sig_missing": "не обчислено ({reason})",
+        "pf_title": "Звіт портфеля: {name}",
+        "pf_meta": "Теми: {topics} · розділи: {editions} · період з {start} по {end} · створено {generated} · "
+                   "джерело: Wikimedia Analytics API",
+        "p1": "1. Підсумок", "p2": "2. Матриця портфеля", "p3": "3. Сигнали для ухвалення рішень",
+        "p4": "4. Фільтри та приховані рядки", "p5": "5. Визначення тем", "p6": "6. Якість даних",
+        "p7": "7. Висновки для бізнесу",
+        "pf_matrix_intro": "Один рядок на кожну пару тема–розділ у вказаному порядку. Частку та спорідненість "
+                           "виміряно в межах кожної теми серед цих розділів. Рядки не впорядковано за жодним "
+                           "показником, бо такий порядок читався б як рейтинг.",
+        "pf_split": "Межі квадрантів: зростання вище 0% рік до року; попит на рівні медіани всіх виміряних пар "
+                    "або вище ({threshold} переглядів), до застосування фільтрів.",
+        "pf_col_topic": "Тема", "pf_col_category": "Категорія", "pf_col_reason": "Причина",
+        "pf_col_articles": "Статті",
+        "pf_filters_none": "Фільтрів немає: показано всі виміряні пари.",
+        "pf_filters": "Застосовані фільтри: {filters}.",
+        "pf_f_min_views": "щонайменше {n} переглядів за останні 12 місяців",
+        "pf_f_min_growth": "зміна рік до року щонайменше {pct}",
+        "pf_f_categories": "категорії {names}",
+        "pf_excluded_intro": "Рядки, приховані з матриці та графіка (вони залишаються в portfolio.json):",
+        "pf_no_excluded": "Прихованих рядків немає.",
+        "pf_ex.min_views": "менше переглядів за останні 12 місяців, ніж мінімум",
+        "pf_ex.min_growth": "зміна рік до року нижча за мінімум або відсутня",
+        "pf_ex.category": "категорію не вибрано",
+        "pf_ex.status.no_article": "у цьому розділі немає статті про це поняття",
+        "pf_ex.status.no_data": "стаття не має даних про перегляди",
+        "pf_ex.status.needs_review": "неоднозначна тема: підходять кілька понять; повторіть із точною назвою чи ID Wikidata",
+        "pf_ex.status.not_found": "тему не знайдено",
+        "pf_ex.status.api_error": "помилка API",
+        "pf_ex.status.ok": "неповні дані за останні 12 місяців",
+        "pf_country": "Фільтр за країнами недоступний: Wikimedia не публікує перегляди окремих статей за країнами.",
+        "pf_ne_rank": "Що одна тема чи розділ є кращим ринком, ніж інші: квадранти описують лише читання Вікіпедії.",
+        "pf_obs_none": "Після фільтрів не залишилося жодної пари тема–розділ: див. розділ 4.",
+        "pf_obs_count": "Показано пар тема–розділ: {n}; тем: {topics}; розділів: {editions}.",
+        "pf_obs_top": "Найбільше переглядів мала пара {label}: {views} за останні 12 місяців.",
+        "pf_obs_all_declined": "Усі показані пари з даними рік до року ({n}) скоротилися рік до року.",
+        "pf_obs_more": " та інші",
+        "pf_obs_grew": "Зросли рік до року {n} із {total} показаних пар: {names}.",
+        "pf_chart_title": "Портфель: попит і зростання (описові квадранти)",
+        "pf_legend_topics": "Тема (колір)", "pf_legend_editions": "Розділ (форма)",
+        "pf_alt": "Матриця портфеля",
         "sig_rules": "Правила: розмір ринку — за переглядами за останні 12 місяців (дуже малий — менше 12 000, "
                      "малий — менше 60 000, середній — менше 300 000, великий — менше 1 500 000); зростання — за CAGR "
                      "за 3 роки (спад — менше −3%, стабільно — менше +3%, зростання — менше +15%); динаміка — за "

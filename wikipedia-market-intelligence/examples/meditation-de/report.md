@@ -128,8 +128,8 @@ YoY with flagged months replaced by their expected values: -22.7% (reported YoY:
 | | |
 |---|---|
 | Source | Wikimedia Analytics API (https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article), access=all-access, agent=user |
-| Data retrieved | 2026-09-27T11:22:30+00:00 |
-| Report generated | 2026-09-27T11:22:30+00:00 (software 0.1.0) |
+| Data retrieved | 2026-09-27T12:04:48+00:00 |
+| Report generated | 2026-09-27T12:04:48+00:00 (software 0.1.0) |
 | Coverage | 100.0% |
 | Missing data | none |
 | Topic resolution confidence | 0.98 |
@@ -151,7 +151,7 @@ Metrics not computed:
 | ecosystem.related_topics | unavailable | Not computed by `analyze`: run `cluster` to measure related topics. |
 | signals.localization | unavailable | Only defined across several editions: run `compare` with the languages to compare. |
 
-Raw responses: `data/raw/wikimedia/pageviews-per-article/20260927T112230_2b682df09582.json`, `data/raw/wikimedia/pageviews-aggregate/20260927T112230_c49dec8c1d36.json`
+Raw responses: `data/raw/wikimedia/pageviews-per-article/20260927T120448_2b682df09582.json`, `data/raw/wikimedia/pageviews-aggregate/20260927T120448_c49dec8c1d36.json`
 
 ## 11. Business Implications
 

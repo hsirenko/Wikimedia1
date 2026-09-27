@@ -10,8 +10,8 @@
     ],
     "period_start": "2023-09",
     "period_end": "2026-08",
-    "generated_at": "2026-09-27T11:22:35+00:00",
-    "data_retrieved_at": "2026-09-27T11:22:30+00:00",
+    "generated_at": "2026-09-27T12:04:53+00:00",
+    "data_retrieved_at": "2026-09-27T12:04:48+00:00",
     "source": "Wikimedia",
     "software_version": "0.1.0",
     "question": null,
@@ -165,8 +165,8 @@
         "project": "en.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T11:22:34+00:00",
-        "data_retrieved_at": "2026-09-27T11:22:33+00:00",
+        "generated_at": "2026-09-27T12:04:52+00:00",
+        "data_retrieved_at": "2026-09-27T12:04:52+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -1183,14 +1183,14 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Meditation/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:33+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T112233_bde0ce522f31.json"
+          "retrieved_at": "2026-09-27T12:04:52+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120452_bde0ce522f31.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/en.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:34+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T112234_c361e5c5945d.json"
+          "retrieved_at": "2026-09-27T12:04:52+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120452_c361e5c5945d.json"
         }
       ]
     },
@@ -1201,8 +1201,8 @@
         "project": "de.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T11:22:34+00:00",
-        "data_retrieved_at": "2026-09-27T11:22:30+00:00",
+        "generated_at": "2026-09-27T12:04:52+00:00",
+        "data_retrieved_at": "2026-09-27T12:04:48+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -2208,14 +2208,14 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/user/Meditation/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:30+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T112230_2b682df09582.json"
+          "retrieved_at": "2026-09-27T12:04:48+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120448_2b682df09582.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/de.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:30+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T112230_c49dec8c1d36.json"
+          "retrieved_at": "2026-09-27T12:04:48+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120448_c49dec8c1d36.json"
         }
       ]
     },
@@ -2226,8 +2226,8 @@
         "project": "fr.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T11:22:34+00:00",
-        "data_retrieved_at": "2026-09-27T11:22:34+00:00",
+        "generated_at": "2026-09-27T12:04:52+00:00",
+        "data_retrieved_at": "2026-09-27T12:04:52+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -3210,14 +3210,14 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/fr.wikipedia/all-access/user/M%C3%A9ditation/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:34+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T112234_db7ec53d2678.json"
+          "retrieved_at": "2026-09-27T12:04:52+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120452_db7ec53d2678.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/fr.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:34+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T112234_d163f0e2aa54.json"
+          "retrieved_at": "2026-09-27T12:04:52+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120452_d163f0e2aa54.json"
         }
       ]
     },
@@ -3228,8 +3228,8 @@
         "project": "es.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T11:22:34+00:00",
-        "data_retrieved_at": "2026-09-27T11:22:34+00:00",
+        "generated_at": "2026-09-27T12:04:52+00:00",
+        "data_retrieved_at": "2026-09-27T12:04:52+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -4212,14 +4212,14 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/es.wikipedia/all-access/user/Meditaci%C3%B3n/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:34+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T112234_1e60c1d3dbbb.json"
+          "retrieved_at": "2026-09-27T12:04:52+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120452_1e60c1d3dbbb.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/es.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:34+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T112234_e8ece5a18d58.json"
+          "retrieved_at": "2026-09-27T12:04:52+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120452_e8ece5a18d58.json"
         }
       ]
     },
@@ -4230,8 +4230,8 @@
         "project": "it.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T11:22:35+00:00",
-        "data_retrieved_at": "2026-09-27T11:22:34+00:00",
+        "generated_at": "2026-09-27T12:04:53+00:00",
+        "data_retrieved_at": "2026-09-27T12:04:53+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -5226,14 +5226,14 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/it.wikipedia/all-access/user/Meditazione/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:34+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T112234_af414b80c12b.json"
+          "retrieved_at": "2026-09-27T12:04:53+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120453_af414b80c12b.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/it.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T11:22:35+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T112235_a7e558859bee.json"
+          "retrieved_at": "2026-09-27T12:04:53+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120453_a7e558859bee.json"
         }
       ]
     }

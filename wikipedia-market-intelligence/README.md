@@ -19,13 +19,16 @@ decision.
   similarity, their demand and growth, descriptive signals, and interest concentration.
 - **Decision signals:** five separate readings (market size, growth, momentum, localization,
   stability), each with its evidence and rule, and never combined into a score or verdict.
-- **Later milestone:** the HTML report and portfolio mode (see [Roadmap](#roadmap)).
+- **Portfolio mode** (`portfolio`): many topics × many editions in one matrix and chart, with
+  filters, the decision signals for every pair, and no ranking.
+- **HTML reports:** every command also writes a self-contained `report.html`, with the charts
+  embedded, in light and dark mode.
 
 ## 1. What it does
 
 ```text
 topic + language → topic resolution → Wikimedia collection → raw archive → normalized records
-                 → KPIs (demand, growth, seasonality, quality) → JSON + Markdown + chart
+                 → KPIs (demand, growth, seasonality, quality) → JSON + Markdown + HTML + charts
 ```
 
 The layers are separate packages. `clients/` is the only place that does HTTP. `data/` holds the
@@ -74,6 +77,8 @@ wiki-market analyze --topic meditation --language de --start 2023-09 --end 2026-
 wiki-market analyze --input examples/meditation-de.yaml
 wiki-market compare --topic meditation --languages en,de,fr,es,it
 wiki-market cluster --topic meditation --language de           # analyze + related topics
+wiki-market portfolio --topics examples/wellness-topics.yaml --languages de,en,fr,es
+wiki-market portfolio --topics meditation,yoga,sleep --languages de,fr --min-views 20000 --min-growth -10
 wiki-market topic --topic meditation --languages en,de,fr      # resolution only
 wiki-market validate                                             # check every saved report
 wiki-market cache clear
@@ -113,6 +118,16 @@ comparison = compare_languages(topic="meditation", languages=["en", "de", "fr", 
 for row in comparison.rows:          # LanguageOpportunityMetrics, one per edition
     row.language, row.annual_views, row.yoy_growth, row.topic_share, row.topic_penetration, row.topic_affinity
 comparison.analyses["de"]            # the full single-language result for each edition
+```
+
+```python
+from wiki_market_intel import portfolio
+
+matrix = portfolio(topics=["meditation", {"topic": "sleep", "category": "sleep"}], languages=["de", "en", "fr"],
+                   min_views=20_000)
+for row in matrix.visible:           # PortfolioRow, one per (topic, edition), in input order
+    row.topic, row.language, row.annual_views, row.yoy_growth, row.topic_affinity, row.quadrant, row.signals
+matrix.rows                          # every row, including hidden ones (row.excluded_by says why)
 ```
 
 If the topic is ambiguous, `analyze` and `compare_languages` raise `AmbiguousTopicError`, and its `.resolution.candidates`
@@ -263,6 +278,47 @@ On real data (2023-09 to 2026-08), the signals for "Meditation" read as follows:
 | es | low | declining | decelerating | moderate | highly seasonal |
 | it | low | declining | accelerating | moderate | highly seasonal |
 
+## Portfolio mode
+
+`wiki-market portfolio --topics topics.yaml --languages de,en,fr,es` (spec §36-§37). Either
+argument can be a comma list or a YAML file. A topics file is a list, or `topics:` with items
+that are a name or `{topic: name, category: label}`
+(see [`examples/wellness-topics.yaml`](examples/wellness-topics.yaml)).
+
+- **Per topic:** each topic runs through the normal comparison (or a single analysis for one
+  edition). Its rows therefore carry the same KPIs, affinity and decision signals as a `compare`
+  report, and the portfolio JSON embeds the full results.
+- **Affinity is within each topic,** across the portfolio's editions. It changes when the set of
+  editions changes.
+- **Portfolio quadrant:** YoY > 0; demand at or above the median annual views of every measured
+  pair. The median is taken *before* filters, so a filter never moves the split.
+- **Filters:**
+  - `--min-views N`: annual views;
+  - `--min-growth P`: YoY in percent, e.g. `5` or `-10` (write `--min-growth=-10%` with a % sign);
+  - `--category a,b`: categories from the topics file;
+  - languages and period: `--languages`, `--period` / `--start` / `--end`.
+
+  Hidden rows stay in `portfolio.json`, with `excluded_by` saying why, and the report lists them.
+  Country filtering is not available: Wikimedia publishes no per-article country data.
+- **Topics that fail to resolve:** a topic that is ambiguous, not found or fails at the API becomes
+  rows with that status and reason. It never stops the rest of the portfolio.
+- **No ranking:** rows keep the input order and are never sorted by a KPI. The chart colours each
+  topic (fixed order, never cycled) and gives each edition its own marker shape, with a legend.
+  The CLI prints a `READY ANSWER` grouped by quadrant.
+- **Output:** `reports/portfolio/{name}/{date}/`, with `portfolio.json`, `report.md`,
+  `report.html` and `charts/portfolio.png`. `validate` rechecks every embedded result and
+  rebuilds the rows, the split and the filters.
+
+[`examples/wellness-portfolio/`](examples/wellness-portfolio/report.md) holds five wellness
+topics across four editions. On this data, all 19 pairs with a year-over-year figure declined.
+
+## HTML reports
+
+Every report folder also has `report.html`: the Markdown report as one self-contained page. The
+charts are embedded as data URIs, so the file can be emailed or opened offline. It has light and
+dark themes and works at phone width (wide tables scroll inside their own box). A small built-in
+converter covers the reports' Markdown subset, so the HTML adds no dependency.
+
 ## 8. Formulas
 
 All formulas live in [`analytics/formulas.py`](src/wiki_market_intel/analytics/formulas.py).
@@ -326,8 +382,8 @@ KPI functions would not change.
 ## 13. Tests
 
 ```bash
-pytest                    # 159 offline tests; the network is replaced by a fake Wikimedia
-pytest -m integration     # 4 tests against the live API
+pytest                    # 183 offline tests; the network is replaced by a fake Wikimedia
+pytest -m integration     # 5 tests against the live API
 ```
 
 The fixture `tests/fixtures/pageviews_meditation_de_2020-09_2026-08.json` is a real captured API
@@ -342,6 +398,9 @@ response. The tests cover:
 - **The CLI and its exit codes.**
 - **Decision signals:** every band boundary, episodes versus volatility, missing signals with
   reasons, and both report languages.
+- **Portfolio:** input order, per-topic failures, the median split, filters, one-language
+  portfolios, the ready answer, both report languages, the chart and self-contained HTML.
+- **HTML:** tables, alignment, escaping, inline marks and embedded images.
 - **`validate`,** including catching a tampered report.
 
 ## Roadmap
@@ -355,6 +414,7 @@ In the order the spec (§40) sets:
 3. ~~**Topic ecosystem and concentration**~~ (done): `cluster`.
 4. ~~**Decision signals**~~ (done): market size, growth, momentum, localization, stability,
    each with its evidence. Kept separate, with no single score.
-5. **HTML report and portfolio mode:** a matrix of many topics × languages (the opportunity matrix already exists per topic).
+5. ~~**HTML report and portfolio mode**~~ (done): `report.html` for every report; `portfolio`
+   with the matrix, chart, filters and signals.
 
 [aqs]: https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/reference/page-views.html
