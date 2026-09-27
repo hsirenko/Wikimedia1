@@ -14,7 +14,6 @@ from wiki_market_intel.models.topic import TopicResolution
 
 NOT_YET = [
     ("ecosystem.related_topics", "Not computed by `analyze`: run `cluster` to measure related topics."),
-    ("signals", "Decision signals are planned for a later milestone."),
 ]
 COUNTRY_REASON = ("Wikimedia publishes country-level pageviews per project (top-by-country), "
                   "not per article, so a topic's country distribution cannot be measured.")
@@ -37,8 +36,7 @@ def assess(series: list[MonthlyPoint], requested: Period, resolution: TopicResol
     gaps.append(MissingMetric(metric="localization.country_distribution", status="unsupported", reason=COUNTRY_REASON))
     gaps += [MissingMetric(metric=m, status="unavailable", reason=ONLY_IN_COMPARISON)
              for m in ("localization.topic_share", "localization.topic_affinity")]
-    gaps += [MissingMetric(metric=m, status="unavailable" if m == "ecosystem.related_topics" else "not_implemented",
-                           reason=r) for m, r in NOT_YET]
+    gaps += [MissingMetric(metric=m, status="unavailable", reason=r) for m, r in NOT_YET]
 
     confidence = resolution.confidence
     reasons: list[str] = []

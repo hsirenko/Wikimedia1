@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from jinja2 import Environment, StrictUndefined
 
+from wiki_market_intel.analytics import signals as signal_kpis
 from wiki_market_intel.analytics.summary import observations_from_spans
 from wiki_market_intel.i18n import REASON_KEYS, Translator
 from wiki_market_intel.models.analysis import AnalysisResult
@@ -35,6 +36,15 @@ TEMPLATE = """\
 | {{ t("localization") }} | {{ t("penetration") }}: {{ pen(r.localization.topic_penetration) }} |
 | {{ t("quality") }} | **{{ t("level." ~ r.quality.quality_level) }}** ({{ quality_reasons | join("; ") }}) |
 
+### {{ t("sig_title") }}
+
+{{ t("sig_intro") }}
+
+| {{ t("sig_col_signal") }} | {{ t("sig_col_label") }} | {{ t("sig_col_evidence") }} |
+|---|---|---|
+{% for name, label, text in signal_rows -%}
+| {{ t("sig_name." ~ name) }} | {% if label %}**{{ t("sig." ~ name ~ "." ~ label) }}**{% else %}{{ t("na") }}{% endif %} | {{ text }} |
+{% endfor %}
 ### {{ t("observations") }}
 
 {% for o in observations -%}
@@ -320,6 +330,14 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
     else:
         basis = ""
 
+    explained = signal_kpis.explain(result, tr)
+    signal_rows = []
+    for name in signal_kpis.SIGNAL_NAMES:
+        label = getattr(result.signals, name)
+        gap = reasons.get(f"signals.{name}")
+        text = explained.get(name) or (tr("sig_missing", reason=reason(gap)) if gap else tr("na"))
+        signal_rows.append((name, label, text))
+
     env = Environment(undefined=StrictUndefined, autoescape=False)
     def month_mid(name):
         # Inside a sentence Ukrainian month names are lowercase ("пік — січень"); English stay capitalised.
@@ -330,7 +348,7 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
                        times=times, share=share,
                        month=tr.month, month_mid=month_mid)
     return env.from_string(TEMPLATE).render(
-        r=result, chart=chart_path, basis=basis,
+        r=result, chart=chart_path, basis=basis, signal_rows=signal_rows,
         observations=observations_from_spans(result.demand, result.growth, result.seasonality, _spans(result), tr,
                                              result.anomalies, result.anomaly_analysis),
         an_info=result.anomaly_analysis or AnomalyAnalysis(),

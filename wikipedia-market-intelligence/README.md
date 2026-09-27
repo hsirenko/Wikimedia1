@@ -17,8 +17,9 @@ decision.
   causes always left as "unknown".
 - **Topic ecosystem** (`cluster`): related concepts through typed Wikidata relations and text
   similarity, their demand and growth, descriptive signals, and interest concentration.
-- **Later milestones:** decision signals and portfolio mode (see
-  [Roadmap](#roadmap)). Reports already contain those sections and say why they're empty.
+- **Decision signals:** five separate readings (market size, growth, momentum, localization,
+  stability), each with its evidence and rule, and never combined into a score or verdict.
+- **Later milestone:** the HTML report and portfolio mode (see [Roadmap](#roadmap)).
 
 ## 1. What it does
 
@@ -225,6 +226,43 @@ On real data, German "Meditation" lost 17.2% year over year. Every typed relatio
 relative to its edition, so the topic is holding up better than its neighbourhood. The cluster
 is concentrated: Buddhism, a larger category, holds 62% of its views.
 
+## Decision signals
+
+Spec §22 asks for business-relevant signals without pretending that Wikipedia can make an
+investment decision. So there are five **separate** labels. Each comes from one rule on KPIs
+already in the report, and each carries a sentence with its evidence (`signals.evidence` in the
+JSON; section 1 of the report, in the report language). They are never combined into a score,
+and never turned into BUY / INVEST.
+
+| Signal | Input | Rule |
+|---|---|---|
+| market size | views in the last 12 months | very low < 12,000 ≤ low < 60,000 ≤ medium < 300,000 ≤ high < 1.5M ≤ very high |
+| growth | 3-year CAGR (YoY without 4 years of data) | declining < −3% ≤ stable < +3% ≤ growing < +15% ≤ strongly growing |
+| momentum | 3M growth minus previous 3M growth | accelerating > +5 points, decelerating < −5, else stable |
+| localization | affinity (only in `compare`) | weak < 0.80 ≤ moderate < 1.25 ≤ strong |
+| stability | anomaly episodes, then seasonal peak | volatile: ≥ 2 episodes and ≥ 1 per 12 months checked; else peak ≥ 1.30× highly seasonal, ≥ 1.12× moderately seasonal, else stable |
+
+- **Market size** is absolute on purpose (the spec says "based on absolute demand"), so the same
+  topic reads higher in a larger edition.
+- **Growth** uses raw pageviews. Its evidence adds the whole edition's YoY, because Wikipedia
+  traffic falls in many editions.
+- **An anomaly episode** is a run of consecutive flagged months. English "Meditation" has a spike
+  in June 2026 and two flagged months after it. That is one event, not volatility.
+- **A missing signal** is listed in the data-quality table with its reason. For example,
+  localization is `unavailable` outside a comparison, and stability needs two years of each
+  calendar month.
+- **`validate`** recomputes every signal from the report's own monthly series.
+
+On real data (2023-09 to 2026-08), the signals for "Meditation" read as follows:
+
+| Edition | Market size | Growth | Momentum | Localization | Stability |
+|---|---|---|---|---|---|
+| en | high | declining | accelerating | moderate | moderately seasonal |
+| de | low | declining | accelerating | strong | moderately seasonal |
+| fr | low | declining | accelerating | moderate | highly seasonal |
+| es | low | declining | decelerating | moderate | highly seasonal |
+| it | low | declining | accelerating | moderate | highly seasonal |
+
 ## 8. Formulas
 
 All formulas live in [`analytics/formulas.py`](src/wiki_market_intel/analytics/formulas.py).
@@ -288,7 +326,7 @@ KPI functions would not change.
 ## 13. Tests
 
 ```bash
-pytest                    # 132 offline tests; the network is replaced by a fake Wikimedia
+pytest                    # 159 offline tests; the network is replaced by a fake Wikimedia
 pytest -m integration     # 4 tests against the live API
 ```
 
@@ -302,6 +340,8 @@ response. The tests cover:
 - **Periods and quality levels.**
 - **Reporting:** section order, missing-metric rendering, incomplete data.
 - **The CLI and its exit codes.**
+- **Decision signals:** every band boundary, episodes versus volatility, missing signals with
+  reasons, and both report languages.
 - **`validate`,** including catching a tampered report.
 
 ## Roadmap
@@ -313,8 +353,8 @@ In the order the spec (§40) sets:
    stays unsupported, because Wikimedia doesn't publish it per article.
 2. ~~**Anomalies**~~ (done): seasonal, level-aware baseline; robust flags; causes stay "unknown".
 3. ~~**Topic ecosystem and concentration**~~ (done): `cluster`.
-4. **Decision signals:** market size, growth, momentum, localization, stability. Kept separate,
-   with no single score.
+4. ~~**Decision signals**~~ (done): market size, growth, momentum, localization, stability,
+   each with its evidence. Kept separate, with no single score.
 5. **HTML report and portfolio mode:** a matrix of many topics × languages (the opportunity matrix already exists per topic).
 
 [aqs]: https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/reference/page-views.html

@@ -14,7 +14,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from wiki_market_intel.analytics import anomalies, demand, growth, localization, seasonality
+from wiki_market_intel.analytics import anomalies, demand, growth, localization, seasonality, signals
 from wiki_market_intel.analytics.periods import build_periods
 from wiki_market_intel.models.analysis import AnalysisResult, ComparisonResult
 from wiki_market_intel.models.metrics import LanguageOpportunityMetrics
@@ -34,9 +34,10 @@ def _check_analysis(result: AnalysisResult, stored_raw: dict, prefix: str = "") 
     months = (end.year - start.year) * 12 + end.month - start.month + 1
     periods = build_periods(end, months)
     problems = []
-    for section, (recomputed, _) in (("demand", demand.compute(result.monthly, periods)),
-                                     ("growth", growth.compute(result.monthly, periods)),
-                                     ("seasonality", seasonality.compute(result.monthly, periods["requested"]))):
+    fresh = {"demand": demand.compute(result.monthly, periods)[0],
+             "growth": growth.compute(result.monthly, periods)[0],
+             "seasonality": seasonality.compute(result.monthly, periods["requested"])[0]}
+    for section, recomputed in fresh.items():
         stored = getattr(result, section)
         for field in type(recomputed).model_fields:
             if field not in stored_raw.get(section, {}):
@@ -69,6 +70,16 @@ def _check_analysis(result: AnalysisResult, stored_raw: dict, prefix: str = "") 
             conc.largest = None      # written before the largest article was recorded
         if conc != stored_conc:
             problems.append(f"{prefix}ecosystem.concentration: stored != recomputed")
+    if "growth_basis" in stored_raw.get("signals", {}):   # older reports had no signals
+        # from KPIs recomputed out of the raw monthly series, not the stored ones
+        found, info = anomalies.detect(result.monthly, periods["requested"])
+        again, _ = signals.compute(fresh["demand"].annual_views, fresh["growth"], fresh["seasonality"],
+                                   [a.date for a in found], info.months_checked,
+                                   result.localization.topic_affinity)
+        for field in (*signals.SIGNAL_NAMES, "growth_basis"):
+            if getattr(result.signals, field) != getattr(again, field):
+                problems.append(f"{prefix}signals.{field}: stored {getattr(result.signals, field)!r} "
+                                f"!= recomputed {getattr(again, field)!r}")
     if result.edition_monthly:
         pen, _ = localization.penetration(result.monthly, result.edition_monthly, periods["last_12m"], True)
         if not _same(result.localization.topic_penetration, pen):

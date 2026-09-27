@@ -207,6 +207,27 @@ REGISTRY: list[Formula] = [
     Formula(name="concentration_top_k",
             definition="views of the k largest articles / views of the topic plus its typed relations, k = 1, 5, 10, 20",
             edge_cases="null when the cluster has fewer than k articles; text-similar articles excluded"),
+    Formula(name="signal_market_size",
+            definition="annual views (last 12 months): very_low < 12,000 <= low < 60,000 <= medium < 300,000 "
+                       "<= high < 1,500,000 <= very_high",
+            edge_cases="absolute on purpose (spec §22), so larger editions read higher for the same topic"),
+    Formula(name="signal_growth",
+            definition="3-year CAGR (YoY when there is no CAGR): declining < -3% <= stable < +3% <= growing "
+                       "< +15% <= strongly_growing",
+            edge_cases="raw pageviews; the explanation adds the whole edition's YoY for context"),
+    Formula(name="signal_momentum", definition="the momentum label: acceleration > +5 points accelerating, "
+                                               "< -5 points decelerating, else stable"),
+    Formula(name="signal_localization",
+            definition="topic affinity: weak < 0.80 <= moderate < 1.25 <= strong",
+            edge_cases="null outside a comparison, because affinity needs other editions"),
+    Formula(name="signal_stability",
+            definition="volatile if >= 2 anomaly episodes (runs of consecutive flagged months) and >= 1 per "
+                       "12 months checked; else peak-to-average "
+                       ">= 1.30 highly_seasonal, >= 1.12 moderately_seasonal, else stable",
+            edge_cases="null without 2 years of each calendar month (seasonality cannot be told from noise)"),
+    Formula(name="decision_signals",
+            definition="five separate labels (market size, growth, momentum, localization, stability)",
+            edge_cases="never combined into a single score, never a BUY / INVEST recommendation"),
     Formula(name="quadrant",
             definition="growth: YoY > 0; demand: annual views >= median of compared editions; "
                        "labels investigate / explore / established / watch are descriptive, not recommendations"),

@@ -5,8 +5,8 @@
     "project": "de.wikipedia",
     "period_start": "2023-09",
     "period_end": "2026-08",
-    "generated_at": "2026-09-27T10:49:11+00:00",
-    "data_retrieved_at": "2026-09-27T09:35:05+00:00",
+    "generated_at": "2026-09-27T11:22:30+00:00",
+    "data_retrieved_at": "2026-09-27T11:22:30+00:00",
     "source": "Wikimedia",
     "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
     "access": "all-access",
@@ -177,7 +177,15 @@
     "yoy_excluding_anomalies": -0.22652793946449357
   },
   "ecosystem": {
-    "related_topics": []
+    "computed": false,
+    "related_topics": [],
+    "concentration": null,
+    "edition_yoy": null,
+    "candidates_considered": 0,
+    "skipped_without_article": {},
+    "capped_from": null,
+    "has_wikidata": true,
+    "notes": []
   },
   "quality": {
     "coverage": 1.0,
@@ -210,13 +218,13 @@
       },
       {
         "metric": "ecosystem.related_topics",
-        "status": "not_implemented",
-        "reason": "Topic ecosystem analysis is planned for a later milestone."
+        "status": "unavailable",
+        "reason": "Not computed by `analyze`: run `cluster` to measure related topics."
       },
       {
-        "metric": "signals",
-        "status": "not_implemented",
-        "reason": "Decision signals are planned for a later milestone."
+        "metric": "signals.localization",
+        "status": "unavailable",
+        "reason": "Only defined across several editions: run `compare` with the languages to compare (the per-language results inside a comparison carry this value)."
       }
     ],
     "api_errors": [],
@@ -232,11 +240,18 @@
     ]
   },
   "signals": {
-    "market_size": null,
-    "growth": null,
-    "momentum": null,
+    "market_size": "low",
+    "growth": "declining",
+    "momentum": "accelerating",
     "localization": null,
-    "stability": null
+    "stability": "moderately_seasonal",
+    "growth_basis": "three_year_cagr",
+    "evidence": {
+      "market_size": "56,910 views in the last 12 months; low is 12,000 to under 60,000. This is absolute: larger editions reach more readers.",
+      "growth": "3-year CAGR -15.1%; declining is under -3.0% a year. For context, de.wikipedia as a whole changed -7.3% year over year.",
+      "momentum": "Last 3 months +3.1% against the 3 before them -10.1% (+13.2 points); above +5 points is accelerating, below -5 decelerating, otherwise stable.",
+      "stability": "The peak month, January, is 1.29x the average month; 2 flagged months out of 36, in 2 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal."
+    }
   },
   "observations": [
     "Annual pageviews (2025-09..2026-08) were 56.9K (about 4.7K a month).",
@@ -932,6 +947,56 @@
       "edge_cases": "null when nothing is flagged; shows whether growth rests on one-off months (spec rule 6)"
     },
     {
+      "name": "related_topics",
+      "definition": "Wikidata P279 subclass-of (broader / reverse: narrower), P1269 facet-of (facet_of / reverse: has_facet), and text similarity (similar_content, labelled separately)",
+      "edge_cases": "deduplicated with typed relations first; capped at 20; concepts without an article in the edition are skipped and counted"
+    },
+    {
+      "name": "share_adjusted_yoy",
+      "definition": "(1 + topic YoY) / (1 + edition YoY) - 1",
+      "edge_cases": ""
+    },
+    {
+      "name": "ecosystem_signal",
+      "definition": "too_small (<1,200 views/yr) > larger_category (broader or facet-of target, more views) > emerging (share-adjusted YoY >= +10%) > declining (<= -10%) > adjacent_opportunity (views >= topic) > adjacent_interest",
+      "edge_cases": "adjacent interest signals only, never a claim of commercial adjacency"
+    },
+    {
+      "name": "concentration_top_k",
+      "definition": "views of the k largest articles / views of the topic plus its typed relations, k = 1, 5, 10, 20",
+      "edge_cases": "null when the cluster has fewer than k articles; text-similar articles excluded"
+    },
+    {
+      "name": "signal_market_size",
+      "definition": "annual views (last 12 months): very_low < 12,000 <= low < 60,000 <= medium < 300,000 <= high < 1,500,000 <= very_high",
+      "edge_cases": "absolute on purpose (spec §22), so larger editions read higher for the same topic"
+    },
+    {
+      "name": "signal_growth",
+      "definition": "3-year CAGR (YoY when there is no CAGR): declining < -3% <= stable < +3% <= growing < +15% <= strongly_growing",
+      "edge_cases": "raw pageviews; the explanation adds the whole edition's YoY for context"
+    },
+    {
+      "name": "signal_momentum",
+      "definition": "the momentum label: acceleration > +5 points accelerating, < -5 points decelerating, else stable",
+      "edge_cases": ""
+    },
+    {
+      "name": "signal_localization",
+      "definition": "topic affinity: weak < 0.80 <= moderate < 1.25 <= strong",
+      "edge_cases": "null outside a comparison, because affinity needs other editions"
+    },
+    {
+      "name": "signal_stability",
+      "definition": "volatile if >= 2 anomaly episodes (runs of consecutive flagged months) and >= 1 per 12 months checked; else peak-to-average >= 1.30 highly_seasonal, >= 1.12 moderately_seasonal, else stable",
+      "edge_cases": "null without 2 years of each calendar month (seasonality cannot be told from noise)"
+    },
+    {
+      "name": "decision_signals",
+      "definition": "five separate labels (market size, growth, momentum, localization, stability)",
+      "edge_cases": "never combined into a single score, never a BUY / INVEST recommendation"
+    },
+    {
       "name": "quadrant",
       "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
       "edge_cases": ""
@@ -941,14 +1006,14 @@
     {
       "endpoint": "pageviews/per-article",
       "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/user/Meditation/monthly/2020090100/2026083100",
-      "retrieved_at": "2026-09-27T09:35:05+00:00",
-      "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T093505_2b682df09582.json"
+      "retrieved_at": "2026-09-27T11:22:30+00:00",
+      "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T112230_2b682df09582.json"
     },
     {
       "endpoint": "pageviews/aggregate",
       "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/de.wikipedia/all-access/user/monthly/2020090100/2026083100",
-      "retrieved_at": "2026-09-27T10:22:06+00:00",
-      "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-aggregate/20260927T102206_c49dec8c1d36.json"
+      "retrieved_at": "2026-09-27T11:22:30+00:00",
+      "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T112230_c49dec8c1d36.json"
     }
   ]
 }

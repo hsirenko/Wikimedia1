@@ -1,6 +1,6 @@
 # Language Comparison Report: Meditation
 
-_Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T10:49:12+00:00 · source: Wikimedia Analytics API_
+_Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T11:22:35+00:00 · source: Wikimedia Analytics API_
 
 ## 1. Summary
 
@@ -35,6 +35,20 @@ _Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia 
 | fr.wikipedia | 31,017 | -44.4% | -19.8% | +9.5% | n/a | 7.0% | 4.3 | 1.06 | established |
 | es.wikipedia | 25,633 | -57.1% | -39.6% | -15.2% | n/a | 5.8% | 3.9 | 0.96 | watch |
 | it.wikipedia | 17,203 | -20.5% | -31.4% | +7.9% | n/a | 3.9% | 3.7 | 0.91 | watch |
+
+### Decision signals
+
+Five separate signals, each from one written rule. They are evidence for a human decision: they are not combined into a score and are not a recommendation to buy or invest.
+
+| Edition | Market size (reader attention) | Growth | Momentum | Localization | Stability |
+|---|---|---|---|---|---|
+| en.wikipedia | high | declining | accelerating | moderate | moderately seasonal |
+| de.wikipedia | low | declining | accelerating | strong | moderately seasonal |
+| fr.wikipedia | low | declining | accelerating | moderate | highly seasonal |
+| es.wikipedia | low | declining | decelerating | moderate | highly seasonal |
+| it.wikipedia | low | declining | accelerating | moderate | highly seasonal |
+
+Rules: market size by views in the last 12 months (very low under 12,000, low under 60,000, medium under 300,000, high under 1,500,000); growth by the 3-year CAGR (declining under -3%, stable under +3%, growing under +15%); momentum by ±5 points of acceleration; localization by affinity (weak under 0.80, strong from 1.25); stability by anomaly episodes, then the seasonal peak (moderately seasonal from 1.12x, highly from 1.30x). Each edition's own report explains its readings with the numbers.
 
 ## 4. Opportunity Matrix
 

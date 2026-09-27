@@ -14,6 +14,7 @@ from pathlib import Path
 
 import yaml
 
+from wiki_market_intel.analytics import signals as signal_kpis
 from wiki_market_intel.analytics.summary import compact, pct
 from wiki_market_intel.config import Settings
 from wiki_market_intel.data.cache import JsonFileCache
@@ -86,6 +87,7 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
           f"3M {pct(g.last_three_month_growth)} ({g.momentum or 'n/a'}) | quality {q.quality_level}")
     for observation in result.observations:
         print(f"  - {observation}")
+    _print_signals(result)
     if result.ecosystem.computed:
         eco = result.ecosystem
         c = eco.concentration
@@ -120,6 +122,12 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
         for observation in observations_from_spans(result.demand, result.growth, result.seasonality,
                                                    markdown._spans(result), tr):
             print(f"  - {observation}")
+        print(f"  {tr('sig_title')}:")
+        explained = signal_kpis.explain(result, tr)
+        for name in signal_kpis.SIGNAL_NAMES:
+            label = getattr(result.signals, name)
+            reading = tr(f"sig.{name}.{label}") if label else tr("na")
+            print(f"    {tr('sig_name.' + name)}: {reading}. {explained.get(name, '')}".rstrip())
     elif wanted != "en":
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
@@ -127,6 +135,18 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
     print(f"Wrote {files.json}\n      {files.markdown}" + (f"\n      {files.chart}" if files.chart else "")
           + (f"\n      {files.eco_chart}" if files.eco_chart else ""))
     return 0
+
+
+def _print_signals(result) -> None:
+    sig = result.signals
+    print("  SIGNALS (five separate readings; never combined into a score or a buy/invest verdict):")
+    for name in signal_kpis.SIGNAL_NAMES:
+        label = getattr(sig, name)
+        if label:
+            print(f"    {name.replace('_', ' ')}: {label.replace('_', ' ')}. {sig.evidence.get(name, '')}".rstrip())
+        else:
+            reason = next((m.reason for m in result.quality.missing_metrics if m.metric == f"signals.{name}"), "")
+            print(f"    {name.replace('_', ' ')}: n/a. {reason}".rstrip())
 
 
 def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
@@ -168,6 +188,11 @@ def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
               f"{(f'{r.topic_affinity:.2f}' if r.topic_affinity is not None else 'n/a'):>10}  {r.quadrant or 'n/a'}")
     for observation in result.observations:
         print(f"  - {observation}")
+    print("  READY ANSWER on signals (give this to the user as written, translated if needed; do not add a "
+          "verdict, score, ranking or 'assessment' per market):")
+    print(f"    {signal_kpis.NO_VERDICT}")
+    for analysis in result.analyses.values():
+        print(f"    - {signal_kpis.brief(analysis)}")
     for note in result.notes:
         print(f"  NOTE {note}")
     if report_lang != "en":

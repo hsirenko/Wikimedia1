@@ -1,11 +1,11 @@
 ---
 name: wiki-market-intel
-description: KPI reports on reader attention to a topic across Wikipedia language editions, from Wikimedia pageview data. For one edition it covers annual views, year-over-year growth, 3-year CAGR, 3-month momentum, seasonality, topic penetration and data quality. Across several editions it adds each edition's share of topic views, topic affinity (how over- or under-represented the topic is) and a demand-by-growth opportunity matrix. Output is JSON, a Markdown report and charts. Use when someone asks how much attention a topic gets in a language, whether it is growing, which language markets show the most interest, or wants a reproducible market-intelligence report. It measures attention and does not give buy or invest recommendations.
+description: KPI reports on reader attention to a topic across Wikipedia language editions, from Wikimedia pageview data. For one edition it covers annual views, year-over-year growth, 3-year CAGR, 3-month momentum, seasonality, anomalies, penetration, data quality and five separate decision signals (market size, growth, momentum, localization, stability). Across editions it adds share, affinity and a demand-by-growth matrix; around a topic it measures related topics and concentration. Output is JSON, a Markdown report and charts. Use when someone asks how much attention a topic gets in a language, whether it is growing, which language markets show the most interest, which related topics draw readers, or wants a reproducible market-intelligence report. It measures attention and does not give buy or invest recommendations.
 license: MIT
 compatibility: Python 3.10+ and outbound access to wikimedia.org, *.wikipedia.org and www.wikidata.org. Libraries (httpx, pydantic, tenacity, python-dateutil, jinja2, matplotlib, pyyaml) are installed automatically on first run if missing.
 metadata:
   version: "0.1.0"
-  milestone: "1 - one topic, one language"
+  milestone: "4 - decision signals"
 ---
 
 # Wikipedia Market Intelligence (wiki-market-intel)
@@ -132,6 +132,22 @@ Only resolving a topic, without fetching views:
 - **When a KPI is `n/a`, give its reason** from the report (for example, unique devices and
   country data are published by Wikimedia only for whole editions, not per article). Never
   replace it with an estimate.
+- **Decision signals (`SIGNALS` lines; the table in section 1 of the report):** five separate
+  readings: market size, growth, momentum, localization and stability. Each comes with its
+  evidence and rule.
+  - Give each one with its evidence, as printed, for example: "growth: declining (3-year CAGR
+    -15.1%; de.wikipedia as a whole changed -7.3%)".
+  - **Never combine them** into an overall score, grade, verdict or recommendation. Never say
+    "buy", "invest", "go" or "no-go", even when the user asks "should we launch?". Answer with the
+    five readings and what they can't show.
+  - Market size is absolute reader attention in that edition, not market size in money or users.
+    Larger editions read higher for the same topic.
+  - In `compare`, give the `READY ANSWER on signals` block as written (translated if needed).
+    Its labels are the tool's: if every edition reads "market size low", say "low" for each.
+    Don't re-rank them as highest, medium or lowest, and don't add an "assessment", a "most
+    favourable" market or a go/no-go line per market.
+  - Localization only exists in `compare`. In a single-edition analysis it is `n/a`; give that
+    reason.
 - **Quadrant names are descriptive, not advice.** Investigate, explore, established and watch
   describe growth vs demand; never turn them into "buy", "best market" or "winner".
 - **Precise language:** "Pageviews decreased 17.2% year over year", not "demand collapsed".
@@ -148,9 +164,9 @@ KPI from the report's own stored monthly data and confirms that the stored numbe
 
 ## Current scope
 
-Single-language analysis, language comparison (share, penetration, affinity, opportunity matrix)
-anomaly detection and the topic ecosystem (`cluster`) are built. Decision signals are not. The reports
-show those sections as "not implemented", with the reason. Country breakdowns and unique devices are
-not published per article by Wikimedia, so they are always n/a. Never estimate them.
+Single-language analysis, language comparison (share, penetration, affinity, opportunity matrix),
+anomaly detection, the topic ecosystem (`cluster`) and decision signals are built. Country breakdowns
+and unique devices are not published per article by Wikimedia, so they are always n/a. Never estimate
+them.
 
 More detail: `references/README.md` (KPI definitions, formulas, quality rules, data limitations).

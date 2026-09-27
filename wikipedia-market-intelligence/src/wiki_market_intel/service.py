@@ -16,6 +16,7 @@ from wiki_market_intel.analytics import demand as demand_kpis
 from wiki_market_intel.analytics import formulas, growth as growth_kpis, quality as quality_kpis
 from wiki_market_intel.analytics import anomalies as anomaly_kpis
 from wiki_market_intel.analytics import localization as localization_kpis
+from wiki_market_intel.analytics import signals as signal_kpis
 from wiki_market_intel.analytics import seasonality as seasonality_kpis
 from wiki_market_intel.analytics.periods import build_periods, fetch_window, parse_period
 from wiki_market_intel.analytics.summary import comparison_observations, observations
@@ -27,7 +28,7 @@ from wiki_market_intel.data.cache import JsonFileCache, NullCache
 from wiki_market_intel.data.normalizer import edition_totals, monthly_series, normalize
 from wiki_market_intel.data.raw_store import RawStore
 from wiki_market_intel.errors import AmbiguousTopicError, ArticleMissingError, TopicNotFoundError
-from wiki_market_intel.i18n import resolve_report_language
+from wiki_market_intel.i18n import Translator, resolve_report_language
 from wiki_market_intel.models.analysis import (
     AnalysisResult, ComparisonMetadata, ComparisonResult, Metadata, SourceRecord, TopicSection,
 )
@@ -111,8 +112,12 @@ def _analyze_article(services: Services, topic: str, language: str, resolution: 
                                   api_errors, denominator_available=edition_fetch.status == "ok",
                                   anomaly_count=len(found))
 
+    signals, gaps_sig = signal_kpis.compute(demand.annual_views, growth, seasonality, [a.date for a in found],
+                                            anomaly_info.months_checked)
+    quality.missing_metrics += gaps_sig
+
     requested = periods["requested"]
-    return AnalysisResult(
+    result = AnalysisResult(
         metadata=Metadata(
             topic=topic, language=language, project=project,
             period_start=f"{requested.start:%Y-%m}", period_end=f"{requested.end:%Y-%m}",
@@ -133,7 +138,10 @@ def _analyze_article(services: Services, topic: str, language: str, resolution: 
         monthly=series, edition_monthly=edition, formulas=formulas.REGISTRY,
         sources=[SourceRecord(endpoint=f.fetched.endpoint, url=f.fetched.url, retrieved_at=f.fetched.retrieved_at,
                               raw_path=f.fetched.raw_path) for f in (fetch, edition_fetch)],
+        signals=signals,
     )
+    result.signals.evidence = signal_kpis.explain(result, Translator("en"))
+    return result
 
 
 def _resolve_or_raise(services: Services, topic: str, languages: list[str]) -> TopicResolution:
@@ -212,6 +220,10 @@ def compare_languages(topic: str, languages: list[str], period: str = "3y", *, s
         result.localization.topic_affinity = row.topic_affinity
         computed = {m for m, v in (("localization.topic_share", row.topic_share),
                                    ("localization.topic_affinity", row.topic_affinity)) if v is not None}
+        result.signals.localization = signal_kpis.localization(row.topic_affinity)
+        if result.signals.localization:
+            computed.add("signals.localization")
+        result.signals.evidence = signal_kpis.explain(result, Translator("en"))
         result.quality.missing_metrics = [m for m in result.quality.missing_metrics if m.metric not in computed]
     if resolution.missing_languages:
         notes.insert(0, f"No article about this concept in: {', '.join(resolution.missing_languages)} "

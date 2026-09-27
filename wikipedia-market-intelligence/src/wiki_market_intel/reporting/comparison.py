@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from jinja2 import Environment, StrictUndefined
 
+from wiki_market_intel.analytics import signals as signal_kpis
 from wiki_market_intel.analytics.summary import comparison_observations
 from wiki_market_intel.i18n import Translator
 from wiki_market_intel.models.analysis import ComparisonResult
@@ -44,6 +45,17 @@ _{{ t("cmp_meta", editions=editions, start=c.metadata.period_start, end=c.metada
 | {{ r.project }} | {{ num(r.annual_views) }} | {{ rate(r.yoy_growth) }} | {{ rate(r.three_year_cagr) }} | {{ rate(r.three_month_growth) }} | {{ t("na") }} | {{ rate(r.topic_share, False) }} | {{ per_m(r.topic_penetration) }} | {{ dec(r.topic_affinity) }} | {{ t("quadrant." ~ r.quadrant) if r.quadrant else t("na") }} |
 {% endif -%}
 {% endfor %}
+### {{ t("sig_title") }}
+
+{{ t("sig_intro") }}
+
+| {{ t("col_edition") }} |{% for n in sig_names %} {{ t("sig_name." ~ n) }} |{% endfor %}
+|---|---|---|---|---|---|
+{% for lang, a in c.analyses.items() -%}
+| {{ a.metadata.project }} |{% for n in sig_names %}{% set v = a.signals[n] %} {{ t("sig." ~ n ~ "." ~ v) if v else t("na") }} |{% endfor %}
+{% endfor %}
+{{ t("sig_rules") }}
+
 ## {{ t("c4") }}
 
 {% if matrix %}![{{ t("matrix_alt") }}]({{ matrix }})
@@ -137,7 +149,7 @@ def render(c: ComparisonResult, matrix: str | None, penetration: str | None, lan
         return tr.decimal(value * 1_000_000, 1) if value is not None else tr("na")
 
     env = Environment(undefined=StrictUndefined, autoescape=False, trim_blocks=False)
-    env.globals.update(t=tr, num=num, rate=rate, dec=dec, per_m=per_m)
+    env.globals.update(t=tr, num=num, rate=rate, dec=dec, per_m=per_m, sig_names=signal_kpis.SIGNAL_NAMES)
     return env.from_string(TEMPLATE).render(
         c=c, matrix=matrix, penetration=penetration, notes=_notes(c, tr),
         editions=", ".join(f"{l}.wikipedia" for l in c.metadata.languages),

@@ -166,8 +166,11 @@ class Localization(BaseModel):
 
 
 class Signals(BaseModel):
-    market_size: str | None = None
-    growth: str | None = None
-    momentum: str | None = None
-    localization: str | None = None
-    stability: str | None = None
+    """Five separate decision signals (spec §22); never combined into one score or verdict."""
+    market_size: Literal["very_low", "low", "medium", "high", "very_high"] | None = None
+    growth: Literal["declining", "stable", "growing", "strongly_growing"] | None = None
+    momentum: Literal["decelerating", "stable", "accelerating"] | None = None
+    localization: Literal["weak", "moderate", "strong"] | None = None
+    stability: Literal["stable", "moderately_seasonal", "highly_seasonal", "volatile"] | None = None
+    growth_basis: Literal["three_year_cagr", "yoy"] | None = None
+    evidence: dict[str, str] = Field(default_factory=dict)   # English; the report rebuilds it per language

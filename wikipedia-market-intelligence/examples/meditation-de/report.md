@@ -17,6 +17,18 @@
 | Localization metrics | Wikipedia topic penetration: 6.7 per million edition views |
 | Data quality | **HIGH** (full coverage, confident topic match, at least two years of data) |
 
+### Decision signals
+
+Five separate signals, each from one written rule. They are evidence for a human decision: they are not combined into a score and are not a recommendation to buy or invest.
+
+| Signal | Reading | Evidence and rule |
+|---|---|---|
+| Market size (reader attention) | **low** | 56,910 views in the last 12 months; low is 12,000 to under 60,000. This is absolute: larger editions reach more readers. |
+| Growth | **declining** | 3-year CAGR -15.1%; declining is under -3.0% a year. For context, de.wikipedia as a whole changed -7.3% year over year. |
+| Momentum | **accelerating** | Last 3 months +3.1% against the 3 before them -10.1% (+13.2 points); above +5 points is accelerating, below -5 decelerating, otherwise stable. |
+| Localization | n/a | not computed (Only defined across several editions: run `compare` with the languages to compare.) |
+| Stability | **moderately seasonal** | The peak month, January, is 1.29x the average month; 2 flagged months out of 36, in 2 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal. |
+
 ### Key observations
 
 - Annual pageviews (2025-09..2026-08) were 56.9K (about 4.7K a month).
@@ -35,7 +47,7 @@
 | Resolution method | exact title |
 | Resolution confidence | 0.98 |
 | Language mappings | de: Meditation |
-| Related topics | n/a (not implemented: Topic ecosystem analysis is planned for a later milestone.) |
+| Related topics | n/a (unavailable: Not computed by `analyze`: run `cluster` to measure related topics.) |
 
 ## 3. Demand
 
@@ -91,7 +103,8 @@ A language edition is not a country: de.wikipedia is read wherever that language
 
 ## 8. Topic Ecosystem
 
-n/a (not implemented: Topic ecosystem analysis is planned for a later milestone.)
+Not computed by `analyze`: run `cluster` to measure related topics.
+
 
 ## 9. Anomalies
 
@@ -115,8 +128,8 @@ YoY with flagged months replaced by their expected values: -22.7% (reported YoY:
 | | |
 |---|---|
 | Source | Wikimedia Analytics API (https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article), access=all-access, agent=user |
-| Data retrieved | 2026-09-27T09:35:05+00:00 |
-| Report generated | 2026-09-27T10:49:11+00:00 (software 0.1.0) |
+| Data retrieved | 2026-09-27T11:22:30+00:00 |
+| Report generated | 2026-09-27T11:22:30+00:00 (software 0.1.0) |
 | Coverage | 100.0% |
 | Missing data | none |
 | Topic resolution confidence | 0.98 |
@@ -135,10 +148,10 @@ Metrics not computed:
 | localization.country_distribution | unsupported | Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured. |
 | localization.topic_share | unavailable | Only defined across several editions: run `compare` with the languages to compare. |
 | localization.topic_affinity | unavailable | Only defined across several editions: run `compare` with the languages to compare. |
-| ecosystem.related_topics | not implemented | Topic ecosystem analysis is planned for a later milestone. |
-| signals | not implemented | Decision signals are planned for a later milestone. |
+| ecosystem.related_topics | unavailable | Not computed by `analyze`: run `cluster` to measure related topics. |
+| signals.localization | unavailable | Only defined across several editions: run `compare` with the languages to compare. |
 
-Raw responses: `/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T093505_2b682df09582.json`, `/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-aggregate/20260927T102206_c49dec8c1d36.json`
+Raw responses: `data/raw/wikimedia/pageviews-per-article/20260927T112230_2b682df09582.json`, `data/raw/wikimedia/pageviews-aggregate/20260927T112230_c49dec8c1d36.json`
 
 ## 11. Business Implications
 

@@ -109,7 +109,46 @@ CATALOG: dict[str, dict[str, str]] = {
         "reason.country": "Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured.",
         "reason.anomalies": "Anomaly detection is planned for a later milestone.",
         "reason.related_topics": "Not computed by `analyze`: run `cluster` to measure related topics.",
-        "reason.signals": "Decision signals are planned for a later milestone.",
+        "reason.signals_market_size": "needs complete pageviews for the last 12 months",
+        "reason.signals_growth": "needs at least 24 months of pageviews for YoY (48 for the 3-year CAGR)",
+        "reason.signals_momentum": "needs the last 6 months of pageviews",
+        "reason.signals_stability": "needs at least 2 years of each calendar month to separate seasonality from noise",
+        "sig_title": "Decision signals",
+        "sig_intro": "Five separate signals, each from one written rule. They are evidence for a human decision: "
+                     "they are not combined into a score and are not a recommendation to buy or invest.",
+        "sig_col_signal": "Signal", "sig_col_label": "Reading", "sig_col_evidence": "Evidence and rule",
+        "sig_name.market_size": "Market size (reader attention)", "sig_name.growth": "Growth",
+        "sig_name.momentum": "Momentum", "sig_name.localization": "Localization", "sig_name.stability": "Stability",
+        "sig.market_size.very_low": "very low", "sig.market_size.low": "low", "sig.market_size.medium": "medium",
+        "sig.market_size.high": "high", "sig.market_size.very_high": "very high",
+        "sig.growth.declining": "declining", "sig.growth.stable": "stable", "sig.growth.growing": "growing",
+        "sig.growth.strongly_growing": "strongly growing",
+        "sig.momentum.decelerating": "decelerating", "sig.momentum.stable": "stable",
+        "sig.momentum.accelerating": "accelerating",
+        "sig.localization.weak": "weak", "sig.localization.moderate": "moderate", "sig.localization.strong": "strong",
+        "sig.stability.stable": "stable", "sig.stability.moderately_seasonal": "moderately seasonal",
+        "sig.stability.highly_seasonal": "highly seasonal", "sig.stability.volatile": "volatile",
+        "sig_basis.three_year_cagr": "3-year CAGR", "sig_basis.yoy": "YoY",
+        "sig_below": "under {upper}", "sig_at_least": "{lower} or more", "sig_between": "{lower} to under {upper}",
+        "sigx.market_size": "{views} views in the last 12 months; {label} is {band}. This is absolute: "
+                            "larger editions reach more readers.",
+        "sigx.growth": "{basis} {value}; {label} is {band} a year.",
+        "sigx.growth_edition": "For context, {project} as a whole changed {value} year over year.",
+        "sigx.momentum": "Last 3 months {recent} against the 3 before them {previous} ({points} points); "
+                         "above +5 points is accelerating, below -5 decelerating, otherwise stable.",
+        "sigx.localization": "Affinity {value} (this edition's share of the topic compared with the compared "
+                             "editions); {label} is {band}.",
+        "sigx.flags": "{n} flagged months out of {months}, in {episodes} separate episodes",
+        "sigx.volatile": "{flags}: at least 2 episodes, and at least one per 12 months checked, is volatile.",
+        "sigx.stability": "The peak month, {month}, is {ratio}x the average month; {flags}. From {moderate}x the "
+                          "topic is moderately seasonal, from {high}x highly seasonal.",
+        "sig_missing": "not computed ({reason})",
+        "sig_rules": "Rules: market size by views in the last 12 months (very low under 12,000, low under 60,000, "
+                     "medium under 300,000, high under 1,500,000); growth by the 3-year CAGR (declining under -3%, "
+                     "stable under +3%, growing under +15%); momentum by ±5 points of acceleration; localization by "
+                     "affinity (weak under 0.80, strong from 1.25); stability by anomaly episodes, then the seasonal "
+                     "peak (moderately seasonal from 1.12x, highly from 1.30x). Each edition's own report explains "
+                     "its readings with the numbers.",
         "reason.insufficient": "some months needed for this metric have no data",
         "reason.season_months": "not every calendar month has data in the requested period",
         # --- language comparison (compare) ---
@@ -272,7 +311,46 @@ CATALOG: dict[str, dict[str, str]] = {
         "reason.country": "Wikimedia публікує перегляди за країнами лише для всього розділу (top-by-country), а не для статті, тому розподіл теми за країнами виміряти неможливо.",
         "reason.anomalies": "Виявлення аномалій заплановано на наступний етап.",
         "reason.related_topics": "Команда `analyze` цього не обчислює: запустіть `cluster`, щоб виміряти пов'язані теми.",
-        "reason.signals": "Сигнали для ухвалення рішень заплановано на наступний етап.",
+        "reason.signals_market_size": "потрібні повні дані про перегляди за останні 12 місяців",
+        "reason.signals_growth": "потрібно щонайменше 24 місяці переглядів для зміни рік до року (48 для CAGR за 3 роки)",
+        "reason.signals_momentum": "потрібні перегляди за останні 6 місяців",
+        "reason.signals_stability": "потрібно щонайменше 2 роки даних для кожного календарного місяця, щоб відрізнити сезонність від шуму",
+        "sig_title": "Сигнали для ухвалення рішень",
+        "sig_intro": "П'ять окремих сигналів, кожен за одним письмовим правилом. Це докази для рішення людини: "
+                     "їх не зводять в одну оцінку, і вони не є порадою купувати чи інвестувати.",
+        "sig_col_signal": "Сигнал", "sig_col_label": "Значення", "sig_col_evidence": "Дані та правило",
+        "sig_name.market_size": "Розмір ринку (увага читачів)", "sig_name.growth": "Зростання",
+        "sig_name.momentum": "Динаміка", "sig_name.localization": "Локалізація", "sig_name.stability": "Стабільність",
+        "sig.market_size.very_low": "дуже малий", "sig.market_size.low": "малий", "sig.market_size.medium": "середній",
+        "sig.market_size.high": "великий", "sig.market_size.very_high": "дуже великий",
+        "sig.growth.declining": "спад", "sig.growth.stable": "стабільно", "sig.growth.growing": "зростання",
+        "sig.growth.strongly_growing": "сильне зростання",
+        "sig.momentum.decelerating": "сповільнюється", "sig.momentum.stable": "стабільна",
+        "sig.momentum.accelerating": "прискорюється",
+        "sig.localization.weak": "слабка", "sig.localization.moderate": "помірна", "sig.localization.strong": "сильна",
+        "sig.stability.stable": "стабільна", "sig.stability.moderately_seasonal": "помірно сезонна",
+        "sig.stability.highly_seasonal": "сильно сезонна", "sig.stability.volatile": "нестабільна",
+        "sig_basis.three_year_cagr": "CAGR за 3 роки", "sig_basis.yoy": "Зміна рік до року",
+        "sig_below": "менше {upper}", "sig_at_least": "{lower} або більше", "sig_between": "від {lower} до менше {upper}",
+        "sigx.market_size": "{views} переглядів за останні 12 місяців; «{label}» означає {band}. Це абсолютна "
+                            "величина: більші мовні розділи мають більше читачів.",
+        "sigx.growth": "{basis}: {value}; «{label}» означає {band} на рік.",
+        "sigx.growth_edition": "Для порівняння: весь {project} змінився на {value} рік до року.",
+        "sigx.momentum": "Останні 3 місяці {recent} проти 3 попередніх {previous} ({points} п. п.); "
+                         "понад +5 п. п. означає прискорення, нижче −5 — сповільнення, інакше динаміка стабільна.",
+        "sigx.localization": "Спорідненість {value} (частка теми в цьому розділі порівняно з іншими розділами); "
+                             "«{label}» означає {band}.",
+        "sigx.flags": "позначених місяців: {n} із {months}, окремих епізодів: {episodes}",
+        "sigx.volatile": "{flags}: щонайменше 2 епізоди і не менше одного на кожні 12 перевірених місяців означає нестабільність.",
+        "sigx.stability": "Пік — {month}: {ratio}× від середнього місяця; {flags}. Від {moderate}× тема помірно "
+                          "сезонна, від {high}× — сильно сезонна.",
+        "sig_missing": "не обчислено ({reason})",
+        "sig_rules": "Правила: розмір ринку — за переглядами за останні 12 місяців (дуже малий — менше 12 000, "
+                     "малий — менше 60 000, середній — менше 300 000, великий — менше 1 500 000); зростання — за CAGR "
+                     "за 3 роки (спад — менше −3%, стабільно — менше +3%, зростання — менше +15%); динаміка — за "
+                     "прискоренням ±5 п. п.; локалізація — за спорідненістю (слабка — менше 0,80, сильна — від 1,25); "
+                     "стабільність — за епізодами аномалій, далі за сезонним піком (помірно сезонна — від 1,12×, "
+                     "сильно — від 1,30×). Звіт кожного розділу пояснює свої значення з числами.",
         "reason.insufficient": "для цього показника бракує даних за деякі місяці",
         "reason.season_months": "не всі календарні місяці мають дані у вибраному періоді",
         "cmp_title": "Звіт порівняння мов: {topic}",
@@ -366,7 +444,10 @@ REASON_KEYS = {
     "localization.country_distribution": "reason.country",
     "localization.topic_share": "reason.only_in_comparison", "localization.topic_affinity": "reason.only_in_comparison",
     "ecosystem.related_topics": "reason.related_topics",
-    "signals": "reason.signals", "seasonality.peak_month": "reason.season_months",
+    "seasonality.peak_month": "reason.season_months",
+    "signals.market_size": "reason.signals_market_size", "signals.growth": "reason.signals_growth",
+    "signals.momentum": "reason.signals_momentum", "signals.localization": "reason.only_in_comparison",
+    "signals.stability": "reason.signals_stability",
 }
 
 
