@@ -32,6 +32,17 @@ def test_lockfiles_pin_every_direct_dependency_with_hashes():
     assert 'requires-python = ">=3.13,<3.14"' in pyproject
 
 
+def test_launcher_installs_the_hashed_lock_not_a_missing_list():
+    import ast
+
+    tree = ast.parse((ROOT / "scripts" / "wiki_market.py").read_text())
+    fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "ensure_dependencies")
+    names = {node.id for node in ast.walk(fn) if isinstance(node, ast.Name)}
+    assert "missing" not in names
+    source = ast.get_source_segment((ROOT / "scripts" / "wiki_market.py").read_text(), fn)
+    assert "--require-hashes" in source and "-r" in source
+
+
 def test_current_environment_matches_the_runtime_lock():
     assert _launcher().environment_matches_lock(ROOT / "requirements.lock")
 
