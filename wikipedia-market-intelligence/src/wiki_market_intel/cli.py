@@ -79,6 +79,9 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
           f"3M {pct(g.last_three_month_growth)} ({g.momentum or 'n/a'}) | quality {q.quality_level}")
     for observation in result.observations:
         print(f"  - {observation}")
+    for a in result.anomalies:
+        print(f"  ANOMALY {a.date}: {a.actual:,} views vs {a.expected:,} expected ({pct(a.change_vs_baseline)}, "
+              f"{a.severity}{', provisional' if a.provisional else ''}); cause unknown")
     if report_lang != "en":
         print(f"REPORT_LANGUAGE {report_lang}: report.md and the chart are in this language. "
               f"Reply to the user in it too. The same observations in {report_lang}:")

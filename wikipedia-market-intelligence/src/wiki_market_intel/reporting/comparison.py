@@ -74,11 +74,11 @@ _{{ t("cmp_meta", editions=editions, start=c.metadata.period_start, end=c.metada
 
 ## {{ t("c7") }}
 
-| {{ t("col_edition") }} | {{ t("col_status") }} | {{ t("col_coverage") }} | {{ t("col_quality") }} |
-|---|---|---:|---|
+| {{ t("col_edition") }} | {{ t("col_status") }} | {{ t("col_coverage") }} | {{ t("col_quality") }} | {{ t("col_anomalies") }} |
+|---|---|---:|---|---|
 {% for r in c.rows -%}
 {% set a = c.analyses.get(r.language) -%}
-| {{ r.project }} | {{ t("row." ~ r.status) if r.status != "ok" else "OK" }} | {{ rate(a.quality.coverage, False) if a else t("na") }} | {{ t("level." ~ r.quality_level) if r.quality_level else t("na") }} |
+| {{ r.project }} | {{ t("row." ~ r.status) if r.status != "ok" else "OK" }} | {{ rate(a.quality.coverage, False) if a else t("na") }} | {{ t("level." ~ r.quality_level) if r.quality_level else t("na") }} | {% if a and a.anomalies %}{% for x in a.anomalies %}{{ x.date }} {{ rate(x.change_vs_baseline) }}{% if not loop.last %}; {% endif %}{% endfor %}{% elif a %}0{% else %}{{ t("na") }}{% endif %} |
 {% endfor %}
 {% if c.notes %}
 ### {{ t("notes") }}

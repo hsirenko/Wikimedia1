@@ -85,6 +85,12 @@ Only resolving a topic, without fetching views:
   short-term momentum and can be swung by seasonality. Mention it only after YoY, and never present
   it alone as growth. If every edition declined year over year, say so plainly, even when some
   recent 3-month figures are positive.
+- **Anomalies (`ANOMALY ...` lines, section 9 of the report):** say the month, the views, the
+  expected views and the gap, as printed. **Never suggest a cause**, not even a likely one: the
+  tool reports "cause unknown", and so do you. Call flags in the last 3 months provisional.
+  When the summary says the year-over-year change would differ with the flagged months replaced,
+  mention it. It shows whether a trend rests on a one-off spike (for example, a 3-month rise
+  driven by one unusual month).
 - **Quote numbers exactly as printed.** Growth figures are relative changes in %, not percentage
   points. The momentum label (accelerating / stable / decelerating) compares two 3-month growth
   rates. It is a historical measurement, not a forecast.
@@ -107,8 +113,8 @@ KPI from the report's own stored monthly data and confirms that the stored numbe
 
 ## Current scope
 
-Single-language analysis and language comparison (share, penetration, affinity, opportunity matrix)
-are built. Anomalies, the topic ecosystem (related topics) and decision signals are not. The reports
+Single-language analysis, language comparison (share, penetration, affinity, opportunity matrix)
+and anomaly detection are built. The topic ecosystem (related topics) and decision signals are not. The reports
 show those sections as "not implemented", with the reason. Country breakdowns and unique devices are
 not published per article by Wikimedia, so they are always n/a. Never estimate them.
 

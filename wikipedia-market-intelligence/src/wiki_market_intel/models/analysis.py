@@ -7,8 +7,8 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from wiki_market_intel.models.metrics import (
-    Demand, Formula, Growth, LanguageOpportunityMetrics, Localization, MissingMetric, MonthlyPoint, PeriodRef,
-    Seasonality, Signals,
+    Anomaly, AnomalyAnalysis, Demand, Formula, Growth, LanguageOpportunityMetrics, Localization, MissingMetric,
+    MonthlyPoint, PeriodRef, Seasonality, Signals,
 )
 from wiki_market_intel.models.topic import TopicResolution
 
@@ -75,7 +75,8 @@ class AnalysisResult(BaseModel):
     growth: Growth
     seasonality: Seasonality
     localization: Localization = Field(default_factory=Localization)
-    anomalies: list[dict] = Field(default_factory=list)
+    anomalies: list[Anomaly] = Field(default_factory=list)
+    anomaly_analysis: AnomalyAnalysis | None = None
     ecosystem: Ecosystem = Field(default_factory=Ecosystem)
     quality: Quality
     signals: Signals = Field(default_factory=Signals)

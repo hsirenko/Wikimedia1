@@ -102,6 +102,29 @@ class LanguageOpportunityMetrics(BaseModel):
     topic_affinity: float | None = None
     quadrant: Literal["investigate", "explore", "established", "watch"] | None = None
     quality_level: Literal["HIGH", "MEDIUM", "LOW"] | None = None
+    anomaly_count: int | None = None
+
+
+class Anomaly(BaseModel):
+    date: str                                   # YYYY-MM
+    actual: int
+    expected: int
+    change_vs_baseline: float                   # actual / expected - 1
+    robust_z: float
+    direction: Literal["spike", "drop"]
+    severity: Literal["low", "medium", "high"]
+    cause: Literal["unknown"] = "unknown"
+    provisional: bool = False                   # too recent for a two-sided baseline
+
+
+class AnomalyAnalysis(BaseModel):
+    method: str = ("centered 12-month median level (6 before, 6 after) x leave-one-out seasonal factor; "
+                   "robust z on log deviation")
+    z_threshold: float = 3.5
+    min_change: float = 0.25
+    seasonal_adjustment: bool = False           # False when there were too few years for seasonal factors
+    months_checked: int = 0
+    yoy_excluding_anomalies: float | None = None
 
 
 class Localization(BaseModel):

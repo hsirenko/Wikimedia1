@@ -5,7 +5,7 @@
     "project": "de.wikipedia",
     "period_start": "2023-09",
     "period_end": "2026-08",
-    "generated_at": "2026-09-27T10:24:17+00:00",
+    "generated_at": "2026-09-27T10:49:11+00:00",
     "data_retrieved_at": "2026-09-27T09:35:05+00:00",
     "source": "Wikimedia",
     "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
@@ -144,7 +144,38 @@
     "topic_penetration": 6.727669276052559e-6,
     "country_distribution": []
   },
-  "anomalies": [],
+  "anomalies": [
+    {
+      "date": "2025-11",
+      "actual": 7348,
+      "expected": 5127,
+      "change_vs_baseline": 0.4332,
+      "robust_z": 5.5,
+      "direction": "spike",
+      "severity": "medium",
+      "cause": "unknown",
+      "provisional": false
+    },
+    {
+      "date": "2026-08",
+      "actual": 5328,
+      "expected": 3792,
+      "change_vs_baseline": 0.4051,
+      "robust_z": 5.19,
+      "direction": "spike",
+      "severity": "medium",
+      "cause": "unknown",
+      "provisional": true
+    }
+  ],
+  "anomaly_analysis": {
+    "method": "centered 12-month median level (6 before, 6 after) x leave-one-out seasonal factor; robust z on log deviation",
+    "z_threshold": 3.5,
+    "min_change": 0.25,
+    "seasonal_adjustment": true,
+    "months_checked": 36,
+    "yoy_excluding_anomalies": -0.22652793946449357
+  },
   "ecosystem": {
     "related_topics": []
   },
@@ -178,11 +209,6 @@
         "reason": "Only defined across several editions: run `compare` with the languages to compare (the per-language results inside a comparison carry this value)."
       },
       {
-        "metric": "anomalies",
-        "status": "not_implemented",
-        "reason": "Anomaly detection is planned for a later milestone."
-      },
-      {
         "metric": "ecosystem.related_topics",
         "status": "not_implemented",
         "reason": "Topic ecosystem analysis is planned for a later milestone."
@@ -196,7 +222,7 @@
     "api_errors": [],
     "topic_resolution_confidence": 0.98,
     "language_mapping_confidence": 1.0,
-    "anomaly_count": null,
+    "anomaly_count": 2,
     "country_data_available": false,
     "unique_devices_available": false,
     "project_denominator_available": true,
@@ -217,7 +243,7 @@
     "Pageviews decreased 17.2% year over year (2025-09..2026-08 vs 2024-09..2025-08).",
     "Three-year CAGR was -15.1% (vs 2022-09..2023-08).",
     "The last 3 months were +3.1% against the previous 3 months; momentum accelerating.",
-    "January had the highest average monthly traffic (1.29x the average) and July the lowest (0.77x)."
+    "2 potential anomalies flagged; the largest was +43.3% against its baseline in 2025-11 (cause unknown). With the flagged months replaced by their expected values, the year-over-year change would be -22.7%."
   ],
   "monthly": [
     {
@@ -889,6 +915,21 @@
       "name": "topic_affinity",
       "definition": "(topic views / edition views) / (compared topic views / compared edition views)",
       "edge_cases": "location quotient relative to the compared editions; not an official Wikimedia metric"
+    },
+    {
+      "name": "anomaly_expected",
+      "definition": "better fit of median(6 months before) and median(6 months after) x seasonal factor; seasonal factor = median over other years of views / centered 12-month median, same calendar month",
+      "edge_cases": "leave-one-out, so a spike cannot raise its own baseline; factor 1.0 with fewer than 2 other years"
+    },
+    {
+      "name": "anomaly_flag",
+      "definition": "robust z = 0.6745 x (log(actual/expected) - median) / MAD > 3.5 and |actual/expected - 1| >= 25%",
+      "edge_cases": "flags in the last 3 months are provisional; cause is always 'unknown'"
+    },
+    {
+      "name": "yoy_excluding_anomalies",
+      "definition": "YoY with every flagged month replaced by its expected value",
+      "edge_cases": "null when nothing is flagged; shows whether growth rests on one-off months (spec rule 6)"
     },
     {
       "name": "quadrant",

@@ -183,6 +183,16 @@ REGISTRY: list[Formula] = [
     Formula(name="topic_affinity",
             definition="(topic views / edition views) / (compared topic views / compared edition views)",
             edge_cases="location quotient relative to the compared editions; not an official Wikimedia metric"),
+    Formula(name="anomaly_expected",
+            definition="better fit of median(6 months before) and median(6 months after) x seasonal factor; "
+                       "seasonal factor = median over other years of views / centered 12-month median, same calendar month",
+            edge_cases="leave-one-out, so a spike cannot raise its own baseline; factor 1.0 with fewer than 2 other years"),
+    Formula(name="anomaly_flag",
+            definition="robust z = 0.6745 x (log(actual/expected) - median) / MAD > 3.5 and |actual/expected - 1| >= 25%",
+            edge_cases="flags in the last 3 months are provisional; cause is always 'unknown'"),
+    Formula(name="yoy_excluding_anomalies",
+            definition="YoY with every flagged month replaced by its expected value",
+            edge_cases="null when nothing is flagged; shows whether growth rests on one-off months (spec rule 6)"),
     Formula(name="quadrant",
             definition="growth: YoY > 0; demand: annual views >= median of compared editions; "
                        "labels investigate / explore / established / watch are descriptive, not recommendations"),

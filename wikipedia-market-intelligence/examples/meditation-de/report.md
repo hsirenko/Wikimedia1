@@ -23,7 +23,7 @@
 - Pageviews decreased 17.2% year over year (2025-09..2026-08 vs 2024-09..2025-08).
 - Three-year CAGR was -15.1% (vs 2022-09..2023-08).
 - The last 3 months were +3.1% against the previous 3 months; momentum accelerating.
-- January had the highest average monthly traffic (1.29x the average) and July the lowest (0.77x).
+- 2 potential anomalies flagged; the largest was +43.3% against its baseline in 2025-11 (cause unknown). With the flagged months replaced by their expected values, the year-over-year change would be -22.7%.
 
 ## 2. Topic Definition
 
@@ -95,7 +95,20 @@ n/a (not implemented: Topic ecosystem analysis is planned for a later milestone.
 
 ## 9. Anomalies
 
-n/a (not implemented: Anomaly detection is planned for a later milestone.)
+Months far from their expected value. Expected = the median of the 6 months before and after, times the usual seasonal factor for that calendar month (from other years), so recurring seasonal peaks are not flagged. Flagged when the robust z-score exceeds 3.5 and the gap is at least 25.0%. Causes are not investigated.
+
+
+| Month | Actual | Expected (baseline) | Change vs baseline | Robust z | Severity |
+|---|---:|---:|---:|---:|---|
+| 2025-11 | 7,348 | 5,127 | +43.3% | 5.5 | medium |
+| 2026-08 | 5,328 | 3,792 | +40.5% | 5.2 | medium, provisional (recent month: the next data can change it) |
+
+- Potential anomaly detected: 2025-11 pageviews were 43.3% above baseline. Cause: unknown.
+- Potential anomaly detected: 2026-08 pageviews were 40.5% above baseline. Cause: unknown.
+
+
+YoY with flagged months replaced by their expected values: -22.7% (reported YoY: -17.2%).
+
 
 ## 10. Data Quality
 
@@ -103,7 +116,7 @@ n/a (not implemented: Anomaly detection is planned for a later milestone.)
 |---|---|
 | Source | Wikimedia Analytics API (https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article), access=all-access, agent=user |
 | Data retrieved | 2026-09-27T09:35:05+00:00 |
-| Report generated | 2026-09-27T10:24:17+00:00 (software 0.1.0) |
+| Report generated | 2026-09-27T10:49:11+00:00 (software 0.1.0) |
 | Coverage | 100.0% |
 | Missing data | none |
 | Topic resolution confidence | 0.98 |
@@ -122,7 +135,6 @@ Metrics not computed:
 | localization.country_distribution | unsupported | Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured. |
 | localization.topic_share | unavailable | Only defined across several editions: run `compare` with the languages to compare. |
 | localization.topic_affinity | unavailable | Only defined across several editions: run `compare` with the languages to compare. |
-| anomalies | not implemented | Anomaly detection is planned for a later milestone. |
 | ecosystem.related_topics | not implemented | Topic ecosystem analysis is planned for a later milestone. |
 | signals | not implemented | Decision signals are planned for a later milestone. |
 
@@ -136,7 +148,7 @@ Raw responses: `/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-art
 - Pageviews decreased 17.2% year over year (2025-09..2026-08 vs 2024-09..2025-08).
 - Three-year CAGR was -15.1% (vs 2022-09..2023-08).
 - The last 3 months were +3.1% against the previous 3 months; momentum accelerating.
-- January had the highest average monthly traffic (1.29x the average) and July the lowest (0.77x).
+- 2 potential anomalies flagged; the largest was +43.3% against its baseline in 2025-11 (cause unknown). With the flagged months replaced by their expected values, the year-over-year change would be -22.7%.
 - These figures describe reader attention to one Wikipedia article in de.wikipedia.
 
 ### What the data does NOT establish

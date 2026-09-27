@@ -14,7 +14,7 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from wiki_market_intel.analytics import demand, growth, localization, seasonality
+from wiki_market_intel.analytics import anomalies, demand, growth, localization, seasonality
 from wiki_market_intel.analytics.periods import build_periods
 from wiki_market_intel.models.analysis import AnalysisResult, ComparisonResult
 from wiki_market_intel.models.metrics import LanguageOpportunityMetrics
@@ -44,6 +44,15 @@ def _check_analysis(result: AnalysisResult, stored_raw: dict, prefix: str = "") 
             if not _same(getattr(stored, field), getattr(recomputed, field)):
                 problems.append(f"{prefix}{section}.{field}: stored {getattr(stored, field)!r} "
                                 f"!= recomputed {getattr(recomputed, field)!r}")
+    if "anomalies" in stored_raw and result.anomaly_analysis is not None:
+        found, info = anomalies.detect(result.monthly, periods["requested"])
+        if [a.model_dump() for a in found] != [a.model_dump() for a in result.anomalies]:
+            problems.append(f"{prefix}anomalies: stored {[a.date for a in result.anomalies]} "
+                            f"!= recomputed {[a.date for a in found]}")
+        excluded = anomalies.yoy_excluding(result.monthly, found, periods["last_12m"], periods["previous_12m"])
+        if not _same(result.anomaly_analysis.yoy_excluding_anomalies, excluded):
+            problems.append(f"{prefix}anomaly_analysis.yoy_excluding_anomalies: stored "
+                            f"{result.anomaly_analysis.yoy_excluding_anomalies!r} != recomputed {excluded!r}")
     if result.edition_monthly:
         pen, _ = localization.penetration(result.monthly, result.edition_monthly, periods["last_12m"], True)
         if not _same(result.localization.topic_penetration, pen):

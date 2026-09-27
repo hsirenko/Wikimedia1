@@ -14,6 +14,7 @@ from dateutil.relativedelta import relativedelta
 
 from wiki_market_intel.analytics import demand as demand_kpis
 from wiki_market_intel.analytics import formulas, growth as growth_kpis, quality as quality_kpis
+from wiki_market_intel.analytics import anomalies as anomaly_kpis
 from wiki_market_intel.analytics import localization as localization_kpis
 from wiki_market_intel.analytics import seasonality as seasonality_kpis
 from wiki_market_intel.analytics.periods import build_periods, fetch_window, parse_period
@@ -100,11 +101,15 @@ def _analyze_article(services: Services, topic: str, language: str, resolution: 
     growth, gaps_g = growth_kpis.compute(series, periods)
     seasonality, gaps_s = seasonality_kpis.compute(series, periods["requested"])
     pen, gaps_p = localization_kpis.penetration(series, edition, periods["last_12m"], edition_fetch.status == "ok")
+    found, anomaly_info = anomaly_kpis.detect(series, periods["requested"])
+    anomaly_info.yoy_excluding_anomalies = anomaly_kpis.yoy_excluding(series, found, periods["last_12m"],
+                                                                      periods["previous_12m"])
     api_errors = [] if fetch.status == "ok" else [f"{PER_ARTICLE}: HTTP 404, no pageviews stored for this article"]
     if edition_fetch.status != "ok":
         api_errors.append(f"{AGGREGATE}: HTTP 404, no edition totals for {project}")
     quality = quality_kpis.assess(series, periods["requested"], resolution, gaps_d + gaps_g + gaps_s + gaps_p,
-                                  api_errors, denominator_available=edition_fetch.status == "ok")
+                                  api_errors, denominator_available=edition_fetch.status == "ok",
+                                  anomaly_count=len(found))
 
     requested = periods["requested"]
     return AnalysisResult(
@@ -122,7 +127,9 @@ def _analyze_article(services: Services, topic: str, language: str, resolution: 
         periods=[p.ref(series) for p in periods.values()],
         demand=demand, growth=growth, seasonality=seasonality, quality=quality,
         localization=Localization(topic_penetration=pen),
-        observations=observations(demand, growth, seasonality, periods),
+        anomalies=found, anomaly_analysis=anomaly_info,
+        observations=observations(demand, growth, seasonality, periods, anomalies=found,
+                                  anomaly_info=anomaly_info),
         monthly=series, edition_monthly=edition, formulas=formulas.REGISTRY,
         sources=[SourceRecord(endpoint=f.fetched.endpoint, url=f.fetched.url, retrieved_at=f.fetched.retrieved_at,
                               raw_path=f.fetched.raw_path) for f in (fetch, edition_fetch)],
@@ -196,7 +203,7 @@ def compare_languages(topic: str, languages: list[str], period: str = "3y", *, s
             yoy_growth=result.growth.yoy, three_year_cagr=result.growth.three_year_cagr,
             three_month_growth=result.growth.last_three_month_growth, momentum=result.growth.momentum,
             peak_month=result.seasonality.peak_month, topic_penetration=result.localization.topic_penetration,
-            quality_level=result.quality.quality_level))
+            quality_level=result.quality.quality_level, anomaly_count=len(result.anomalies)))
 
     threshold, notes = localization_kpis.compare(rows, edition_annual)
     for result in analyses.values():   # each per-language result now knows its share and affinity

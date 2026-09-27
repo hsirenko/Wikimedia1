@@ -51,6 +51,11 @@ def trend_chart(result: AnalysisResult, path: Path, lang: str = "en") -> Path | 
             alpha=0.35, label=text["raw"])
     ax.plot(xs, [v if v is not None else float("nan") for v in smooth], color=SERIES, linewidth=2,
             label=text["avg"])
+    flagged = {a.date for a in result.anomalies}
+    marks = [(i, p.views) for i, p in enumerate(points) if p.month in flagged and p.views is not None]
+    if marks:
+        ax.scatter([i for i, _ in marks], [v for _, v in marks], s=70, facecolor=SURFACE, edgecolor="#e34948",
+                   linewidth=1.8, zorder=4, label=tr("chart_anomaly"))
     step = max(1, len(points) // 9)
     ax.set_xticks(xs[::step])
     ax.set_xticklabels([p.month for p in points][::step])
@@ -59,7 +64,7 @@ def trend_chart(result: AnalysisResult, path: Path, lang: str = "en") -> Path | 
     ax.set_title(text["title"].format(title=result.topic.article_title, project=result.metadata.project,
                                       start=start, end=end, agent=result.metadata.agent),
                  fontsize=9, color=INK2, loc="left")
-    ax.legend(fontsize=7.5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=2,
+    ax.legend(fontsize=7.5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=3,
               labelcolor=INK2)
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)

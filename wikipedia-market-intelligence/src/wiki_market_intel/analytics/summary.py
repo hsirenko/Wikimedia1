@@ -27,9 +27,9 @@ def _span(start: str, end: str) -> str:
 
 
 def observations(demand: Demand, growth: Growth, seasonality: Seasonality, periods: dict[str, Period],
-                 tr: Translator = ENGLISH) -> list[str]:
+                 tr: Translator = ENGLISH, anomalies=None, anomaly_info=None) -> list[str]:
     spans = {name: _span(f"{p.start:%Y-%m}", f"{p.end:%Y-%m}") for name, p in periods.items()}
-    return observations_from_spans(demand, growth, seasonality, spans, tr)
+    return observations_from_spans(demand, growth, seasonality, spans, tr, anomalies, anomaly_info)
 
 
 def per_million(fraction: float) -> float:
@@ -65,8 +65,11 @@ def comparison_observations(rows, tr: Translator = ENGLISH) -> list[str]:
     return out[:5]
 
 
+RULE6_GAP = 0.05   # YoY moves by more than 5 points once flagged months are replaced: say so
+
+
 def observations_from_spans(demand: Demand, growth: Growth, seasonality: Seasonality, spans: dict[str, str],
-                            tr: Translator = ENGLISH) -> list[str]:
+                            tr: Translator = ENGLISH, anomalies=None, anomaly_info=None) -> list[str]:
     """`spans` maps period names (last_12m, previous_12m, twelve_months_3y_earlier) to 'YYYY-MM..YYYY-MM'."""
     out: list[str] = []
     if demand.annual_views is not None and demand.monthly_average is not None:
@@ -81,9 +84,18 @@ def observations_from_spans(demand: Demand, growth: Growth, seasonality: Seasona
     if growth.last_three_month_growth is not None:
         tail = tr("obs_3m_tail", label=tr(f"momentum.{growth.momentum}")) if growth.momentum else ""
         out.append(tr("obs_3m", pct=tr.percent(growth.last_three_month_growth), tail=tail))
+    if anomalies:
+        largest = max(anomalies, key=lambda a: abs(a.change_vs_baseline))
+        sentence = tr("obs_anomalies_one" if len(anomalies) == 1 else "obs_anomalies", n=len(anomalies),
+                      month=largest.date, pct=tr.percent(largest.change_vs_baseline))
+        excluded = anomaly_info.yoy_excluding_anomalies if anomaly_info else None
+        if excluded is not None and growth.yoy is not None and abs(excluded - growth.yoy) > RULE6_GAP:
+            # Rule 6: one sentence, so the spike-free figure can never be trimmed away from the flag.
+            sentence += " " + tr("obs_rule6", pct=tr.percent(excluded))
+        out.append(sentence)
     if seasonality.peak_month and seasonality.trough_month:
         out.append(tr("obs_season", peak=tr.month(seasonality.peak_month, in_form=True),
                       trough=tr.month(seasonality.trough_month, in_form=True),
                       peak_ratio=tr.decimal(seasonality.peak_to_average),
                       trough_ratio=tr.decimal(seasonality.trough_to_average)))
-    return out[:5]
+    return out[:5]   # spec §24.1: 3-5 observations; seasonality is the one dropped first

@@ -13,7 +13,6 @@ from wiki_market_intel.models.metrics import MissingMetric, MonthlyPoint
 from wiki_market_intel.models.topic import TopicResolution
 
 NOT_YET = [
-    ("anomalies", "Anomaly detection is planned for a later milestone."),
     ("ecosystem.related_topics", "Topic ecosystem analysis is planned for a later milestone."),
     ("signals", "Decision signals are planned for a later milestone."),
 ]
@@ -26,7 +25,8 @@ ONLY_IN_COMPARISON = ("Only defined across several editions: run `compare` with 
 
 
 def assess(series: list[MonthlyPoint], requested: Period, resolution: TopicResolution,
-           metric_gaps: list[MissingMetric], api_errors: list[str], denominator_available: bool = False) -> Quality:
+           metric_gaps: list[MissingMetric], api_errors: list[str], denominator_available: bool = False,
+           anomaly_count: int | None = None) -> Quality:
     values = requested.values(series)
     covered = sum(v is not None for v in values)
     coverage = covered / len(values) if values else None
@@ -62,5 +62,5 @@ def assess(series: list[MonthlyPoint], requested: Period, resolution: TopicResol
         coverage=coverage, missing_data=missing_months, missing_metrics=gaps, api_errors=api_errors,
         topic_resolution_confidence=confidence,
         language_mapping_confidence=1.0 if resolution.method != "no_wikidata" else None,
-        anomaly_count=None, country_data_available=False, unique_devices_available=False,
+        anomaly_count=anomaly_count, country_data_available=False, unique_devices_available=False,
         project_denominator_available=denominator_available, quality_level=level, quality_reasons=reasons)

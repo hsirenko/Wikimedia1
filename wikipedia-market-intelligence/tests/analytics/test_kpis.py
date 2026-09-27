@@ -128,5 +128,6 @@ def test_quality_states_what_is_unsupported_or_not_built_yet():
     q = quality.assess(series(lambda i: 100), PERIODS["requested"], _resolution(0.98), [], [])
     statuses = {m.metric: m.status for m in q.missing_metrics}
     assert statuses["localization.country_distribution"] == "unsupported"
-    assert statuses["anomalies"] == "not_implemented"
+    assert statuses["ecosystem.related_topics"] == "not_implemented"
+    assert "anomalies" not in statuses          # implemented: reported in the anomalies section
     assert q.country_data_available is False and q.unique_devices_available is False

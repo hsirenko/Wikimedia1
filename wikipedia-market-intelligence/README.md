@@ -13,7 +13,9 @@ decision.
   pageviews, core KPIs, and a JSON result, a Markdown report and a trend chart.
 - **Language comparison:** one topic across editions, with topic share, Wikipedia topic
   penetration, topic affinity and the demand × growth opportunity matrix.
-- **Later milestones:** anomalies, topic ecosystem, decision signals and portfolio mode (see
+- **Anomaly detection:** unusual months flagged against a seasonal, level-aware baseline, with
+  causes always left as "unknown".
+- **Later milestones:** topic ecosystem, decision signals and portfolio mode (see
   [Roadmap](#roadmap)). Reports already contain those sections and say why they're empty.
 
 ## 1. What it does
@@ -153,7 +155,33 @@ wiki-market analyze --topic meditation --language de \
 | Wikipedia topic penetration | topic views / all views of the edition, last 12 months | same traffic class for both; shown per million; not market penetration |
 | Topic share | an edition's topic views / topic views across the compared editions | relative to the compared set; editions without data are left out and named |
 | Topic affinity | (topic views / edition views) / (compared topic views / compared edition views) | a location quotient; 1.0 is average for the compared set; this system's own measure, not an official Wikimedia metric |
+| Anomaly | a month far from its expected value (see below) | cause always "unknown"; flags in the last 3 months are provisional |
+| YoY excluding anomalies | YoY with flagged months replaced by their expected values | shows whether growth rests on one-off months (spec rule 6) |
 | Quadrant | growth: YoY > 0%; demand: views ≥ median of the compared editions | labels are investigate, explore, established and watch; descriptive, never recommendations |
+
+## Anomaly detection
+
+For each month the system computes an **expected value**. It flags the month only when the actual
+value is far from it, both statistically and in size.
+
+1. **Seasonal factor:** how that calendar month usually compares with the surrounding level in
+   *other* years. It's computed leave-one-out, so a spike can't raise its own baseline. January
+   peaks that recur every year are therefore expected, not flagged.
+2. **Level:** the median of the 6 months before *or* the 6 months after, whichever fits the month
+   better. At a permanent change in level, each month matches its own side, so a step isn't
+   reported as a spike plus a drop. A genuine spike stands out against both sides.
+3. **Flag:** a robust z-score (median/MAD on the log gap) above 3.5 **and** a gap of at least 25%.
+   The size gate stops tiny wobbles on very smooth series from counting as "extreme".
+4. **Severity:** high at ≥ 100% gap or z > 7, medium at ≥ 50% or z > 5, otherwise low.
+   - Flags in the **last 3 months are provisional**: no later months exist yet to anchor them.
+   - **Causes are never inferred.**
+
+Checked on real data, these three results come out right:
+- German "Meditation": January peaks are not flagged; the November 2025 bump (+43%) is.
+- Italian: a real 2024 drop to a lower level is not reported as a run of anomalies.
+- English: June to August 2026 are flagged (+122%, +40% and +46%, all provisional). Replacing
+  them shows YoY at −31.7% instead of the reported −20.8%, so the recent rise was masking a
+  steeper decline.
 
 ## 8. Formulas
 
@@ -218,7 +246,7 @@ KPI functions would not change.
 ## 13. Tests
 
 ```bash
-pytest                    # 101 offline tests; the network is replaced by a fake Wikimedia
+pytest                    # 120 offline tests; the network is replaced by a fake Wikimedia
 pytest -m integration     # 3 tests against the live API
 ```
 
@@ -241,7 +269,7 @@ In the order the spec (§40) sets:
 1. ~~**Language comparison and localization**~~ (done): `compare`, topic share, penetration from
    the project `aggregate` endpoint, affinity, and the opportunity matrix. Country distribution
    stays unsupported, because Wikimedia doesn't publish it per article.
-2. **Anomalies:** a rolling median / MAD baseline. Causes stay "unknown".
+2. ~~**Anomalies**~~ (done): seasonal, level-aware baseline; robust flags; causes stay "unknown".
 3. **Topic ecosystem and concentration** (`cluster`).
 4. **Decision signals:** market size, growth, momentum, localization, stability. Kept separate,
    with no single score.

@@ -13,6 +13,7 @@ from jinja2 import Environment, StrictUndefined
 from wiki_market_intel.analytics.summary import observations_from_spans
 from wiki_market_intel.i18n import REASON_KEYS, Translator
 from wiki_market_intel.models.analysis import AnalysisResult
+from wiki_market_intel.models.metrics import AnomalyAnalysis
 
 TEMPLATE = """\
 # {{ t("title") }}
@@ -114,7 +115,24 @@ TEMPLATE = """\
 
 ## {{ t("s9") }}
 
-{{ missing("anomalies") }}
+{{ t("an_intro") }} {{ t("an_rule", z=dec(an_info.z_threshold, 1), min_change=rate(an_info.min_change, None, signed=False)) }}
+{% if an_info and not an_info.seasonal_adjustment %}
+{{ t("an_no_season") }}
+{% endif %}
+{% if r.anomalies %}
+| {{ t("an_date") }} | {{ t("an_actual") }} | {{ t("an_expected") }} | {{ t("an_change") }} | {{ t("an_z") }} | {{ t("an_severity") }} |
+|---|---:|---:|---:|---:|---|
+{% for a in r.anomalies -%}
+| {{ a.date }} | {{ num(a.actual, None) }} | {{ num(a.expected, None) }} | {{ rate(a.change_vs_baseline, None) }} | {{ dec(a.robust_z, 1) }} | {{ t("severity." ~ a.severity) }}{% if a.provisional %}, {{ t("an_provisional") }}{% endif %} |
+{% endfor %}
+{% for a in r.anomalies -%}
+- {{ t("an_line", month=a.date, pct=rate(a.change_vs_baseline | abs, None, signed=False), direction=t("an_above") if a.direction == "spike" else t("an_below")) }}
+{% endfor %}
+{% if an_info.yoy_excluding_anomalies is not none %}
+{{ t("an_yoy_excl", pct=rate(an_info.yoy_excluding_anomalies, None), yoy=rate(r.growth.yoy, "growth.yoy")) }}
+{% endif %}{% else %}
+{{ t("an_none", n=an_info.months_checked) }}
+{% endif %}
 
 ## {{ t("s10") }}
 
@@ -222,7 +240,7 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
 
     def num(value, metric: str) -> str:
         if value is None:
-            return missing(metric)
+            return missing(metric) if metric else tr("na")
         return tr.number(value, 0 if abs(value) >= 100 else 1)
 
     def rate(value, metric: str | None, signed: bool = True) -> str:
@@ -230,8 +248,8 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
             return missing(metric) if metric else tr("na")
         return tr.percent(value, signed)
 
-    def dec(value) -> str:
-        return tr.decimal(value) if value is not None else tr("na")
+    def dec(value, decimals: int = 2) -> str:
+        return tr.decimal(value, decimals) if value is not None else tr("na")
 
     def pen(value) -> str:
         if value is None:
@@ -259,6 +277,8 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
                        month=tr.month, month_mid=month_mid)
     return env.from_string(TEMPLATE).render(
         r=result, chart=chart_path, basis=basis,
-        observations=observations_from_spans(result.demand, result.growth, result.seasonality, _spans(result), tr),
+        observations=observations_from_spans(result.demand, result.growth, result.seasonality, _spans(result), tr,
+                                             result.anomalies, result.anomaly_analysis),
+        an_info=result.anomaly_analysis or AnomalyAnalysis(),
         quality_reasons=_quality_reasons(result, tr), notes=_notes(result, tr),
         missing_months=[tr("missing_month", month=line[:7]) for line in result.quality.missing_data])

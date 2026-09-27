@@ -1,6 +1,6 @@
 # Language Comparison Report: Meditation
 
-_Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T10:24:06+00:00 · source: Wikimedia Analytics API_
+_Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T10:49:12+00:00 · source: Wikimedia Analytics API_
 
 ## 1. Summary
 
@@ -71,13 +71,13 @@ Topic penetration: the topic's views per million views of its edition, month by 
 
 ## 7. Data Quality
 
-| Edition | Status | Coverage | Quality |
-|---|---|---:|---|
-| en.wikipedia | OK | 100.0% | HIGH |
-| de.wikipedia | OK | 100.0% | HIGH |
-| fr.wikipedia | OK | 100.0% | HIGH |
-| es.wikipedia | OK | 100.0% | HIGH |
-| it.wikipedia | OK | 100.0% | HIGH |
+| Edition | Status | Coverage | Quality | Anomalies |
+|---|---|---:|---|---|
+| en.wikipedia | OK | 100.0% | HIGH | 2026-06 +122.2%; 2026-07 +40.2%; 2026-08 +45.6% |
+| de.wikipedia | OK | 100.0% | HIGH | 2025-11 +43.3%; 2026-08 +40.5% |
+| fr.wikipedia | OK | 100.0% | HIGH | 0 |
+| es.wikipedia | OK | 100.0% | HIGH | 0 |
+| it.wikipedia | OK | 100.0% | HIGH | 2026-08 +60.2% |
 
 
 ## 8. Business Implications
