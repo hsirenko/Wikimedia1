@@ -54,6 +54,18 @@ def _scaled(items: list[dict], factor: float, growth_per_month: float = 1.0) -> 
     return [{**item, "views": int(item["views"] * factor * growth_per_month ** i)} for i, item in enumerate(items)]
 
 
+# A small, known ecosystem around Meditation (Q108458) in German.
+CLAIMS = {"Q108458": {"P279": ["Q_BROAD"], "P1269": ["Q748"]}}
+REVERSE = {("P279", "Q108458"): ["Q_TM", "Q_ZAZEN", "Q_NOART"], ("P1269", "Q108458"): []}
+DE_TITLES = {"Q_BROAD": "Entspannungsverfahren", "Q748": "Buddhismus", "Q_TM": "Transzendentale Meditation",
+             "Q_ZAZEN": "Zazen", "Q_YOGA": "Yoga", "Q_TINY": "Rosenkranz"}          # Q_NOART: no German article
+MORELIKE = {"Meditation": [("Yoga", "Q_YOGA"), ("Transzendentale Meditation", "Q_TM"), ("Rosenkranz", "Q_TINY")]}
+# title -> (scale vs the real Meditation series, monthly growth factor, flat views override)
+RELATED_SERIES = {"Buddhismus": (4.0, 1.0, None), "Entspannungsverfahren": (0.1, 1.0, None),
+                  "Transzendentale Meditation": (0.6, 1.0, None), "Zazen": (0.3, 1.03, None),
+                  "Yoga": (1.7, 1.012, None), "Rosenkranz": (None, None, 10)}
+
+
 class FakeWikimedia:
     """Routes requests like the real APIs. Records every request for assertions."""
 
@@ -77,9 +89,20 @@ class FakeWikimedia:
             return self._aggregate(url)
         query = {k: v[0] for k, v in parse_qs(urlparse(url).query).items()}
         if "wikidata.org" in url:
+            if query.get("action") == "query":                       # haswbstatement reverse lookup
+                prop, qid = query["srsearch"].split(":", 1)[1].split("=")
+                hits = [{"title": q, "ns": 0} for q in REVERSE.get((prop, qid), [])]
+                return httpx.Response(200, json={"query": {"search": hits}})
+            if query.get("props") == "claims":
+                return self._claims(query["ids"])
+            if query.get("props") == "sitelinks" and query.get("sitefilter") == "dewiki" and "|" in query["ids"] + "|":
+                if any(q.startswith("Q_") or q == "Q748" for q in query["ids"].split("|")):
+                    return self._sitelinks(query["ids"].split("|"))
             return self._entity(query)
         lang = urlparse(url).hostname.split(".")[0]
         if query.get("generator") == "search":
+            if query["gsrsearch"].startswith("morelike:"):
+                return self._morelike(query["gsrsearch"].split(":", 1)[1])
             return self._search(query["gsrsearch"])
         return self._page(lang, query["titles"])
 
@@ -87,6 +110,12 @@ class FakeWikimedia:
         parts = url.split("/per-article/")[1].split("/")
         lang, article = parts[0].split(".")[0], unquote(parts[3]).replace("_", " ")
         base = self.pageviews["items"]
+        related = RELATED_SERIES.get(article) if lang == "de" else None
+        if related:
+            scale, growth, flat = related
+            generated = ([{**i, "views": flat} for i in base] if flat is not None else _scaled(base, scale, growth))
+            return httpx.Response(200, json={"items": [{**i, "project": "de.wikipedia",
+                                                        "article": article.replace(" ", "_")} for i in generated]})
         series = {
             ("de", "Meditation"): base,
             ("en", "Meditation"): _scaled(base, 12),                 # same shape, bigger edition
@@ -97,6 +126,21 @@ class FakeWikimedia:
         project = f"{lang}.wikipedia"
         return httpx.Response(200, json={"items": [{**i, "project": project, "article": article.replace(" ", "_")}
                                                    for i in series]})
+
+    def _claims(self, qid: str) -> httpx.Response:
+        claims = {prop: [{"mainsnak": {"datavalue": {"value": {"id": v}}}} for v in values]
+                  for prop, values in CLAIMS.get(qid, {}).items()}
+        return httpx.Response(200, json={"entities": {qid: {"id": qid, "claims": claims}}})
+
+    def _sitelinks(self, qids: list[str]) -> httpx.Response:
+        return httpx.Response(200, json={"entities": {
+            q: {"id": q, "sitelinks": {"dewiki": {"site": "dewiki", "title": DE_TITLES[q]}} if q in DE_TITLES else {}}
+            for q in qids}})
+
+    def _morelike(self, title: str) -> httpx.Response:
+        pages = [{"pageid": 700 + i, "ns": 0, "title": t, "index": i + 1, "pageprops": {"wikibase_item": q}}
+                 for i, (t, q) in enumerate(MORELIKE.get(title, []))]
+        return httpx.Response(200, json={"query": {"pages": pages}} if pages else {"batchcomplete": True})
 
     def _aggregate(self, url: str) -> httpx.Response:
         parts = url.split("/aggregate/")[1].split("/")

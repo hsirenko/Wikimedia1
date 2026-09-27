@@ -58,6 +58,41 @@ Share, affinity and quadrants are relative to the editions compared: adding or r
 changes them. Say so. "no article" is a finding (the concept has no article in that edition),
 not zero interest. Output goes to `./wiki_market_reports/<topic>/compare-<langs>/<date>/`.
 
+**Related topics around one topic** (larger categories, emerging neighbours, how concentrated
+interest is):
+
+```bash
+python3 <skill-dir>/scripts/wiki_market.py cluster --topic "meditation" --language de \
+  --question "<the user's request, copied word for word>"
+```
+
+It prints the usual analysis plus a `RELATED` table.
+- **Each row** gives the related article, its relationship, its views, its size relative to the
+  topic, its YoY and its YoY relative to the whole edition, plus a signal.
+- **Relationship values:** `broader`, `narrower`, `facet_of` and `has_facet` come from Wikidata.
+  `similar_content` is text similarity only, which can include unrelated popular articles. When
+  you mention one of those, say it was found by similarity.
+- **Signals** (larger category, emerging, declining, adjacent opportunity, adjacent interest,
+  too small) are *adjacent interest signals*: where readers' attention sits.
+  - **Don't rank them.** Group topics by signal and describe them. Don't use the words
+    "best", "most promising", "primary", "secondary", "top opportunity", "winner" or "inflection
+    point". Even "adjacent opportunity" is only a signal name: "at least as many readers as
+    the topic, changing within 10 points of its edition". It can still be falling.
+  - Don't draw conclusions from `too_small` topics.
+- **"better / worse than its edition by X%"** is the topic's growth compared with its whole
+  edition. The edition's own YoY is printed once, in the `RELATED:` header. Don't confuse the two.
+- **Topics marked `*` were found by text similarity only.** Say so whenever you mention one.
+- **Your reply is the `READY ANSWER` block**, which comes right after the `RELATED:` header.
+  Give it to the user as written (translated into the user's language if needed), then add the
+  report path and the limits. Keep every sentence, including "found by text similarity only",
+  and the group names as they are. Don't add headings such as "Best", "Primary", "Secondary",
+  "Resilient" or "Most viable", and don't pick a winner, even when the user asks for "the best".
+  The first sentence of the block already answers that question. The `DETAIL TABLE` below it
+  is for reference only.
+- **Concentration** (top 1 / top 5 share) is neither good nor bad: describe it, don't judge it.
+  The `RELATED:` header names the largest article. It's often a broader concept, not the topic
+  itself.
+
 Only resolving a topic, without fetching views:
 `python3 <skill-dir>/scripts/wiki_market.py topic --topic meditation --languages en,de,fr`
 
@@ -114,7 +149,7 @@ KPI from the report's own stored monthly data and confirms that the stored numbe
 ## Current scope
 
 Single-language analysis, language comparison (share, penetration, affinity, opportunity matrix)
-and anomaly detection are built. The topic ecosystem (related topics) and decision signals are not. The reports
+anomaly detection and the topic ecosystem (`cluster`) are built. Decision signals are not. The reports
 show those sections as "not implemented", with the reason. Country breakdowns and unique devices are
 not published per article by Wikimedia, so they are always n/a. Never estimate them.
 

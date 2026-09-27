@@ -15,7 +15,9 @@ decision.
   penetration, topic affinity and the demand × growth opportunity matrix.
 - **Anomaly detection:** unusual months flagged against a seasonal, level-aware baseline, with
   causes always left as "unknown".
-- **Later milestones:** topic ecosystem, decision signals and portfolio mode (see
+- **Topic ecosystem** (`cluster`): related concepts through typed Wikidata relations and text
+  similarity, their demand and growth, descriptive signals, and interest concentration.
+- **Later milestones:** decision signals and portfolio mode (see
   [Roadmap](#roadmap)). Reports already contain those sections and say why they're empty.
 
 ## 1. What it does
@@ -70,6 +72,7 @@ wiki-market analyze --topic "meditation" --language de --period 3y
 wiki-market analyze --topic meditation --language de --start 2023-09 --end 2026-08
 wiki-market analyze --input examples/meditation-de.yaml
 wiki-market compare --topic meditation --languages en,de,fr,es,it
+wiki-market cluster --topic meditation --language de           # analyze + related topics
 wiki-market topic --topic meditation --languages en,de,fr      # resolution only
 wiki-market validate                                             # check every saved report
 wiki-market cache clear
@@ -183,6 +186,45 @@ Checked on real data, these three results come out right:
   them shows YoY at −31.7% instead of the reported −20.8%, so the recent rise was masking a
   steeper decline.
 
+## Topic ecosystem
+
+`wiki-market cluster` (or `analyze_cluster()` in Python) runs the single-language analysis and
+fills report section 8 with related concepts.
+
+**Where related concepts come from.** Each concept records its relationship and its source:
+
+| Relationship | Found through |
+|---|---|
+| broader | Wikidata P279 *subclass of* (the topic is a kind of it) |
+| narrower | the reverse of P279 (kinds of the topic) |
+| facet of / has facet | Wikidata P1269 *facet of*, both ways |
+| similar text | Wikipedia's "more like this" search, labelled separately because it's not a stated relationship and can pull in popular unrelated articles |
+
+Typed relations are listed before text similarity, duplicates are removed, and at most 20 are
+measured. Concepts without an article in the edition are skipped, and the report says how many.
+
+**Per related topic:** views in the last 12 months, YoY, 3Y CAGR, 3-month change, size relative
+to the topic, and **share-adjusted YoY**, meaning growth relative to the whole edition, so
+platform-wide decline doesn't make everything look like it's declining.
+
+**Signals.** These are descriptive *adjacent interest signals*, never claims that an article is
+a commercially adjacent product. The first matching rule wins:
+
+1. **too small to judge:** under 100 views a month;
+2. **larger category:** a broader concept with more views than the topic;
+3. **emerging category:** share-adjusted YoY ≥ +10%;
+4. **declining category:** share-adjusted YoY ≤ −10%;
+5. **adjacent opportunity:** at least as many views as the topic;
+6. **adjacent interest:** everything else.
+
+**Concentration.** This is the share of views held by the top 1, 5, 10 and 20 articles of the
+topic plus its typed relations (text-similar articles are excluded), and is null when there are
+fewer than k articles. It's reported without a good/bad judgement.
+
+On real data, German "Meditation" lost 17.2% year over year. Every typed relation lost more
+relative to its edition, so the topic is holding up better than its neighbourhood. The cluster
+is concentrated: Buddhism, a larger category, holds 62% of its views.
+
 ## 8. Formulas
 
 All formulas live in [`analytics/formulas.py`](src/wiki_market_intel/analytics/formulas.py).
@@ -246,8 +288,8 @@ KPI functions would not change.
 ## 13. Tests
 
 ```bash
-pytest                    # 120 offline tests; the network is replaced by a fake Wikimedia
-pytest -m integration     # 3 tests against the live API
+pytest                    # 132 offline tests; the network is replaced by a fake Wikimedia
+pytest -m integration     # 4 tests against the live API
 ```
 
 The fixture `tests/fixtures/pageviews_meditation_de_2020-09_2026-08.json` is a real captured API
@@ -270,7 +312,7 @@ In the order the spec (§40) sets:
    the project `aggregate` endpoint, affinity, and the opportunity matrix. Country distribution
    stays unsupported, because Wikimedia doesn't publish it per article.
 2. ~~**Anomalies**~~ (done): seasonal, level-aware baseline; robust flags; causes stay "unknown".
-3. **Topic ecosystem and concentration** (`cluster`).
+3. ~~**Topic ecosystem and concentration**~~ (done): `cluster`.
 4. **Decision signals:** market size, growth, momentum, localization, stability. Kept separate,
    with no single score.
 5. **HTML report and portfolio mode:** a matrix of many topics × languages (the opportunity matrix already exists per topic).

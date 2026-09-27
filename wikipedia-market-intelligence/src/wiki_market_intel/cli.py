@@ -21,7 +21,7 @@ from wiki_market_intel.errors import AmbiguousTopicError, ApiError, ArticleMissi
 from wiki_market_intel.analytics.summary import comparison_observations, observations_from_spans
 from wiki_market_intel.i18n import SUPPORTED, Translator, resolve_report_language
 from wiki_market_intel.reporting import generator, markdown
-from wiki_market_intel.service import analyze, build_services, compare_languages, resolve_topic
+from wiki_market_intel.service import analyze, analyze_cluster, build_services, compare_languages, resolve_topic
 from wiki_market_intel.validate import find_reports, validate_file
 
 
@@ -37,6 +37,11 @@ def _load_input(path: str) -> dict:
     return out
 
 
+def cmd_cluster(args: argparse.Namespace, settings: Settings) -> int:
+    args.cluster = True
+    return cmd_analyze(args, settings)
+
+
 def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
     params = _load_input(args.input) if args.input else {}
     question = args.question or params.get("question")
@@ -48,9 +53,11 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
         return 2
     services = build_services(settings, use_cache=not args.no_cache)
     try:
-        result = analyze(topic, language, args.period or params.get("period", "3y"),
+        run = analyze_cluster if getattr(args, "cluster", False) else analyze
+        extra = {"max_related": args.max_related} if getattr(args, "cluster", False) else {}
+        result = run(topic, language, args.period or params.get("period", "3y"),
                          start=args.start or params.get("start"), end=args.end or params.get("end"),
-                         question=question, report_language=report_lang, services=services)
+                         question=question, report_language=report_lang, services=services, **extra)
     except AmbiguousTopicError as exc:
         print(exc.resolution.review_message())
         first = exc.resolution.candidates[0]
@@ -79,6 +86,30 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
           f"3M {pct(g.last_three_month_growth)} ({g.momentum or 'n/a'}) | quality {q.quality_level}")
     for observation in result.observations:
         print(f"  - {observation}")
+    if result.ecosystem.computed:
+        eco = result.ecosystem
+        c = eco.concentration
+        print(f"  RELATED: {len(eco.related_topics)} topics measured. The whole {result.metadata.project} changed "
+              f"{pct(eco.edition_yoy)} year over year. Concentration (topic + typed relations, {c.articles} "
+              f"articles): the largest article, {c.largest}, holds {pct(c.top_1, False)}; the top 5 hold "
+              f"{pct(c.top_5, False)}.")
+        from wiki_market_intel.analytics.ecosystem import quote_ready
+        print("  READY ANSWER (give this to the user as written, translated if needed; groups are descriptive, "
+              "not a ranking):")
+        for line in quote_ready(eco.related_topics, eco.edition_yoy, result.metadata.project):
+            print(f"    {line}")
+        print("  DETAIL TABLE. Signals are adjacent interest signals (descriptive), not ranked opportunities. "
+              "* = found by text similarity only, not a stated relationship.")
+        for x in eco.related_topics:
+            size = f"{x.relative_size:.2f}x" if x.relative_size is not None else "n/a"
+            if x.share_adjusted_yoy is None:
+                versus = "no comparison with the edition"
+            else:
+                side = "better" if x.share_adjusted_yoy > 0 else "worse"
+                versus = f"{side} than its edition by {abs(x.share_adjusted_yoy) * 100:.1f}%"
+            mark = "*" if x.relationship == "similar_content" else " "
+            print(f"    {mark}{x.title[:34]:34} {x.relationship:15} {compact(x.annual_views):>7} ({size:>6} the topic) "
+                  f"YoY {pct(x.yoy_growth):>7}, {versus}; signal: {x.signal or 'n/a'}")
     for a in result.anomalies:
         print(f"  ANOMALY {a.date}: {a.actual:,} views vs {a.expected:,} expected ({pct(a.change_vs_baseline)}, "
               f"{a.severity}{', provisional' if a.provisional else ''}); cause unknown")
@@ -93,7 +124,8 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
               f"and reply to them in their language.")
-    print(f"Wrote {files.json}\n      {files.markdown}" + (f"\n      {files.chart}" if files.chart else ""))
+    print(f"Wrote {files.json}\n      {files.markdown}" + (f"\n      {files.chart}" if files.chart else "")
+          + (f"\n      {files.eco_chart}" if files.eco_chart else ""))
     return 0
 
 
@@ -208,6 +240,15 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--no-cache", action="store_true", help="ignore cached responses")
     a.add_argument("--json", action="store_true", help="print the full JSON result")
     a.set_defaults(func=cmd_analyze)
+
+    cl = sub.add_parser("cluster", help="analyze plus the topic ecosystem: related topics and concentration")
+    for flag in ("--topic", "--language", "--question", "--period", "--start", "--end", "--input"):
+        cl.add_argument(flag)
+    cl.add_argument("--report-lang", default="auto")
+    cl.add_argument("--max-related", type=int, default=20, help="how many related concepts to measure (default 20)")
+    cl.add_argument("--no-cache", action="store_true")
+    cl.add_argument("--json", action="store_true")
+    cl.set_defaults(func=cmd_cluster)
 
     cp = sub.add_parser("compare", help="one topic across several language editions")
     cp.add_argument("--topic", required=True)

@@ -111,7 +111,40 @@ TEMPLATE = """\
 
 ## {{ t("s8") }}
 
-{{ missing("ecosystem.related_topics") }}
+{% if not eco.computed -%}
+{{ t("eco_not_computed") }}
+{% else -%}
+{{ t("eco_intro") }}{% if eco.edition_yoy is not none %} {{ t("eco_edition", pct=rate(eco.edition_yoy, None)) }}{% endif %}
+
+{% if eco_chart %}![{{ t("eco_alt") }}]({{ eco_chart }})
+
+{% endif -%}
+| {{ t("col_topic") }} | {{ t("col_relationship") }} | {{ t("annual") }} | {{ t("col_relsize") }} | {{ t("yoy") }} | {{ t("col_adj_yoy") }} | {{ t("col_signal") }} |
+|---|---|---:|---:|---:|---:|---|
+| **{{ r.topic.article_title }}** | — | {{ num(r.demand.annual_views, "demand.annual_views") }} | 1× | {{ rate(r.growth.yoy, "growth.yoy") }} | — | — |
+{% for x in eco.related_topics -%}
+| {{ x.title }} | {{ t("rel." ~ x.relationship) }} | {{ num(x.annual_views, None) }} | {{ times(x.relative_size) }} | {{ rate(x.yoy_growth, None) }} | {{ rate(x.share_adjusted_yoy, None) }} | {{ t("signal." ~ x.signal) if x.signal else t("na") }} |
+{% endfor %}
+{{ t("eco_signals") }}
+{% for s in ("larger_category", "emerging_category", "declining_category", "adjacent_opportunity", "adjacent_interest", "too_small") -%}
+- **{{ t("signal." ~ s) }}**: {{ t("sdesc." ~ s) }}
+{% endfor %}
+### {{ t("conc_title") }}
+
+{% set c = eco.concentration -%}
+{{ t("conc_intro", n=c.articles) }}
+
+| {{ t("conc_top", k=1) }} | {{ t("conc_top", k=5) }} | {{ t("conc_top", k=10) }} | {{ t("conc_top", k=20) }} |
+|---:|---:|---:|---:|
+| {{ share(c.top_1, 1) }} | {{ share(c.top_5, 5) }} | {{ share(c.top_10, 10) }} | {{ share(c.top_20, 20) }} |
+
+{% if c.largest %}{{ t("conc_largest", title=c.largest, pct=share(c.top_1, 1)) }}
+
+{% endif %}{{ t("conc_meaning") }}
+{% if eco_notes %}
+{% for n in eco_notes -%}
+> {{ n }}
+{% endfor %}{% endif %}{% endif %}
 
 ## {{ t("s9") }}
 
@@ -220,7 +253,21 @@ def _spans(result: AnalysisResult) -> dict[str, str]:
             "twelve_months_3y_earlier": by_label["12 months ending 3 years earlier"]}
 
 
-def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "en") -> str:
+def _eco_notes(result: AnalysisResult, tr: Translator) -> list[str]:
+    """Ecosystem notes rebuilt from structured fields, so they exist in every report language."""
+    eco = result.ecosystem
+    notes = [tr("eco_note_skipped", n=n, relationship=tr(f"rel.{rel}")) for rel, n in eco.skipped_without_article.items()]
+    if eco.capped_from:
+        notes.append(tr("eco_note_capped", n=eco.capped_from, cap=len(eco.related_topics)))
+    if not eco.has_wikidata:
+        notes.append(tr("eco_note_no_qid"))
+    if any(x.relationship == "similar_content" for x in eco.related_topics):
+        notes.append(tr("eco_note_similar"))
+    return notes
+
+
+def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "en",
+           eco_chart: str | None = None) -> str:
     tr = Translator(lang)
     reasons = {m.metric: m for m in result.quality.missing_metrics}
 
@@ -256,6 +303,12 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
             return missing("localization.topic_penetration")
         return tr("per_million_value", value=tr.decimal(value * 1_000_000, 1))
 
+    def times(value) -> str:
+        return f"{tr.decimal(value, 2)}×" if value is not None else tr("na")
+
+    def share(value, k: int) -> str:
+        return tr.percent(value, signed=False) if value is not None else tr("conc_short", k=k)
+
     def points(value: float) -> str:
         text = f"{value * 100:+.1f}"
         return text.replace(".", ",").replace("-", "−") if tr.lang == "uk" else text
@@ -274,11 +327,13 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
         return text.lower() if text and tr.lang == "uk" else text
 
     env.globals.update(t=tr, missing=missing, num=num, rate=rate, dec=dec, points=points, reason=reason, pen=pen,
+                       times=times, share=share,
                        month=tr.month, month_mid=month_mid)
     return env.from_string(TEMPLATE).render(
         r=result, chart=chart_path, basis=basis,
         observations=observations_from_spans(result.demand, result.growth, result.seasonality, _spans(result), tr,
                                              result.anomalies, result.anomaly_analysis),
         an_info=result.anomaly_analysis or AnomalyAnalysis(),
+        eco=result.ecosystem, eco_chart=eco_chart, eco_notes=_eco_notes(result, tr) if result.ecosystem.computed else [],
         quality_reasons=_quality_reasons(result, tr), notes=_notes(result, tr),
         missing_months=[tr("missing_month", month=line[:7]) for line in result.quality.missing_data])

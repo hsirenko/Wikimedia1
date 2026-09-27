@@ -7,8 +7,8 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from wiki_market_intel.models.metrics import (
-    Anomaly, AnomalyAnalysis, Demand, Formula, Growth, LanguageOpportunityMetrics, Localization, MissingMetric,
-    MonthlyPoint, PeriodRef, Seasonality, Signals,
+    Anomaly, AnomalyAnalysis, Concentration, Demand, Formula, Growth, LanguageOpportunityMetrics, Localization,
+    MissingMetric, MonthlyPoint, PeriodRef, RelatedTopic, Seasonality, Signals,
 )
 from wiki_market_intel.models.topic import TopicResolution
 
@@ -64,7 +64,15 @@ class Quality(BaseModel):
 
 
 class Ecosystem(BaseModel):
-    related_topics: list[dict] = Field(default_factory=list)
+    computed: bool = False                      # False for `analyze`; `cluster` fills it in
+    related_topics: list[RelatedTopic] = Field(default_factory=list)
+    concentration: Concentration | None = None
+    edition_yoy: float | None = None            # used to share-adjust related topics' growth
+    candidates_considered: int = 0
+    skipped_without_article: dict[str, int] = Field(default_factory=dict)   # per relationship
+    capped_from: int | None = None              # how many were found when more than the cap
+    has_wikidata: bool = True
+    notes: list[str] = Field(default_factory=list)
 
 
 class AnalysisResult(BaseModel):

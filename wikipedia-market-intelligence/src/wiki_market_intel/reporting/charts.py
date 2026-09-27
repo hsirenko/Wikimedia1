@@ -172,3 +172,62 @@ def penetration_chart(comparison, path: Path, lang: str = "en") -> Path | None:
     fig.savefig(path, facecolor=SURFACE)
     plt.close(fig)
     return path
+
+
+def ecosystem_chart(result: AnalysisResult, path: Path, lang: str = "en") -> Path | None:
+    """Related topics: share-adjusted growth across, views up (log). The topic itself is highlighted;
+    typed relations and text-similar articles have different colours, always with a legend."""
+    tr = Translator(lang)
+    eco = result.ecosystem
+    # "too small" topics stay in the report table but not on the chart: their growth figures are noise.
+    points = [t for t in eco.related_topics
+              if t.annual_views and t.share_adjusted_yoy is not None and t.signal != "too_small"]
+    focal_views = result.demand.annual_views
+    if not points or not focal_views:
+        return None
+    focal_x = (ecosystem_share_adjusted(result.growth.yoy, eco.edition_yoy) or 0) * 100
+    fig, ax = plt.subplots(figsize=(7.5, 4.8), dpi=150)
+    fig.patch.set_facecolor(SURFACE)
+    _style(ax)
+    ax.set_yscale("log")
+    xs = [t.share_adjusted_yoy * 100 for t in points] + [focal_x]
+    ys = [t.annual_views for t in points] + [focal_views]
+    span = max(15.0, max(abs(x) for x in xs) * 1.3)
+    ax.set_xlim(-span, span)
+    ax.set_ylim(min(ys) / 2.5, max(ys) * 2.5)
+    ax.axvline(0, color=MUTED, linewidth=1)
+    for kind, colour, label in (("typed", PALETTE[0], tr("chart_eco_typed")), ("similar", PALETTE[3], tr("chart_eco_similar"))):
+        group = [t for t in points if (t.relationship == "similar_content") == (kind == "similar")]
+        if group:
+            ax.scatter([t.share_adjusted_yoy * 100 for t in group], [t.annual_views for t in group], s=40,
+                       color=colour, edgecolor=SURFACE, linewidth=1, zorder=3, label=label)
+    ax.scatter([focal_x], [focal_views], s=120, color=PALETTE[1], edgecolor=INK2, linewidth=1.2, zorder=4,
+               label=tr("chart_eco_focal"))
+    ax.annotate(result.topic.article_title, (focal_x, focal_views), xytext=(8, 6), textcoords="offset points",
+                fontsize=8, color=INK2, fontweight="bold")
+    # Label the largest topics first; skip a label that would collide with one already placed.
+    fig.canvas.draw()
+    placed = [ax.transData.transform((focal_x, focal_views))]
+    for t in sorted(points, key=lambda t: -t.annual_views):
+        x, y = ax.transData.transform((t.share_adjusted_yoy * 100, t.annual_views))
+        if any(abs(x - px) < 95 and abs(y - py) < 16 for px, py in placed):
+            continue
+        placed.append((x, y))
+        ax.annotate(t.title[:26], (t.share_adjusted_yoy * 100, t.annual_views), xytext=(6, 3),
+                    textcoords="offset points", fontsize=7, color=INK2)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: tr.percent(v / 100)))
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: tr.compact(v)))
+    ax.set_xlabel(tr("chart_eco_x"), fontsize=8, color=INK2)
+    ax.set_ylabel(tr("chart_eco_y"), fontsize=8, color=INK2)
+    ax.set_title(tr("chart_eco_title", topic=result.topic.article_title), fontsize=9, color=INK2, loc="left")
+    ax.legend(fontsize=7.5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=3, labelcolor=INK2)
+    fig.tight_layout()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path, facecolor=SURFACE)
+    plt.close(fig)
+    return path
+
+
+def ecosystem_share_adjusted(yoy, edition):
+    from wiki_market_intel.analytics.ecosystem import share_adjusted
+    return share_adjusted(yoy, edition)

@@ -16,6 +16,7 @@ class ReportFiles:
     json: Path
     markdown: Path
     chart: Path | None
+    eco_chart: Path | None = None
 
 
 def slug(text: str) -> str:
@@ -26,16 +27,20 @@ def write(result: AnalysisResult, reports_dir: Path, lang: str | None = None) ->
     """`lang` defaults to the language recorded in the result (from the user's question)."""
     lang = lang or result.metadata.report_language
     day = result.metadata.generated_at[:10]
-    directory = Path(reports_dir) / slug(result.metadata.topic) / result.metadata.language / day
+    kind = "cluster-" if result.ecosystem.computed else ""
+    directory = Path(reports_dir) / slug(result.metadata.topic) / f"{kind}{result.metadata.language}" / day
     directory.mkdir(parents=True, exist_ok=True)
 
     json_path = directory / "analysis.json"
     json_path.write_text(result.model_dump_json(indent=2), "utf-8")
 
     chart = charts.trend_chart(result, directory / "charts" / "trend.png", lang)
+    eco_chart = (charts.ecosystem_chart(result, directory / "charts" / "ecosystem.png", lang)
+                 if result.ecosystem.computed else None)
     md_path = directory / "report.md"
-    md_path.write_text(markdown.render(result, "charts/trend.png" if chart else None, lang), "utf-8")
-    return ReportFiles(directory=directory, json=json_path, markdown=md_path, chart=chart)
+    md_path.write_text(markdown.render(result, "charts/trend.png" if chart else None, lang,
+                                       "charts/ecosystem.png" if eco_chart else None), "utf-8")
+    return ReportFiles(directory=directory, json=json_path, markdown=md_path, chart=chart, eco_chart=eco_chart)
 
 
 @dataclass

@@ -228,3 +228,112 @@ def compare_languages(topic: str, languages: list[str], period: str = "3y", *, s
             question=question, report_language=report_lang),
         resolution=resolution, rows=rows, analyses=analyses, demand_threshold=threshold,
         observations=comparison_observations(rows), notes=notes, formulas=formulas.REGISTRY)
+
+
+# ---------------------------------------------------------------------------
+# topic ecosystem (spec §19-§20)
+# ---------------------------------------------------------------------------
+
+# (relationship, how it is found, Wikidata property or None, reverse lookup?, per-kind cap)
+RELATION_SOURCES = [
+    ("broader", "wikidata:P279 subclass of", "P279", False, 10),
+    ("facet_of", "wikidata:P1269 facet of", "P1269", False, 10),
+    ("narrower", "wikidata:P279 subclass of (reverse)", "P279", True, 15),
+    ("has_facet", "wikidata:P1269 facet of (reverse)", "P1269", True, 10),
+    ("similar_content", "search:morelike (text similarity)", None, False, 10),
+]
+MAX_RELATED = 20
+
+
+def analyze_cluster(topic: str, language: str, period: str = "3y", *, start: date | str | None = None,
+                    end: date | str | None = None, question: str | None = None, report_language: str = "auto",
+                    max_related: int = MAX_RELATED, services: Services | None = None) -> AnalysisResult:
+    """`analyze` plus the topic ecosystem: related concepts with their KPIs and signals.
+
+    Related concepts come from typed Wikidata relations (broader / narrower / facets) and,
+    labelled separately, from text similarity. Each is an adjacent *interest* signal only.
+    """
+    from concurrent.futures import ThreadPoolExecutor
+
+    from wiki_market_intel.analytics import ecosystem as eco
+    from wiki_market_intel.clients import wikidata as wd
+    from wiki_market_intel.models.analysis import Ecosystem
+    from wiki_market_intel.models.metrics import RelatedTopic
+
+    services = services or build_services()
+    result = analyze(topic, language, period, start=start, end=end, question=question,
+                     report_language=report_language, services=services)
+    wikipedia, wikidata = services.resolver.wikipedia, services.resolver.wikidata
+    qid, focal_title = result.topic.wikidata_id, result.topic.article_title
+
+    found: list[tuple[str, str, str | None, str]] = []   # (relationship, source, qid, title)
+    notes: list[str] = []
+    skipped: dict[str, int] = {}
+    capped_from = None
+    considered = 0
+    for relationship, source, prop, is_reverse, cap in RELATION_SOURCES:
+        if prop is None:
+            candidates = wd.morelike(wikipedia, language, focal_title, cap)
+            considered += len(candidates)
+            found += [(relationship, source, c.wikidata_id, c.title) for c in candidates]
+            continue
+        if not qid:
+            continue
+        qids = (wd.reverse(wikidata, prop, qid, cap) if is_reverse
+                else wd.claims(wikidata, qid, (prop,)).get(prop, [])[:cap])
+        considered += len(qids)
+        titles = wd.sitelinks(wikidata, qids, language) if qids else {}
+        missing = [q for q in qids if q not in titles]
+        if missing:
+            skipped[relationship] = len(missing)
+            notes.append(f"{len(missing)} {relationship} concept(s) have no {language}.wikipedia article "
+                         f"and were skipped.")
+        found += [(relationship, source, q, titles[q]) for q in qids if q in titles]
+    if not qid:
+        notes.append("The topic has no Wikidata entity, so only text-similar articles were considered.")
+
+    seen: set[str] = {focal_title.casefold()} | ({qid} if qid else set())
+    picked = []
+    for relationship, source, rqid, title in found:            # typed relations come first and win
+        keys = {title.casefold()} | ({rqid} if rqid else set())
+        if keys & seen:
+            continue
+        seen |= keys
+        picked.append((relationship, source, rqid, title))
+    if len(picked) > max_related:
+        capped_from = len(picked)
+        notes.append(f"{len(picked)} related concepts found; the first {max_related} were measured "
+                     f"(typed Wikidata relations before text similarity).")
+        picked = picked[:max_related]
+
+    end_month = date.fromisoformat(result.metadata.period_end + "-01")
+    start_month = date.fromisoformat(result.metadata.period_start + "-01")
+    months = (end_month.year - start_month.year) * 12 + end_month.month - start_month.month + 1
+    periods = build_periods(end_month, months)
+    window_start, window_end = fetch_window(periods)
+    project = f"{language}.wikipedia"
+
+    def fetch(item):
+        relationship, source, rqid, title = item
+        pv = services.wikimedia.per_article(project, title, window_start, window_end)
+        article = result.topic.resolution.articles[language].model_copy(update={"title": title, "page_id": None})
+        return RelatedTopic(title=title, wikidata_id=rqid, relationship=relationship, source=source,
+                            monthly=monthly_series(normalize(pv.items, article), window_start, window_end))
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        related = list(pool.map(fetch, picked))
+
+    edition = eco.edition_yoy(result.edition_monthly, periods)
+    focal_annual = result.demand.annual_views
+    related = [eco.measure(r, periods, focal_annual, edition) for r in related]
+    related.sort(key=lambda r: -(r.annual_views or -1))
+    if any(r.relationship == "similar_content" for r in related):
+        notes.append("'similar_content' comes from text similarity, not a stated relationship: it can include "
+                     "unrelated articles that share vocabulary.")
+    result.ecosystem = Ecosystem(computed=True, related_topics=related, edition_yoy=edition,
+                                 concentration=eco.concentration(focal_annual, related, focal_title),
+                                 candidates_considered=considered, skipped_without_article=skipped,
+                                 capped_from=capped_from, has_wikidata=bool(qid), notes=notes)
+    result.quality.missing_metrics = [m for m in result.quality.missing_metrics
+                                      if m.metric != "ecosystem.related_topics"]
+    return result

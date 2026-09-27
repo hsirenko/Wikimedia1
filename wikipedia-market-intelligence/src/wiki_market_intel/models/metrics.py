@@ -127,6 +127,37 @@ class AnomalyAnalysis(BaseModel):
     yoy_excluding_anomalies: float | None = None
 
 
+class RelatedTopic(BaseModel):
+    """One adjacent concept (spec §19). An *adjacent interest signal*, not a product claim."""
+
+    title: str                                  # article title in the analysed edition
+    wikidata_id: str | None = None
+    relationship: Literal["broader", "narrower", "facet_of", "has_facet", "similar_content"]
+    source: str                                 # where the link came from, e.g. "wikidata:P279"
+    status: Literal["ok", "no_data"] = "ok"
+    annual_views: int | None = None
+    yoy_growth: float | None = None
+    three_year_cagr: float | None = None
+    three_month_growth: float | None = None
+    relative_size: float | None = None          # annual views / the focal topic's annual views
+    share_adjusted_yoy: float | None = None     # YoY relative to the whole edition's YoY
+    signal: Literal["larger_category", "emerging_category", "declining_category", "adjacent_opportunity",
+                    "adjacent_interest", "too_small"] | None = None
+    monthly: list[MonthlyPoint] = Field(default_factory=list)
+
+
+class Concentration(BaseModel):
+    """Share of cluster views held by the largest articles (spec §20). Neither good nor bad.
+    The cluster is the focal topic plus its typed relations; text-similar articles are left out."""
+
+    articles: int = 0
+    largest: str | None = None                  # the article holding the top-1 share (may not be the topic)
+    top_1: float | None = None
+    top_5: float | None = None                  # None when the cluster has fewer articles than k
+    top_10: float | None = None
+    top_20: float | None = None
+
+
 class Localization(BaseModel):
     topic_share: float | None = None
     topic_affinity: float | None = None

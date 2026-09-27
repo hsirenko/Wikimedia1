@@ -53,6 +53,22 @@ def _check_analysis(result: AnalysisResult, stored_raw: dict, prefix: str = "") 
         if not _same(result.anomaly_analysis.yoy_excluding_anomalies, excluded):
             problems.append(f"{prefix}anomaly_analysis.yoy_excluding_anomalies: stored "
                             f"{result.anomaly_analysis.yoy_excluding_anomalies!r} != recomputed {excluded!r}")
+    if result.ecosystem.computed:
+        from wiki_market_intel.analytics import ecosystem as eco
+        edition = eco.edition_yoy(result.edition_monthly, periods)
+        for stored in result.ecosystem.related_topics:
+            again = eco.measure(stored.model_copy(deep=True), periods, result.demand.annual_views, edition)
+            for field in ("annual_views", "yoy_growth", "relative_size", "share_adjusted_yoy", "signal"):
+                if not _same(getattr(stored, field), getattr(again, field)):
+                    problems.append(f"{prefix}ecosystem[{stored.title}].{field}: stored {getattr(stored, field)!r} "
+                                    f"!= recomputed {getattr(again, field)!r}")
+        conc = eco.concentration(result.demand.annual_views, result.ecosystem.related_topics,
+                                 result.topic.article_title)
+        stored_conc = result.ecosystem.concentration
+        if stored_raw.get("ecosystem", {}).get("concentration", {}).get("largest") is None:
+            conc.largest = None      # written before the largest article was recorded
+        if conc != stored_conc:
+            problems.append(f"{prefix}ecosystem.concentration: stored != recomputed")
     if result.edition_monthly:
         pen, _ = localization.penetration(result.monthly, result.edition_monthly, periods["last_12m"], True)
         if not _same(result.localization.topic_penetration, pen):

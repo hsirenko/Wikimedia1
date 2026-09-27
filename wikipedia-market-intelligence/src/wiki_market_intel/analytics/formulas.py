@@ -193,6 +193,20 @@ REGISTRY: list[Formula] = [
     Formula(name="yoy_excluding_anomalies",
             definition="YoY with every flagged month replaced by its expected value",
             edge_cases="null when nothing is flagged; shows whether growth rests on one-off months (spec rule 6)"),
+    Formula(name="related_topics",
+            definition="Wikidata P279 subclass-of (broader / reverse: narrower), P1269 facet-of (facet_of / "
+                       "reverse: has_facet), and text similarity (similar_content, labelled separately)",
+            edge_cases="deduplicated with typed relations first; capped at 20; concepts without an article in "
+                       "the edition are skipped and counted"),
+    Formula(name="share_adjusted_yoy", definition="(1 + topic YoY) / (1 + edition YoY) - 1"),
+    Formula(name="ecosystem_signal",
+            definition="too_small (<1,200 views/yr) > larger_category (broader or facet-of target, more views) > "
+                       "emerging (share-adjusted YoY >= +10%) > declining (<= -10%) > adjacent_opportunity "
+                       "(views >= topic) > adjacent_interest",
+            edge_cases="adjacent interest signals only, never a claim of commercial adjacency"),
+    Formula(name="concentration_top_k",
+            definition="views of the k largest articles / views of the topic plus its typed relations, k = 1, 5, 10, 20",
+            edge_cases="null when the cluster has fewer than k articles; text-similar articles excluded"),
     Formula(name="quadrant",
             definition="growth: YoY > 0; demand: annual views >= median of compared editions; "
                        "labels investigate / explore / established / watch are descriptive, not recommendations"),
