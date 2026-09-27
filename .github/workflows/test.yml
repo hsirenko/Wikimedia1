@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  push:
+    paths:
+      - "wiki-market-intel/**"
+      - ".github/workflows/test.yml"
+  pull_request:
+    paths:
+      - "wiki-market-intel/**"
+      - ".github/workflows/test.yml"
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: wiki-market-intel
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: wiki-market-intel/.python-version
+      - name: Install locked dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --require-hashes -r requirements-dev.lock
+          python -m pip install -e . --no-deps
+      - name: Unit tests
+        run: pytest

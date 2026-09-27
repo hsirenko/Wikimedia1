@@ -41,7 +41,7 @@ Wikipedia Market Intelligence (WMI) helps product teams validate topic selection
 
 ### Requirements
 
-- **Python** 3.12 or later
+- **CPython 3.13** (pinned in `.python-version`; `requires-python = ">=3.13,<3.14"`)
 - **Network access** to Wikimedia domains
 - **Claude plan**: Pro, Max, Team, or Enterprise with code execution enabled (for claude.ai usage)
 
@@ -75,13 +75,13 @@ To publish a new downloadable zip, tag a release (see [Releasing a skill zip](#r
 git clone https://github.com/hsirenko/Wikimedia1.git
 cd Wikimedia1/wiki-market-intel
 
-# Using uv (recommended)
-uv venv --python 3.13 && uv pip sync requirements.lock && uv pip install -e ".[dev]" --no-deps
+# Using uv (recommended) — installs the hashed lock, including pytest
+uv venv --python 3.13 && uv pip sync requirements-dev.lock && uv pip install -e . --no-deps
 
 # OR using standard venv
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.lock
-.venv/bin/pip install -e ".[dev]" --no-deps
+python3.13 -m venv .venv
+.venv/bin/pip install --require-hashes -r requirements-dev.lock
+.venv/bin/pip install -e . --no-deps
 ```
 
 
@@ -460,7 +460,7 @@ Then use the exact article title from the candidates list.
 
 ## Architecture
 
-The skill is the `wiki-market-intel/` folder. `SKILL.md` is the agent contract (which command to run, reply order, no invented numbers). `scripts/wiki_market.py` is the launcher: it puts `src/` on `sys.path`, installs missing packages from `requirements.lock`, writes `data/` and `reports/` into the current working directory (never into the skill folder), and copies new reports to `/mnt/user-data/outputs` when that path exists (claude.ai). All application code is `src/wiki_market_intel/`.
+The skill is the `wiki-market-intel/` folder. `SKILL.md` is the agent contract (which command to run, reply order, no invented numbers). `scripts/wiki_market.py` is the launcher: it requires CPython 3.13, puts `src/` on `sys.path`, installs the hashed `requirements.lock` (or upgrades any mismatch), writes `data/` and `reports/` into the current working directory (never into the skill folder), and copies new reports to `/mnt/user-data/outputs` when that path exists (claude.ai). All application code is `src/wiki_market_intel/`.
 
 `service.py` is the only orchestrator. It holds no formulas. The pipeline for one article is:
 
@@ -565,6 +565,30 @@ src/wiki_market_intel/
 ---
 
 
+
+## Reproducible environment
+
+The same CPython minor and the same package versions must come out of a fresh clone:
+
+| Pin | File |
+|---|---|
+| CPython 3.13 | `.python-version`, `requires-python` in `pyproject.toml` |
+| Direct dependencies | exact `==` versions in `pyproject.toml` |
+| Every transitive + SHA256 | `requirements.lock` (runtime + PDF) and `requirements-dev.lock` (+ pytest) |
+
+The skill launcher (`scripts/wiki_market.py`) refuses anything other than 3.13 and runs
+`pip install --require-hashes -r requirements.lock` unless **every** locked distribution is
+already at the locked version. It will not keep a pre-installed older `httpx`.
+
+Refresh the locks after changing `pyproject.toml`:
+
+```bash
+sh scripts/lock.sh
+```
+
+Commit both lockfiles. CI (`test.yml`) installs with `--require-hashes` on 3.13 and runs pytest.
+
+---
 
 ## Development
 
