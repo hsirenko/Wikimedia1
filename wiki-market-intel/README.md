@@ -35,8 +35,6 @@ Wikipedia Market Intelligence (WMI) helps product teams validate topic selection
 
 ## Quick Start
 
-
-
 ### Requirements
 
 - **Python** 3.12 or later
@@ -119,6 +117,8 @@ All commands output a dated folder with:
 
 
 ### Commands
+
+
 
 #### `analyze`
 
@@ -203,6 +203,8 @@ wiki-market validate reports/astronomy/uk/2026-09-27
 ---
 
 ## Understanding the output
+
+
 
 ### Recommendation tiers
 
@@ -309,8 +311,6 @@ JSON output is always English.
 
 ## Examples
 
-
-
 ### Example 1: Single-topic growth analysis
 
 ```bash
@@ -381,6 +381,8 @@ except AmbiguousTopicError as e:
 ---
 
 ## Troubleshooting
+
+
 
 ### "Network error: Cannot reach Wikimedia"
 
@@ -454,16 +456,18 @@ question / CLI / Python API
 
 Commands compose that pipeline; they do not fetch or score on their own.
 
-| Command | What it runs |
-|---|---|
-| `analyze` | resolve once → `_analyze_article` for one edition |
-| `cluster` | `analyze`, then related concepts (Wikidata P279 / P1269 and reverse, plus `morelike` text similarity), measure each, attach `Ecosystem` |
-| `compare` | resolve once → `_analyze_article` per requested edition → share, affinity, quadrants. Missing sitelink → `no_article` row, not zeros |
-| `portfolio` | `compare` (or `analyze` if one language) per topic; a failed topic becomes status rows and does not stop the rest |
-| `topic` | resolve only, no pageviews |
-| `pdf` | one-page PDF from a saved report folder (`--full` for every section) |
-| `validate` | schema + recompute from `monthly[]` in the saved JSON |
-| `cache` | inspect / clear `data/cache/` |
+
+| Command     | What it runs                                                                                                                            |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `analyze`   | resolve once → `_analyze_article` for one edition                                                                                       |
+| `cluster`   | `analyze`, then related concepts (Wikidata P279 / P1269 and reverse, plus `morelike` text similarity), measure each, attach `Ecosystem` |
+| `compare`   | resolve once → `_analyze_article` per requested edition → share, affinity, quadrants. Missing sitelink → `no_article` row, not zeros    |
+| `portfolio` | `compare` (or `analyze` if one language) per topic; a failed topic becomes status rows and does not stop the rest                       |
+| `topic`     | resolve only, no pageviews                                                                                                              |
+| `pdf`       | one-page PDF from a saved report folder (`--full` for every section)                                                                    |
+| `validate`  | schema + recompute from `monthly[]` in the saved JSON                                                                                   |
+| `cache`     | inspect / clear `data/cache/`                                                                                                           |
+
 
 On disk, `reporting/generator.py` writes:
 
@@ -527,8 +531,6 @@ src/wiki_market_intel/
 ---
 
 ## Development
-
-
 
 ### Running tests
 
