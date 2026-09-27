@@ -25,6 +25,7 @@ from wiki_market_intel.data.cache import JsonFileCache, NullCache
 from wiki_market_intel.data.normalizer import monthly_series, normalize
 from wiki_market_intel.data.raw_store import RawStore
 from wiki_market_intel.errors import AmbiguousTopicError, ArticleMissingError, TopicNotFoundError
+from wiki_market_intel.i18n import resolve_report_language
 from wiki_market_intel.models.analysis import AnalysisResult, Metadata, SourceRecord, TopicSection
 from wiki_market_intel.models.topic import TopicResolution
 from wiki_market_intel.resolution.topic_resolver import TopicResolver
@@ -62,12 +63,16 @@ def _month(value: date | str) -> date:
 
 
 def analyze(topic: str, language: str, period: str = "3y", *, start: date | str | None = None,
-            end: date | str | None = None, services: Services | None = None) -> AnalysisResult:
+            end: date | str | None = None, question: str | None = None, report_language: str = "auto",
+            services: Services | None = None) -> AnalysisResult:
     """Analyze one topic in one language edition.
 
     `period` ("3y", "18m") counts back from the last complete month. Alternatively pass
     `start`/`end`: a full date `end` is exclusive when it falls on the 1st (2026-01-01
     means "up to December 2025"), a "YYYY-MM" `end` is inclusive.
+    `question` is the user's own request; the report is written in its language
+    (English and Ukrainian are supported; others fall back to English). `report_language`
+    ("auto", "en", "uk") overrides the detection. `language` is the Wikipedia edition analysed.
     Raises AmbiguousTopicError / TopicNotFoundError / ArticleMissingError / ApiError.
     """
     services = services or build_services()
@@ -114,7 +119,8 @@ def analyze(topic: str, language: str, period: str = "3y", *, start: date | str 
             period_start=f"{requested.start:%Y-%m}", period_end=f"{requested.end:%Y-%m}",
             generated_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
             data_retrieved_at=fetch.fetched.retrieved_at, api=f"{settings.pageviews_base}/per-article",
-            access=settings.access, agent=settings.agent, software_version=VERSION),
+            access=settings.access, agent=settings.agent, software_version=VERSION,
+            question=question, report_language=resolve_report_language(question, report_language)[1]),
         topic=TopicSection(canonical_name=resolution.canonical_topic, wikidata_id=resolution.wikidata_id,
                            article_title=article.title,
                            article_id=str(article.page_id) if article.page_id is not None else None,

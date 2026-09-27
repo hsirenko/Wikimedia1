@@ -7,6 +7,7 @@ saved report self-verifying and guards against formula drift between versions.
 
 from __future__ import annotations
 
+import json
 import math
 from datetime import date
 from pathlib import Path
@@ -27,8 +28,10 @@ def _same(a, b) -> bool:
 
 
 def validate_file(path: Path) -> list[str]:
+    text = Path(path).read_text("utf-8")
     try:
-        result = AnalysisResult.model_validate_json(Path(path).read_text("utf-8"))
+        result = AnalysisResult.model_validate_json(text)
+        stored_raw = json.loads(text)
     except (ValidationError, ValueError) as exc:
         return [f"schema: {exc}"]
     start = date.fromisoformat(result.metadata.period_start + "-01")
@@ -41,6 +44,8 @@ def validate_file(path: Path) -> list[str]:
                                      ("seasonality", seasonality.compute(result.monthly, periods["requested"]))):
         stored = getattr(result, section)
         for field in type(recomputed).model_fields:
+            if field not in stored_raw.get(section, {}):
+                continue   # written by an older version that did not have this field yet
             if not _same(getattr(stored, field), getattr(recomputed, field)):
                 problems.append(f"{section}.{field}: stored {getattr(stored, field)!r} "
                                 f"!= recomputed {getattr(recomputed, field)!r}")

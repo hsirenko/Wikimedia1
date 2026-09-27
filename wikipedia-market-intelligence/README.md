@@ -101,6 +101,29 @@ result.model_dump_json()            # the machine-readable result
 If the topic is ambiguous, `analyze` raises `AmbiguousTopicError`, and its `.resolution.candidates`
 lists the plausible concepts. The system never picks one silently.
 
+## Report language
+
+The report follows the language of the user's request. Pass the request word for word with
+`--question`, or `question=` in `analyze()`. That is separate from `--language`, which is the
+Wikipedia edition being analysed:
+
+```bash
+wiki-market analyze --topic meditation --language de \
+  --question "Як змінюється інтерес до медитації в німецькомовній Вікіпедії?"
+```
+
+- **Supported languages:** English and Ukrainian, via the catalogue in `src/wiki_market_intel/i18n.py`.
+- **What is translated:** every heading, label, observation, explanation of a missing metric,
+  quality reason and business-implication line, plus the chart. Numbers follow the language's
+  conventions (`56 910`, `−17,2%`).
+- **Overrides and fallback:** `--report-lang en|uk` forces a language. Any other detected
+  language gets an English report, and the CLI prints a `REPORT_LANGUAGE` line so an agent
+  tells the user and still replies in their language.
+- **The JSON result is always in English:** it is the canonical record, so reports in any
+  language validate and compare the same way.
+- **Adding a language:** copy the `"en"` block in `CATALOG`, translate it and add the code to
+  `SUPPORTED`. `tests/reporting/test_i18n.py` fails if any key or placeholder is missing.
+
 ## 7. KPI definitions
 
 | KPI | Period | Notes |
@@ -180,7 +203,7 @@ KPI functions would not change.
 ## 13. Tests
 
 ```bash
-pytest                    # 62 offline tests; the network is replaced by a fake Wikimedia
+pytest                    # 77 offline tests; the network is replaced by a fake Wikimedia
 pytest -m integration     # 2 tests against the live API
 ```
 

@@ -34,6 +34,8 @@ class Metadata(BaseModel):
     access: str
     agent: str
     software_version: str
+    question: str | None = None     # the user's own words, if given; drives the report language
+    report_language: str = "en"     # language of report.md and the chart; the JSON is always English
 
 
 class TopicSection(BaseModel):

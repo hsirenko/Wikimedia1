@@ -62,6 +62,7 @@ class Seasonality(BaseModel):
     trough_to_average: float | None = None
     volatility: float | None = None             # coefficient of variation of monthly views
     basis: str | None = None
+    observations_per_month: int | None = None   # years behind each calendar-month mean
 
 
 class MissingMetric(BaseModel):

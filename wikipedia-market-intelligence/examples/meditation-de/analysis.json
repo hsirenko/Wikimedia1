@@ -5,13 +5,15 @@
     "project": "de.wikipedia",
     "period_start": "2023-09",
     "period_end": "2026-08",
-    "generated_at": "2026-09-27T09:39:12+00:00",
+    "generated_at": "2026-09-27T10:05:55+00:00",
     "data_retrieved_at": "2026-09-27T09:35:05+00:00",
     "source": "Wikimedia",
     "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
     "access": "all-access",
     "agent": "user",
-    "software_version": "0.1.0"
+    "software_version": "0.1.0",
+    "question": null,
+    "report_language": "en"
   },
   "topic": {
     "canonical_name": "Meditation",
@@ -133,7 +135,8 @@
     "peak_to_average": 1.2912851814174295,
     "trough_to_average": 0.7677178704645643,
     "volatility": 0.2510990728471396,
-    "basis": "calendar-month means over 2023-09..2026-08 (3 observations per month)"
+    "basis": "calendar-month means over 2023-09..2026-08 (3 observations per month)",
+    "observations_per_month": 3
   },
   "localization": {
     "topic_share": null,

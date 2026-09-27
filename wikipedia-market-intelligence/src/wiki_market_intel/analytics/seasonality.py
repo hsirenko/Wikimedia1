@@ -36,4 +36,5 @@ def compute(series: list[MonthlyPoint], period: Period) -> tuple[Seasonality, li
         trough_to_average=f.trough_to_average(list(means.values())),
         volatility=f.volatility(values),
         basis=basis,
+        observations_per_month=years,
     ), []

@@ -32,7 +32,7 @@
 | Canonical topic | Meditation |
 | Wikidata ID | Q108458 |
 | Article used | Meditation (page ID 28837) |
-| Resolution method | exact_title |
+| Resolution method | exact title |
 | Resolution confidence | 0.98 |
 | Language mappings | de: Meditation |
 | Related topics | n/a (not implemented: Topic ecosystem analysis is planned for a later milestone.) |
@@ -73,7 +73,7 @@ These are historical measurements, not forecasts. A growth chart is planned for 
 | Trough / average | 0.77 |
 | Volatility (coefficient of variation) | 0.25 |
 
-Basis: calendar-month means over 2023-09..2026-08 (3 observations per month).
+Basis: calendar-month means over 2023-09..2026-08 (3 observation(s) per month).
 
 ## 6. Language Opportunity
 
@@ -103,7 +103,7 @@ n/a (not implemented: Anomaly detection is planned for a later milestone.)
 |---|---|
 | Source | Wikimedia Analytics API (https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article), access=all-access, agent=user |
 | Data retrieved | 2026-09-27T09:35:05+00:00 |
-| Report generated | 2026-09-27T09:39:12+00:00 (software 0.1.0) |
+| Report generated | 2026-09-27T10:05:55+00:00 (software 0.1.0) |
 | Coverage | 100.0% |
 | Missing data | none |
 | Topic resolution confidence | 0.98 |
@@ -120,12 +120,12 @@ Metrics not computed:
 | demand.unique_devices | unsupported | Wikimedia publishes unique devices per project (whole language edition) only, never per article. |
 | demand.views_per_unique_device | unsupported | Wikimedia publishes unique devices per project (whole language edition) only, never per article. |
 | localization.country_distribution | unsupported | Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured. |
-| anomalies | not_implemented | Anomaly detection is planned for a later milestone. |
-| localization.topic_share | not_implemented | Needs a multi-language comparison (planned: compare command). |
-| localization.topic_affinity | not_implemented | Needs project-level denominators for every compared edition (planned). |
-| localization.topic_penetration | not_implemented | Needs the edition-wide pageview total (planned). |
-| ecosystem.related_topics | not_implemented | Topic ecosystem analysis is planned for a later milestone. |
-| signals | not_implemented | Decision signals are planned for a later milestone. |
+| anomalies | not implemented | Anomaly detection is planned for a later milestone. |
+| localization.topic_share | not implemented | Needs a multi-language comparison (planned: compare command). |
+| localization.topic_affinity | not implemented | Needs project-level denominators for every compared edition (planned). |
+| localization.topic_penetration | not implemented | Needs the edition-wide pageview total (planned). |
+| ecosystem.related_topics | not implemented | Topic ecosystem analysis is planned for a later milestone. |
+| signals | not implemented | Decision signals are planned for a later milestone. |
 
 Raw responses: `/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T093505_2b682df09582.json`
 

@@ -10,13 +10,20 @@ os.environ.setdefault("MPLBACKEND", "Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.ticker import FuncFormatter  # noqa: E402
 
-from wiki_market_intel.analytics.summary import compact  # noqa: E402
+from wiki_market_intel.i18n import Translator  # noqa: E402
 from wiki_market_intel.models.analysis import AnalysisResult  # noqa: E402
+
+CHART_TEXT = {
+    "en": {"title": "'{title}' on {project}: monthly pageviews, {start} to {end} ({agent} traffic)",
+           "raw": "monthly pageviews", "avg": "3-month moving average"},
+    "uk": {"title": "«{title}» у {project}: перегляди за місяць, {start}–{end} (трафік: {agent})",
+           "raw": "перегляди за місяць", "avg": "ковзне середнє за 3 місяці"},
+}
 
 SERIES, INK2, GRID, AXIS, SURFACE = "#2a78d6", "#52514e", "#e1e0d9", "#c3c2b7", "#ffffff"
 
 
-def trend_chart(result: AnalysisResult, path: Path) -> Path | None:
+def trend_chart(result: AnalysisResult, path: Path, lang: str = "en") -> Path | None:
     """Monthly pageviews over the requested period, with a 3-month moving average.
     Months without data are gaps in the line, never zeros."""
     start, end = result.metadata.period_start, result.metadata.period_end
@@ -30,6 +37,8 @@ def trend_chart(result: AnalysisResult, path: Path) -> Path | None:
         window = [v for v in values[max(0, i - 2):i + 1] if v is not None]
         smooth.append(sum(window) / len(window) if len(window) == len(values[max(0, i - 2):i + 1]) else None)
 
+    tr = Translator(lang)
+    text = CHART_TEXT.get(tr.lang, CHART_TEXT["en"])
     fig, ax = plt.subplots(figsize=(8.5, 3.4), dpi=150)
     fig.patch.set_facecolor(SURFACE)
     for side in ("top", "right", "left"):
@@ -39,16 +48,17 @@ def trend_chart(result: AnalysisResult, path: Path) -> Path | None:
     ax.grid(True, axis="y", color=GRID, linewidth=0.6)
     ax.set_axisbelow(True)
     ax.plot(xs, [v if v is not None else float("nan") for v in values], color=SERIES, linewidth=1,
-            alpha=0.35, label="monthly pageviews")
+            alpha=0.35, label=text["raw"])
     ax.plot(xs, [v if v is not None else float("nan") for v in smooth], color=SERIES, linewidth=2,
-            label="3-month moving average")
+            label=text["avg"])
     step = max(1, len(points) // 9)
     ax.set_xticks(xs[::step])
     ax.set_xticklabels([p.month for p in points][::step])
-    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: compact(v)))
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: tr.compact(v)))
     ax.set_ylim(bottom=0)
-    ax.set_title(f"'{result.topic.article_title}' on {result.metadata.project}: monthly pageviews, "
-                 f"{start} to {end} ({result.metadata.agent} traffic)", fontsize=9, color=INK2, loc="left")
+    ax.set_title(text["title"].format(title=result.topic.article_title, project=result.metadata.project,
+                                      start=start, end=end, agent=result.metadata.agent),
+                 fontsize=9, color=INK2, loc="left")
     ax.legend(fontsize=7.5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=2,
               labelcolor=INK2)
     fig.tight_layout()

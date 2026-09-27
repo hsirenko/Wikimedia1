@@ -1,188 +1,257 @@
-"""Markdown report in the fixed order of spec §24.
+"""Markdown report in the fixed order of spec §24, in the report language.
 
 Every section always appears. When a metric is missing, the report shows why
 (unsupported, insufficient data, not implemented yet) instead of a blank or a zero.
+All wording comes from `i18n.CATALOG`; explanations are rebuilt from the data in the
+report language, never copied from the English JSON.
 """
 
 from __future__ import annotations
 
 from jinja2 import Environment, StrictUndefined
 
-from wiki_market_intel.analytics.summary import compact, pct
+from wiki_market_intel.analytics.summary import observations_from_spans
+from wiki_market_intel.i18n import REASON_KEYS, Translator
 from wiki_market_intel.models.analysis import AnalysisResult
 
 TEMPLATE = """\
-# Wikipedia Market Intelligence Report
+# {{ t("title") }}
 
-## 1. Executive Decision Card
+## {{ t("s1") }}
 
 | | |
 |---|---|
-| Topic | {{ r.topic.canonical_name or r.metadata.topic }} |
-| Language edition | {{ r.metadata.project }} (a language edition, not a country) |
-| Analysis period | {{ r.metadata.period_start }} to {{ r.metadata.period_end }} |
-| Annual views (last 12 months) | {{ num(r.demand.annual_views, "demand.annual_views") }} |
-| Monthly average | {{ num(r.demand.monthly_average, "demand.annual_views") }} |
-| Unique devices | {{ num(r.demand.unique_devices, "demand.unique_devices") }} |
-| YoY | {{ rate(r.growth.yoy, "growth.yoy") }} |
-| 3Y CAGR | {{ rate(r.growth.three_year_cagr, "growth.three_year_cagr") }} |
-| Momentum | {{ r.growth.momentum or missing("growth.last_three_month_growth") }} |
-| Seasonality | {% if r.seasonality.peak_month %}peak {{ r.seasonality.peak_month }}, trough {{ r.seasonality.trough_month }}{% else %}{{ missing("seasonality.peak_month") }}{% endif %} |
-| Localization metrics | {{ missing("localization.topic_penetration") }} |
-| Data quality | **{{ r.quality.quality_level }}** ({{ r.quality.quality_reasons | join("; ") }}) |
+| {{ t("topic") }} | {{ r.topic.canonical_name or r.metadata.topic }} |
+| {{ t("edition") }} | {{ r.metadata.project }} ({{ t("edition_note") }}) |
+| {{ t("period") }} | {{ t("period_value", start=r.metadata.period_start, end=r.metadata.period_end) }} |
+| {{ t("annual") }} | {{ num(r.demand.annual_views, "demand.annual_views") }} |
+| {{ t("monthly") }} | {{ num(r.demand.monthly_average, "demand.annual_views") }} |
+| {{ t("unique") }} | {{ num(r.demand.unique_devices, "demand.unique_devices") }} |
+| {{ t("yoy") }} | {{ rate(r.growth.yoy, "growth.yoy") }} |
+| {{ t("cagr") }} | {{ rate(r.growth.three_year_cagr, "growth.three_year_cagr") }} |
+| {{ t("momentum") }} | {{ t("momentum." ~ r.growth.momentum) if r.growth.momentum else missing("growth.last_three_month_growth") }} |
+| {{ t("seasonality") }} | {% if r.seasonality.peak_month %}{{ t("season_value", peak=month_mid(r.seasonality.peak_month), trough=month_mid(r.seasonality.trough_month)) }}{% else %}{{ missing("seasonality.peak_month") }}{% endif %} |
+| {{ t("localization") }} | {{ missing("localization.topic_penetration") }} |
+| {{ t("quality") }} | **{{ t("level." ~ r.quality.quality_level) }}** ({{ quality_reasons | join("; ") }}) |
 
-### Key observations
+### {{ t("observations") }}
 
-{% for o in r.observations -%}
+{% for o in observations -%}
 - {{ o }}
 {% else -%}
-- No observation could be computed: see Data Quality.
+- {{ t("no_observations") }}
 {% endfor %}
-## 2. Topic Definition
+## {{ t("s2") }}
 
 | | |
 |---|---|
-| Canonical topic | {{ r.topic.canonical_name or "n/a" }} |
-| Wikidata ID | {{ r.topic.wikidata_id or "n/a (no Wikidata entity)" }} |
-| Article used | {{ r.topic.article_title }} (page ID {{ r.topic.article_id or "n/a" }}) |
-| Resolution method | {{ r.topic.resolution.method }} |
-| Resolution confidence | {{ "%.2f" % r.topic.resolution_confidence }} |
-| Language mappings | {% for lang, a in r.topic.resolution.articles.items() %}{{ lang }}: {{ a.title }}{% if not loop.last %}, {% endif %}{% endfor %} |
-| Related topics | {{ missing("ecosystem.related_topics") }} |
-{% for n in r.topic.resolution.notes %}
+| {{ t("canonical") }} | {{ r.topic.canonical_name or t("na") }} |
+| {{ t("wikidata") }} | {{ r.topic.wikidata_id or t("no_wikidata") }} |
+| {{ t("article") }} | {{ t("article_value", title=r.topic.article_title, id=r.topic.article_id or t("na")) }} |
+| {{ t("method") }} | {{ t("method." ~ r.topic.resolution.method) }} |
+| {{ t("confidence") }} | {{ dec(r.topic.resolution_confidence) }} |
+| {{ t("mappings") }} | {% for lang, a in r.topic.resolution.articles.items() %}{{ lang }}: {{ a.title }}{% if not loop.last %}, {% endif %}{% endfor %} |
+| {{ t("related") }} | {{ missing("ecosystem.related_topics") }} |
+{% for n in notes %}
 > {{ n }}
 {% endfor %}
-## 3. Demand
+## {{ t("s3") }}
 
-| KPI | Value |
+| {{ t("kpi") }} | {{ t("value") }} |
 |---|---:|
-| Annual views (last 12 months) | {{ num(r.demand.annual_views, "demand.annual_views") }} |
-| Monthly average | {{ num(r.demand.monthly_average, "demand.annual_views") }} |
-| Daily average | {{ num(r.demand.daily_average, "demand.annual_views") }} |
-| Views in the requested period | {{ num(r.demand.requested_period_views, "demand.requested_period_views") }} |
-| Unique devices | {{ num(r.demand.unique_devices, "demand.unique_devices") }} |
-| Views per unique device | {{ num(r.demand.views_per_unique_device, "demand.views_per_unique_device") }} |
+| {{ t("annual") }} | {{ num(r.demand.annual_views, "demand.annual_views") }} |
+| {{ t("monthly") }} | {{ num(r.demand.monthly_average, "demand.annual_views") }} |
+| {{ t("daily") }} | {{ num(r.demand.daily_average, "demand.annual_views") }} |
+| {{ t("requested_views") }} | {{ num(r.demand.requested_period_views, "demand.requested_period_views") }} |
+| {{ t("unique") }} | {{ num(r.demand.unique_devices, "demand.unique_devices") }} |
+| {{ t("per_device") }} | {{ num(r.demand.views_per_unique_device, "demand.views_per_unique_device") }} |
 
-{% if chart %}![Monthly pageviews]({{ chart }})
-{% else %}_Trend chart unavailable: no months with data in the requested period._
+{% if chart %}![{{ t("chart_alt") }}]({{ chart }})
+{% else %}_{{ t("no_chart") }}_
 {% endif %}
-## 4. Growth
+## {{ t("s4") }}
 
-| KPI | Value |
+| {{ t("kpi") }} | {{ t("value") }} |
 |---|---:|
-| YoY (last 12M vs previous 12M) | {{ rate(r.growth.yoy, "growth.yoy") }} |
-| 3Y CAGR | {{ rate(r.growth.three_year_cagr, "growth.three_year_cagr") }} |
-| Last 3M vs previous 3M | {{ rate(r.growth.last_three_month_growth, "growth.last_three_month_growth") }} |
-| Previous 3M vs the 3M before | {{ rate(r.growth.previous_three_month_growth, "growth.previous_three_month_growth") }} |
-| Acceleration | {% if r.growth.acceleration is not none %}{{ "%+.1f" % (r.growth.acceleration * 100) }} pp ({{ r.growth.momentum }}){% else %}n/a{% endif %} |
-| Requested period vs previous equivalent period | {{ rate(r.growth.period_over_period, "growth.period_over_period") }} |
+| {{ t("g_yoy") }} | {{ rate(r.growth.yoy, "growth.yoy") }} |
+| {{ t("g_cagr") }} | {{ rate(r.growth.three_year_cagr, "growth.three_year_cagr") }} |
+| {{ t("g_3m") }} | {{ rate(r.growth.last_three_month_growth, "growth.last_three_month_growth") }} |
+| {{ t("g_prev3m") }} | {{ rate(r.growth.previous_three_month_growth, "growth.previous_three_month_growth") }} |
+| {{ t("g_accel") }} | {% if r.growth.acceleration is not none %}{{ points(r.growth.acceleration) }} {{ t("pp") }} ({{ t("momentum." ~ r.growth.momentum) }}){% else %}{{ t("na") }}{% endif %} |
+| {{ t("g_pop") }} | {{ rate(r.growth.period_over_period, "growth.period_over_period") }} |
 
-These are historical measurements, not forecasts. A growth chart is planned for a later milestone; the Demand chart shows the trend.
+{{ t("growth_note") }}
 
-## 5. Seasonality
+## {{ t("s5") }}
 
-| KPI | Value |
+| {{ t("kpi") }} | {{ t("value") }} |
 |---|---:|
-| Peak month | {{ r.seasonality.peak_month or missing("seasonality.peak_month") }} |
-| Trough month | {{ r.seasonality.trough_month or missing("seasonality.peak_month") }} |
-| Peak / average | {{ ratio(r.seasonality.peak_to_average) }} |
-| Trough / average | {{ ratio(r.seasonality.trough_to_average) }} |
-| Volatility (coefficient of variation) | {{ ratio(r.seasonality.volatility) }} |
+| {{ t("peak") }} | {{ month(r.seasonality.peak_month) or missing("seasonality.peak_month") }} |
+| {{ t("trough") }} | {{ month(r.seasonality.trough_month) or missing("seasonality.peak_month") }} |
+| {{ t("peak_avg") }} | {{ dec(r.seasonality.peak_to_average) }} |
+| {{ t("trough_avg") }} | {{ dec(r.seasonality.trough_to_average) }} |
+| {{ t("volatility") }} | {{ dec(r.seasonality.volatility) }} |
 
-{% if r.seasonality.basis %}Basis: {{ r.seasonality.basis }}.{% endif %}
+{{ basis }}
 
-## 6. Language Opportunity
+## {{ t("s6") }}
 
 {{ missing("localization.topic_share") }}
 
-## 7. Localization
+## {{ t("s7") }}
 
-| Metric | Value |
+| {{ t("metric") }} | {{ t("value") }} |
 |---|---|
-| Wikipedia topic penetration | {{ missing("localization.topic_penetration") }} |
-| Topic affinity | {{ missing("localization.topic_affinity") }} |
-| Country distribution | {{ missing("localization.country_distribution") }} |
+| {{ t("penetration") }} | {{ missing("localization.topic_penetration") }} |
+| {{ t("affinity") }} | {{ missing("localization.topic_affinity") }} |
+| {{ t("countries") }} | {{ missing("localization.country_distribution") }} |
 
-A language edition is not a country: {{ r.metadata.project }} is read wherever that language is read.
+{{ t("not_country", project=r.metadata.project) }}
 
-## 8. Topic Ecosystem
+## {{ t("s8") }}
 
 {{ missing("ecosystem.related_topics") }}
 
-## 9. Anomalies
+## {{ t("s9") }}
 
 {{ missing("anomalies") }}
 
-## 10. Data Quality
+## {{ t("s10") }}
 
 | | |
 |---|---|
-| Source | Wikimedia Analytics API ({{ r.metadata.api }}), access={{ r.metadata.access }}, agent={{ r.metadata.agent }} |
-| Data retrieved | {{ r.metadata.data_retrieved_at }} |
-| Report generated | {{ r.metadata.generated_at }} (software {{ r.metadata.software_version }}) |
-| Coverage | {{ "%.1f%%" % (r.quality.coverage * 100) if r.quality.coverage is not none else "n/a" }} |
-| Missing data | {{ r.quality.missing_data | join("; ") if r.quality.missing_data else "none" }} |
-| Topic resolution confidence | {{ "%.2f" % r.quality.topic_resolution_confidence }} |
-| Unique devices available | {{ "yes" if r.quality.unique_devices_available else "no" }} |
-| Country data available | {{ "yes" if r.quality.country_data_available else "no" }} |
-| Project-level denominator available | {{ "yes" if r.quality.project_denominator_available else "no" }} |
-| API errors | {{ r.quality.api_errors | join("; ") if r.quality.api_errors else "none" }} |
-| Quality level | **{{ r.quality.quality_level }}**: {{ r.quality.quality_reasons | join("; ") }} |
+| {{ t("source") }} | {{ t("source_value", api=r.metadata.api, access=r.metadata.access, agent=r.metadata.agent) }} |
+| {{ t("retrieved") }} | {{ r.metadata.data_retrieved_at }} |
+| {{ t("generated") }} | {{ t("generated_value", at=r.metadata.generated_at, version=r.metadata.software_version) }} |
+| {{ t("coverage") }} | {{ rate(r.quality.coverage, None, signed=False) }} |
+| {{ t("missing_data") }} | {{ missing_months | join("; ") if missing_months else t("none") }} |
+| {{ t("resolution_conf") }} | {{ dec(r.quality.topic_resolution_confidence) }} |
+| {{ t("unique_avail") }} | {{ t("yes") if r.quality.unique_devices_available else t("no") }} |
+| {{ t("country_avail") }} | {{ t("yes") if r.quality.country_data_available else t("no") }} |
+| {{ t("denominator_avail") }} | {{ t("yes") if r.quality.project_denominator_available else t("no") }} |
+| {{ t("api_errors") }} | {{ r.quality.api_errors | join("; ") if r.quality.api_errors else t("none") }} |
+| {{ t("quality_level") }} | **{{ t("level." ~ r.quality.quality_level) }}**: {{ quality_reasons | join("; ") }} |
 
-Metrics not computed:
+{{ t("not_computed") }}
 
-| Metric | Status | Reason |
+| {{ t("metric") }} | {{ t("status") }} | {{ t("reason") }} |
 |---|---|---|
 {% for m in r.quality.missing_metrics -%}
-| {{ m.metric }} | {{ m.status }} | {{ m.reason }} |
+| {{ m.metric }} | {{ t("status." ~ m.status) }} | {{ reason(m) }} |
 {% endfor %}
-Raw responses: {% for s in r.sources %}`{{ s.raw_path }}`{% if not loop.last %}, {% endif %}{% endfor %}
+{{ t("raw") }} {% for s in r.sources %}`{{ s.raw_path }}`{% if not loop.last %}, {% endif %}{% endfor %}
 
-## 11. Business Implications
+## {{ t("s11") }}
 
-### What the data supports
+### {{ t("supports") }}
 
-{% for o in r.observations -%}
+{% for o in observations -%}
 - {{ o }}
 {% endfor -%}
-- These figures describe reader attention to one Wikipedia article in {{ r.metadata.project }}.
+- {{ t("supports_tail", project=r.metadata.project) }}
 
-### What the data does NOT establish
+### {{ t("not_establish") }}
 
-- Revenue, market size (TAM) or willingness to pay: pageviews measure attention, not purchasing.
-- Product-market fit, or that a product on this topic would succeed.
-- Causes of any change: the data shows that traffic moved, not why.
-- Country-level demand: {{ r.metadata.project }} readers are not one country's population.
-- That readers of related articles, or of other language editions, share this trend.
+- {{ t("ne1") }}
+- {{ t("ne2") }}
+- {{ t("ne3") }}
+- {{ t("ne4", project=r.metadata.project) }}
+- {{ t("ne5") }}
 
-### Questions requiring further validation
+### {{ t("validate") }}
 
-- Does search volume (e.g. Google Trends) show the same direction in this language?
-- Is there App Store / Google Play demand for products on this topic in this language?
-- What do competitors in this category earn, and how large is the addressable market?
-- Will people pay? What do customer interviews and landing-page conversion rates show?
-- What would customer acquisition cost, retention and monetization look like?
+- {{ t("q1") }}
+- {{ t("q2") }}
+- {{ t("q3") }}
+- {{ t("q4") }}
+- {{ t("q5") }}
 """
 
 
-def render(result: AnalysisResult, chart_path: str | None = None) -> str:
+def _quality_reasons(result: AnalysisResult, tr: Translator) -> list[str]:
+    """The documented quality rules, restated in the report language."""
+    q, m = result.quality, result.metadata
+    months = next((p.months for p in result.periods if p.label == "requested period"), None)
+    reasons = []
+    if q.coverage is not None and q.coverage < 0.98:
+        reasons.append(tr("qr.coverage", pct=tr.percent(q.coverage, signed=False)))
+    if q.topic_resolution_confidence is not None and q.topic_resolution_confidence < 0.90:
+        reasons.append(tr("qr.confidence", value=tr.decimal(q.topic_resolution_confidence)))
+    if months is not None and months < 24:
+        reasons.append(tr("qr.short", months=months))
+    if q.api_errors:
+        reasons.append(tr("qr.api", n=len(q.api_errors)))
+    return reasons or [tr("qr.ok")]
+
+
+def _notes(result: AnalysisResult, tr: Translator) -> list[str]:
+    res = result.topic.resolution
+    notes = []
+    if res.method == "redirect":
+        notes.append(tr("note.redirect", query=res.query, title=res.canonical_topic))
+    if res.method == "no_wikidata":
+        notes.append(tr("note.no_wikidata", title=res.canonical_topic))
+    elif res.missing_languages:
+        notes.append(tr("note.missing", langs=", ".join(res.missing_languages), qid=res.wikidata_id))
+    return notes
+
+
+def _spans(result: AnalysisResult) -> dict[str, str]:
+    by_label = {p.label: f"{p.start}..{p.end}" for p in result.periods}
+    return {"last_12m": by_label["last 12 months"], "previous_12m": by_label["previous 12 months"],
+            "twelve_months_3y_earlier": by_label["12 months ending 3 years earlier"]}
+
+
+def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "en") -> str:
+    tr = Translator(lang)
     reasons = {m.metric: m for m in result.quality.missing_metrics}
+
+    def reason(m) -> str:
+        key = REASON_KEYS.get(m.metric)
+        if key:
+            return tr(key)
+        if m.status == "insufficient_data":
+            return tr("reason.insufficient") if tr.lang != "en" else m.reason
+        return m.reason
 
     def missing(metric: str) -> str:
         m = reasons.get(metric)
-        return f"n/a ({m.status.replace('_', ' ')}: {m.reason})" if m else "n/a"
+        return f"{tr('na')} ({tr('status.' + m.status)}: {reason(m)})" if m else tr("na")
 
     def num(value, metric: str) -> str:
         if value is None:
             return missing(metric)
-        return f"{value:,.0f}" if abs(value) >= 100 else f"{value:,.1f}"
+        return tr.number(value, 0 if abs(value) >= 100 else 1)
 
-    def rate(value, metric: str) -> str:
-        return pct(value) if value is not None else missing(metric)
+    def rate(value, metric: str | None, signed: bool = True) -> str:
+        if value is None:
+            return missing(metric) if metric else tr("na")
+        return tr.percent(value, signed)
 
-    def ratio(value) -> str:
-        return f"{value:.2f}" if value is not None else "n/a"
+    def dec(value) -> str:
+        return tr.decimal(value) if value is not None else tr("na")
 
-    env = Environment(undefined=StrictUndefined, trim_blocks=False, lstrip_blocks=False, autoescape=False)
-    env.globals.update(missing=missing, num=num, rate=rate, ratio=ratio, compact=compact)
-    return env.from_string(TEMPLATE).render(r=result, chart=chart_path)
+    def points(value: float) -> str:
+        text = f"{value * 100:+.1f}"
+        return text.replace(".", ",").replace("-", "−") if tr.lang == "uk" else text
+
+    s = result.seasonality
+    if s.basis and s.observations_per_month:
+        basis = tr("basis" if s.observations_per_month > 1 else "basis_single",
+                   start=result.metadata.period_start, end=result.metadata.period_end, n=s.observations_per_month)
+    else:
+        basis = ""
+
+    env = Environment(undefined=StrictUndefined, autoescape=False)
+    def month_mid(name):
+        # Inside a sentence Ukrainian month names are lowercase ("пік — січень"); English stay capitalised.
+        text = tr.month(name)
+        return text.lower() if text and tr.lang == "uk" else text
+
+    env.globals.update(t=tr, missing=missing, num=num, rate=rate, dec=dec, points=points, reason=reason,
+                       month=tr.month, month_mid=month_mid)
+    return env.from_string(TEMPLATE).render(
+        r=result, chart=chart_path, basis=basis,
+        observations=observations_from_spans(result.demand, result.growth, result.seasonality, _spans(result), tr),
+        quality_reasons=_quality_reasons(result, tr), notes=_notes(result, tr),
+        missing_months=[tr("missing_month", month=line[:7]) for line in result.quality.missing_data])

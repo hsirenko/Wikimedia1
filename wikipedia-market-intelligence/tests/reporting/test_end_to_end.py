@@ -164,3 +164,13 @@ def test_cache_clear_keeps_raw_responses(run_cli, settings, capsys):
     assert run_cli("cache", "clear") == 0
     assert "Cleared" in capsys.readouterr().out
     assert list(settings.raw_dir.rglob("*.json"))
+
+
+def test_validate_accepts_reports_from_older_versions(run_cli, settings):
+    """A field added later (here seasonality.observations_per_month) must not fail old reports."""
+    run_cli("analyze", "--topic", "meditation", "--language", "de")
+    path = next(settings.reports_dir.rglob("analysis.json"))
+    data = json.loads(path.read_text("utf-8"))
+    del data["seasonality"]["observations_per_month"]
+    path.write_text(json.dumps(data), "utf-8")
+    assert validate_file(path) == []

@@ -18,7 +18,9 @@ from wiki_market_intel.analytics.summary import compact, pct
 from wiki_market_intel.config import Settings
 from wiki_market_intel.data.cache import JsonFileCache
 from wiki_market_intel.errors import AmbiguousTopicError, ApiError, ArticleMissingError, TopicNotFoundError
-from wiki_market_intel.reporting import generator
+from wiki_market_intel.analytics.summary import observations_from_spans
+from wiki_market_intel.i18n import SUPPORTED, Translator, resolve_report_language
+from wiki_market_intel.reporting import generator, markdown
 from wiki_market_intel.service import analyze, build_services, resolve_topic
 from wiki_market_intel.validate import find_reports, validate_file
 
@@ -27,7 +29,7 @@ def _load_input(path: str) -> dict:
     """YAML input as in spec §4: topic, language, period (e.g. 3y) or period: {start, end}."""
     data = yaml.safe_load(Path(path).read_text("utf-8")) or {}
     period = data.get("period")
-    out = {"topic": data.get("topic"), "language": data.get("language")}
+    out = {"topic": data.get("topic"), "language": data.get("language"), "question": data.get("question")}
     if isinstance(period, dict):
         out["start"], out["end"] = str(period.get("start")), str(period.get("end"))
     elif period:
@@ -37,6 +39,8 @@ def _load_input(path: str) -> dict:
 
 def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
     params = _load_input(args.input) if args.input else {}
+    question = args.question or params.get("question")
+    wanted, report_lang = resolve_report_language(question, args.report_lang)
     topic = args.topic or params.get("topic")
     language = args.language or params.get("language")
     if not topic or not language:
@@ -46,7 +50,7 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
     try:
         result = analyze(topic, language, args.period or params.get("period", "3y"),
                          start=args.start or params.get("start"), end=args.end or params.get("end"),
-                         services=services)
+                         question=question, report_language=report_lang, services=services)
     except AmbiguousTopicError as exc:
         print(exc.resolution.review_message())
         first = exc.resolution.candidates[0]
@@ -75,6 +79,17 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
           f"3M {pct(g.last_three_month_growth)} ({g.momentum or 'n/a'}) | quality {q.quality_level}")
     for observation in result.observations:
         print(f"  - {observation}")
+    if report_lang != "en":
+        print(f"REPORT_LANGUAGE {report_lang}: report.md and the chart are in this language. "
+              f"Reply to the user in it too. The same observations in {report_lang}:")
+        tr = Translator(report_lang)
+        for observation in observations_from_spans(result.demand, result.growth, result.seasonality,
+                                                   markdown._spans(result), tr):
+            print(f"  - {observation}")
+    elif wanted != "en":
+        print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
+              f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
+              f"and reply to them in their language.")
     print(f"Wrote {files.json}\n      {files.markdown}" + (f"\n      {files.chart}" if files.chart else ""))
     return 0
 
@@ -129,7 +144,10 @@ def build_parser() -> argparse.ArgumentParser:
     a.add_argument("--period", help="e.g. 3y, 18m (default 3y), ending at the last complete month")
     a.add_argument("--start", help="YYYY-MM or YYYY-MM-DD (instead of --period)")
     a.add_argument("--end", help="YYYY-MM (inclusive) or YYYY-MM-DD (exclusive if the 1st)")
-    a.add_argument("--input", help="YAML file with topic, language and period")
+    a.add_argument("--input", help="YAML file with topic, language, period and optionally question")
+    a.add_argument("--question", help="the user's request in their own words; the report is written in its language")
+    a.add_argument("--report-lang", default="auto",
+                   help=f"report language: auto (from --question, default) or one of {', '.join(SUPPORTED)}")
     a.add_argument("--no-cache", action="store_true", help="ignore cached responses")
     a.add_argument("--json", action="store_true", help="print the full JSON result")
     a.set_defaults(func=cmd_analyze)

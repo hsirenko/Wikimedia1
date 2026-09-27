@@ -22,7 +22,9 @@ def slug(text: str) -> str:
     return re.sub(r"[^\w-]+", "-", text.strip().lower(), flags=re.UNICODE).strip("-") or "topic"
 
 
-def write(result: AnalysisResult, reports_dir: Path) -> ReportFiles:
+def write(result: AnalysisResult, reports_dir: Path, lang: str | None = None) -> ReportFiles:
+    """`lang` defaults to the language recorded in the result (from the user's question)."""
+    lang = lang or result.metadata.report_language
     day = result.metadata.generated_at[:10]
     directory = Path(reports_dir) / slug(result.metadata.topic) / result.metadata.language / day
     directory.mkdir(parents=True, exist_ok=True)
@@ -30,7 +32,7 @@ def write(result: AnalysisResult, reports_dir: Path) -> ReportFiles:
     json_path = directory / "analysis.json"
     json_path.write_text(result.model_dump_json(indent=2), "utf-8")
 
-    chart = charts.trend_chart(result, directory / "charts" / "trend.png")
+    chart = charts.trend_chart(result, directory / "charts" / "trend.png", lang)
     md_path = directory / "report.md"
-    md_path.write_text(markdown.render(result, "charts/trend.png" if chart else None), "utf-8")
+    md_path.write_text(markdown.render(result, "charts/trend.png" if chart else None, lang), "utf-8")
     return ReportFiles(directory=directory, json=json_path, markdown=md_path, chart=chart)
