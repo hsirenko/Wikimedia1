@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wiki-market-intel"
-version = "0.1.0"
+version = "0.3.0"
 description = "Market-intelligence engine built on Wikimedia pageview data: KPIs, not verdicts."
 readme = "README.md"
 requires-python = ">=3.13,<3.14"

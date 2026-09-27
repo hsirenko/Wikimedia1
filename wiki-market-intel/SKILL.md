@@ -4,7 +4,7 @@ description: Measures reader interest in topics on Wikipedia in any language edi
 license: MIT
 compatibility: CPython 3.13 with outbound access to wikimedia.org, *.wikipedia.org and www.wikidata.org. Dependencies are installed from requirements.lock with hashes on first run (or if any installed version does not match the lock).
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Wikipedia Market Intelligence
