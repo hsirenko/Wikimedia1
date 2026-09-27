@@ -1,214 +1,598 @@
 # Wikipedia Market Intelligence
 
-This repository is an [Agent Skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview). It measures reader attention to a topic on Wikipedia language editions, using public Wikimedia pageview data, and writes a short decision memo: what to validate first, monitor, or deprioritise.
+A tool for measuring reader interest in topics across Wikipedia language editions using public Wikimedia pageview data.
 
-Use it when you are choosing a topic, course, or language market and want evidence from how much people *read* about that topic — not a forecast of revenue.
+## Overview
 
-Pageviews are not demand. A language edition is not a country. The Skill never issues a go / no-go, buy, or invest call.
+Wikipedia Market Intelligence (WMI) helps product teams validate topic selection and language prioritization by analyzing reading patterns across Wikimedia. It measures **reader attention, not demand**—use it alongside search volume, app-store analytics, and customer research before making investment decisions.
 
----
-
-## What this Skill can do
+### What this tool does
 
 
-| Question                                                                                    | Command     |
-| ------------------------------------------------------------------------------------------- | ----------- |
-| Is interest in this topic growing in one language, and can we trust the signal?             | `analyze`   |
-| How does the same topic compare across language editions? Which audiences to research next? | `compare`   |
-| What related topics sit around this one?                                                    | `cluster`   |
-| How do several topics look across several editions at once?                                 | `portfolio` |
-| Does this edition even have an article for the concept?                                     | `topic`     |
-| A one-page PDF of a report you already ran (only after you ask)                             | `pdf`       |
+| Question                                                        | Command     |
+| --------------------------------------------------------------- | ----------- |
+| Is interest in this topic growing, and can we trust the signal? | `analyze`   |
+| How does this topic compare across language editions?           | `compare`   |
+| What related topics are nearby?                                 | `cluster`   |
+| What does a portfolio of topics look like across editions?      | `portfolio` |
+| Does this edition have an article for this concept?             | `topic`     |
+| Export a previous report to PDF                                 | `pdf`       |
 
 
-For each run you get the same four-part report (`report.md`, self-contained `report.html`, JSON, charts):
 
-1. Recommendation (validate first / monitor / deprioritise), the rule used, and the limit that this is attention, not demand
-2. Graph
-3. Key observations
-4. KPI breakdown — views, year-over-year versus the whole edition, 3-year CAGR, momentum, seasonality, localization, anomalies, data quality
 
-Signals stay separate. They are never combined into a score.
+### What this tool does NOT do
 
-The Skill also:
-
-- Resolves a topic to the same Wikidata concept in each edition, so you compare one idea, not mixed search hits
-- Reports a missing article as a gap, with search candidates for you to confirm — it never substitutes another article
-- Flags unusual months against a seasonal baseline (causes stay “unknown”)
-- Writes reports in English or Ukrainian from `--question` (other languages fall back to English; JSON stays English)
-- Lets you change what “worth validating” means (`--min-audience`, `--pace-margin`, `--drop-margin`)
-
-No Wikimedia API key is required. You need outbound HTTPS to `wikimedia.org`, `*.wikipedia.org`, and `www.wikidata.org`, and a User-Agent that identifies you (`WMI_USER_AGENT` in `.env.example`).
-
-## What this Skill cannot do
-
-- Size a market, forecast revenue, or measure willingness to pay
-- Tell you whether to launch, invest, or localise
-- Map readers to a country (`de.wikipedia` is read wherever German is read). Per-article unique devices and country mix are not published by Wikimedia and are reported as unsupported
-- Explain *why* views moved
-- Rank editions as “best” or invent a single priority score
-- Fill a month that has no data with zero
-- Work in a sandbox with no network (including the Claude API Skills container, which has no outbound internet). Use claude.ai with code execution and network allowed, Claude Code, Cursor, or this repo on your machine
-
-Confirm any recommendation with search volume, app-store demand, and customer interviews before you spend.
+- Size a market or forecast revenue
+- Measure willingness to pay or demand
+- Map readers to specific countries (de.wikipedia is read globally)
+- Provide per-article geographic breakdowns (not published by Wikimedia)
+- Explain *why* pageviews changed
+- Rank editions or create combined priority scores
+- Work in offline/sandboxed environments
 
 ---
 
-## What to do with this repository
+## Quick Start
 
-This git repo is the source. The Skill Claude loads is the `wiki-market-intel/` folder inside it (`SKILL.md` at that folder’s root). You can:
 
-1. **Run it on your machine** — clone, install, call the CLI
-2. **Upload it to [claude.ai](https://claude.ai)** — zip that folder and add it as a custom Skill
-3. **Use it in Claude Code or Cursor** — copy or symlink the folder into the product’s skills directory
-
-Do not zip the whole Wikimedia1 repo. Claude expects one Skill directory named `wiki-market-intel` that contains `SKILL.md`.
 
 ### Requirements
 
-- Python 3.12 or later
-- Network access to Wikimedia (see above)
-- For claude.ai: a [Pro, Max, Team, or Enterprise](https://support.claude.com/en/articles/12512180-use-skills-in-claude) plan with [code execution](https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude) enabled. Custom Skills uploaded there are private to your account.
+- **Python** 3.12 or later
+- **Network access** to Wikimedia domains
+- **Claude plan**: Pro, Max, Team, or Enterprise with code execution enabled (for claude.ai usage)
 
 
 
-### Clone and install locally
+### Installation
+
+#### Option 1: Clone and run locally
 
 ```bash
 git clone https://github.com/hsirenko/Wikimedia1.git
 cd Wikimedia1/wiki-market-intel
 
+# Using uv (recommended)
 uv venv --python 3.13 && uv pip sync requirements.lock && uv pip install -e ".[dev]" --no-deps
-# or: python3 -m venv .venv && .venv/bin/pip install -r requirements.lock && .venv/bin/pip install -e ".[dev]" --no-deps
+
+# OR using standard venv
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.lock
+.venv/bin/pip install -e ".[dev]" --no-deps
 ```
 
-`scripts/wiki_market.py` installs any missing locked dependencies the first time an agent runs it.
 
-### Upload to claude.ai as a custom Skill
 
-1. From `wiki-market-intel/`, build the zip (numbered so an older build is never overwritten):
+#### Option 2: Upload to claude.ai as a custom Skill
+
+1. From `wiki-market-intel/`, build the skill package:
   ```bash
    sh scripts/build_zip.sh
   ```
-   This writes `wiki-market-intel-skill-<N>.zip` one level up. The archive root is `wiki-market-intel/SKILL.md`, which is the [required layout](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills). `examples/`, `evals/`, caches, and generated reports are left out on purpose: a model that finds a saved sample will answer from the file instead of running the analysis.
-2. In Claude, open **Customize → Skills** (on some accounts this is **Settings → Features → Skills**). See [Use skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude).
-3. Click **+**, then **Upload a skill**, and choose the zip.
-4. Toggle **wiki-market-intel** on.
-5. Start a new chat. Ask a product question in your own words, for example: *Is interest in astronomy growing on Ukrainian Wikipedia?*
+   This creates `wiki-market-intel-skill-<N>.zip` in the parent directory.
+2. In Claude.ai, open **Customize → Skills** (or **Settings → Features → Skills** on some accounts)
+3. Click **+** → **Upload a skill** and select the zip file
+4. Toggle **wiki-market-intel** on
+5. Start a new chat and ask your question naturally
 
-If Claude’s code-execution sandbox cannot reach Wikimedia, it will fail rather than invent numbers. Allow those domains, or run the same command locally and paste the report.
 
-### Claude Code
+
+#### Option 3: Use with Claude Code or Cursor
+
+**Claude Code:**
 
 ```bash
 mkdir -p ~/.claude/skills
 cp -R wiki-market-intel ~/.claude/skills/wiki-market-intel
+# Restart the session
 ```
 
-For one repository only, use `.claude/skills/wiki-market-intel` inside that repo. Restart the session, then ask the same kind of question.
-
-### Cursor
+**Cursor:**
 
 ```bash
 mkdir -p ~/.cursor/skills
 cp -R wiki-market-intel ~/.cursor/skills/wiki-market-intel
+# Or create a symlink: ln -s /path/to/wiki-market-intel ~/.cursor/skills/
 ```
 
-Or keep a project link at `.cursor/skills/wiki-market-intel` → this folder. Open a new chat and name the Skill if an older Wikipedia skill is also present.
-
-Skills do not sync across products. Upload or copy separately for claude.ai, Claude Code, and Cursor. The Claude API Skills environment has **no network**, so this Skill cannot fetch pageviews there.
+> **Note:** Skills do not sync across products. Upload separately for claude.ai, Claude Code, and Cursor.
 
 ---
 
+## Usage
+
+### Basic syntax
+
+```bash
+wiki-market <command> --topic <topic> --language <code> \
+  --question "<your question>"
+```
+
+All commands output a dated folder with:
+
+- `report.md` — Markdown report
+- `report.html` — Self-contained HTML (ready to share)
+- `report.json` — Structured data
+- `charts/` — Chart images
 
 
-## How to use it
 
-Pass the user’s words unchanged as `--question`. That sets report language. `--language` / `--languages` are Wikipedia edition codes (`uk`, `pl`, `de`, …), not countries.
+### Commands
+
+#### `analyze`
+
+Examine a single topic in a single language edition over time.
 
 ```bash
 wiki-market analyze --topic astronomy --language uk \
   --question "Is interest in astronomy growing on Ukrainian Wikipedia?"
+```
 
-wiki-market compare --topic "intermittent fasting" --languages pl,cs --period 2y \
-  --question "Compare intermittent fasting in Polish and Czech Wikipedia over two years"
+**Options:**
 
-wiki-market cluster --topic meditation --language de --question "…"
-wiki-market portfolio --topics meditation,yoga,sleep --languages de,fr,es --question "…"
+- `--period` — Time window: `2y`, `18m`, or `3y` (default: `3y`)
+- `--start`, `--end` — Custom date range (format: `YYYY-MM`, inclusive)
+
+
+
+#### `compare`
+
+Compare the same topic across multiple language editions.
+
+```bash
+wiki-market compare --topic "intermittent fasting" --languages pl,cs \
+  --period 2y \
+  --question "Compare intermittent fasting in Polish and Czech"
+```
+
+
+
+#### `cluster`
+
+Find related topics around a central concept.
+
+```bash
+wiki-market cluster --topic meditation --language de \
+  --question "What meditation-related topics matter on German Wikipedia?"
+```
+
+
+
+#### `portfolio`
+
+Analyze multiple topics across multiple editions at once.
+
+```bash
+wiki-market portfolio --topics meditation,yoga,sleep --languages de,fr,es \
+  --question "Which wellness topics should we validate in German, French, and Spanish?"
+```
+
+
+
+#### `topic`
+
+Check whether a specific concept has an article in an edition.
+
+```bash
+wiki-market topic --topic "quantum computing" --language ja
+```
+
+Returns either the article URL or a list of search candidates if ambiguous or missing.
+
+#### `pdf`
+
+Export a previously generated report to PDF.
+
+```bash
 wiki-market pdf reports/astronomy/uk/2026-09-27
 ```
 
-`python -m wiki_market_intel …` is equivalent. `--period` defaults to `3y`; use `2y`, `18m`, or `--start` / `--end`. A `YYYY-MM` end month is inclusive; the window is capped at the last complete month.
-
-**Exit codes:** `0` ok · `2` bad input · `3` ambiguous topic (candidates printed; nothing is chosen for you) · `4` not found · `5` API error · `1` `validate` failed.
-
-Each run writes a dated folder with Markdown, HTML, JSON, and charts. `wiki-market validate` recomputes KPIs, signals, and the recommendation from that JSON.
-
-Default recommendation rule (printed under every memo; override with flags):
 
 
-| Tier           | When                                                                                                                                          |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Deprioritise   | Under 12,000 views a year, or 25% or more behind the edition                                                                                  |
-| Validate first | At least 12,000 views a year and within 10% of the edition (or ahead). With several options, demand must also be at or above the set’s median |
-| Monitor        | Everything else                                                                                                                               |
+#### `validate`
+
+Recompute recommendations and KPIs from an existing JSON report.
+
+```bash
+wiki-market validate reports/astronomy/uk/2026-09-27/report.json
+```
+
+---
+
+## Understanding the output
+
+### Recommendation tiers
+
+Every report leads with a recommendation based on attention signals:
+
+
+| Tier               | Condition                                                          | Meaning                                                       |
+| ------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------- |
+| **Validate first** | ≥12k annual views AND within 10% of edition performance (or ahead) | Strong signal; prioritize validation with additional research |
+| **Monitor**        | Falls between deprioritize and validate-first                      | Watch the trend; revisit after next period                    |
+| **Deprioritise**   | <12k annual views OR 25%+ below edition                            | Weak signal; lower priority unless other signals are strong   |
+
+
+> Tip: With multiple options, validate-first topics must also be at or above the median demand across your set.
 
 
 
+### Key metrics
 
-### How to read the numbers
+- **Annual views** — Total pageviews in the last 12 months
+- **Year-over-year growth** — Last 12 months vs. prior 12 months, expressed as percentage
+- **3-year CAGR** — Compound annual growth rate over three years
+- **Momentum** — Trend in the last three months only (provisional)
+- **Share** — Percentage of total edition views (context-dependent)
+- **Affinity** — Location quotient relative to other editions in the comparison
+- **Seasonality** — Recurring patterns in the data
+- **Anomalies** — Months that deviate from seasonal baseline (unknown causes)
 
-- **Growth** is the last 12 months versus the 12 before, then the 3-year CAGR. The last three months are momentum only.
-- **Share, affinity, and quadrants** are relative to the editions in *this* comparison. Change the set and they change. Affinity is this Skill’s location quotient, not a Wikimedia metric.
-- **Anomalies** are months far from a seasonal baseline. The last three months are provisional.
-- **Missing months** stay missing.
-- **JSON is always English.** Markdown, HTML, charts, and PDF follow `--question`.
+> **Important:** Growth rates and affinity are relative to the editions you're comparing. Changing your comparison set changes these values.
 
-Example report: `[examples/meditation-de/report.md](examples/meditation-de/report.md)`.
+
+
+### Report sections
+
+1. **Recommendation** — Decision guidance and the rule applied
+2. **Graph** — Visual trend over the analysis period
+3. **Key observations** — Highlights and anomalies
+4. **KPI breakdown** — Detailed metrics (views, growth, affinity, seasonality, data quality)
+
+---
+
+## Customization
+
+Override default recommendation thresholds with flags:
+
+```bash
+wiki-market analyze --topic meditation --language de \
+  --min-audience 20000 \        # Higher minimum view threshold
+  --pace-margin 15 \            # Allow 15% variance (default: 10%)
+  --drop-margin 35 \            # Allow 35% decline (default: 25%)
+  --question "Custom thresholds for German meditation"
+```
+
+---
+
+## Configuration
+
+### Environment variables
+
+Create a `.env` file in the project root:
+
+```bash
+# User-Agent for Wikimedia API requests (required for network access)
+WMI_USER_AGENT="YourName/YourProject (your.email@example.com)"
+
+# Optional: Cache directory for faster re-runs
+WMI_CACHE_DIR="./cache"
+```
+
+
+
+### Language codes
+
+Use Wikipedia edition codes, not country codes:
+
+
+| Language  | Code |
+| --------- | ---- |
+| English   | `en` |
+| German    | `de` |
+| Ukrainian | `uk` |
+| Polish    | `pl` |
+| Czech     | `cs` |
+| French    | `fr` |
+| Spanish   | `es` |
+| Japanese  | `ja` |
+
+
+[Full list of Wikipedia editions](https://en.wikipedia.org/wiki/List_of_Wikipedias)
+
+---
+
+## Output languages
+
+Reports follow the language of your `--question`:
+
+- **English** — Default; if question language is unrecognized
+- **Ukrainian** — If question is in Ukrainian
+- **Other languages** — Fall back to English
+
+JSON output is always English.
+
+---
+
+## Examples
+
+
+
+### Example 1: Single-topic growth analysis
+
+```bash
+wiki-market analyze --topic "artificial intelligence" --language en \
+  --period 3y \
+  --question "How has interest in AI grown on English Wikipedia over three years?"
+```
+
+**Output:** Long-term trend, seasonal patterns, anomalies, and recommendation.
+
+### Example 2: Cross-language comparison
+
+```bash
+wiki-market compare --topic "climate change" --languages en,de,fr,es \
+  --question "How does climate change reading vary across major European languages?"
+```
+
+**Output:** Relative performance, affinity scores, and language-specific insights.
+
+### Example 3: Portfolio screening
+
+```bash
+wiki-market portfolio \
+  --topics "sustainable energy,renewable energy,solar power,wind power" \
+  --languages en,de,uk,es \
+  --question "Which clean energy topics should we validate in each market?"
+```
+
+**Output:** Side-by-side comparison of multiple topics and editions, highlighting which combinations meet validation thresholds.
+
+---
+
+## Python API
+
+Use WMI as a Python library:
 
 ```python
 from wiki_market_intel import analyze
 
-result = analyze(topic="meditation", language="de", period="3y", question="…")
-result.recommendation, result.demand.annual_views, result.growth.yoy
+result = analyze(
+    topic="meditation",
+    language="de",
+    period="3y",
+    question="Is meditation growing on German Wikipedia?"
+)
+
+# Access results
+print(result.recommendation)           # "validate_first", "monitor", or "deprioritise"
+print(result.demand.annual_views)      # Integer
+print(result.growth.yoy)               # Float: percentage growth
+print(result.growth.cagr_3y)           # Float: 3-year CAGR
 ```
 
-Ambiguous topics raise `AmbiguousTopicError` with `.resolution.candidates`.
+
+
+### Handling ambiguous topics
+
+```python
+from wiki_market_intel import analyze, AmbiguousTopicError
+
+try:
+    result = analyze(topic="python", language="en")
+except AmbiguousTopicError as e:
+    print("Candidates:", e.resolution.candidates)
+    # Candidates: ["Python (programming language)", "Python (snake)", ...]
+```
 
 ---
 
+## Troubleshooting
+
+### "Network error: Cannot reach Wikimedia"
+
+**Cause:** Firewall or sandbox restrictions.
+
+**Solution:**
+
+- Run locally instead of in a sandboxed environment
+- Ensure outbound HTTPS access to:
+  - `wikimedia.org`
+  - `*.wikipedia.org`
+  - `www.wikidata.org`
+- Check your `WMI_USER_AGENT` environment variable is set
 
 
-## For the next developer
 
-This directory *is* the Skill. The folder name matches `name:` in `SKILL.md`. Agents read that file and run `scripts/wiki_market.py`. Do not add a second analysis path or a second launcher.
+### "Topic not found" or "Ambiguous topic"
 
-```text
-SKILL.md                     instructions Claude loads when the Skill triggers
-scripts/wiki_market.py       PYTHONPATH + locked dependency install
-scripts/build_zip.sh         claude.ai upload artifact (no examples/, evals/, data)
-src/wiki_market_intel/
-  clients/                   only HTTP (Wikimedia, Wikipedia, Wikidata)
-  data/                      raw archive, cache, normalize → MonthlyPoint
-  analytics/                 pure KPIs, signals, recommend, formulas.py
-  reporting/                 Markdown / HTML / charts / PDF from the result model
-  i18n.py                    user-facing strings (en, uk)
-  cli.py                     analyze, compare, cluster, portfolio, topic, pdf, validate
-tests/                       fake Wikimedia; pytest -m integration hits the live API
-evals/                       cheap-model scenarios + check_reply.py
-```
+**Cause:** Article doesn't exist or title is imprecise.
 
-**Layering.** Analytics never see an API payload. Reporting never fetches. A new source is a client plus a normalizer that emits the same records; KPI functions stay as they are. The cache is a `Cache` protocol (JSON files today). Complete historical months do not expire.
-
-**Invariants.** One command answers one question. Stdout stays short; files hold detail. Recommendation first; no verdicts; no combined score. `--question` sets language. Every null KPI has a reason. Add a test from a case where the naive answer is wrong. After you change `SKILL.md` or CLI stdout, re-run `evals/` on a cheap model — unit tests will not catch an agent that ranks editions or skips the PDF offer.
-
-**Where to change what.** Formulas: `analytics/formulas.py` (embedded in the JSON). Tiers: `analytics/recommend.py`. Report shape: `reporting/markdown.py` (four sections, every command). New language: copy the `"en"` block in `i18n.py` and keep every `{placeholder}`; `tests/reporting/test_i18n.py` fails if a key is missing.
-
-**Extensions that fit the architecture:** treat a topic as a set of articles (`cluster` already finds relations); screening via the `top` endpoint; SQLite/DuckDB on `(project, article, month)`, then [pageview dumps](https://dumps.wikimedia.org/other/pageviews/) at hundreds of series. Do not invent causes, collapse the five signals, or treat pageviews as a launch decision.
+**Solution:**
 
 ```bash
+# Use the topic command to search candidates
+wiki-market topic --topic "your term" --language en
+```
+
+Then use the exact article title from the candidates list.
+
+### "Missing or incomplete data for this period"
+
+**Cause:** Data gaps in the Wikimedia archive (rare).
+
+**Solution:**
+
+- Adjust your `--period` to avoid the gap
+- Check `data_quality` in the JSON report
+- Run `validate` to see which months are affected
+
+---
+
+## Architecture
+
+The skill is the `wiki-market-intel/` folder. `SKILL.md` is the agent contract (which command to run, reply order, no invented numbers). `scripts/wiki_market.py` is the launcher: it puts `src/` on `sys.path`, installs missing packages from `requirements.lock`, writes `data/` and `reports/` into the current working directory (never into the skill folder), and copies new reports to `/mnt/user-data/outputs` when that path exists (claude.ai). All application code is `src/wiki_market_intel/`.
+
+`service.py` is the only orchestrator. It holds no formulas. The pipeline for one article is:
+
+```text
+resolve → collect → normalize → KPIs → quality → recommend → result
+```
+
+```text
+question / CLI / Python API
+  → build_services()
+       HttpClient + RawStore + JsonFileCache (or NullCache)
+       WikimediaClient
+       TopicResolver(WikipediaClient, WikidataClient)
+  → resolve     TopicResolver: query or Q-id → one Wikidata concept → sitelink per edition
+                disambiguation / no match → needs_review / not_found (never a silent pick)
+  → collect     Wikimedia per-article pageviews + project aggregate (same window)
+  → persist     every HTTP response under data/raw/; cache under data/cache/
+  → normalize   API items → MonthlyPoint[] (missing months stay None)
+  → KPIs        demand, growth, seasonality, anomalies, localization, signals
+  → quality     completeness, API errors, missing metrics
+  → recommend   validate_first | monitor | deprioritise (printed rule + user's Criteria)
+  → result      AnalysisResult | ComparisonResult | PortfolioResult
+                JSON is always English; formulas.REGISTRY is embedded
+  → report      report.md + report.html + charts/  (pdf is a separate command)
+  → validate    schema check + recompute every KPI from the stored monthly series
+```
+
+Commands compose that pipeline; they do not fetch or score on their own.
+
+| Command | What it runs |
+|---|---|
+| `analyze` | resolve once → `_analyze_article` for one edition |
+| `cluster` | `analyze`, then related concepts (Wikidata P279 / P1269 and reverse, plus `morelike` text similarity), measure each, attach `Ecosystem` |
+| `compare` | resolve once → `_analyze_article` per requested edition → share, affinity, quadrants. Missing sitelink → `no_article` row, not zeros |
+| `portfolio` | `compare` (or `analyze` if one language) per topic; a failed topic becomes status rows and does not stop the rest |
+| `topic` | resolve only, no pageviews |
+| `pdf` | one-page PDF from a saved report folder (`--full` for every section) |
+| `validate` | schema + recompute from `monthly[]` in the saved JSON |
+| `cache` | inspect / clear `data/cache/` |
+
+On disk, `reporting/generator.py` writes:
+
+```text
+reports/{topic}/{language}/{date}/           analyze
+reports/{topic}/cluster-{language}/{date}/   cluster
+reports/{topic}/compare-{lang}-{lang}/…      compare
+reports/portfolio/{name}/{date}/             portfolio
+  analysis.json | comparison.json | portfolio.json
+  report.md   report.html   charts/*.png
+```
+
+Every Markdown report has the same four sections: **1. Recommendation**, **2. Graph**, **3. Key Observations**, **4. KPI Breakdown**. Cluster adds its ecosystem chart and related-topic table under Graph / KPI. The CLI digest prints those sections; the agent reply follows the same order and ends by offering a PDF.
+
+```text
+src/wiki_market_intel/
+  service.py              pipeline wiring only
+  cli.py                  the eight commands above
+  config.py               WMI_* (User-Agent, data_dir, reports_dir, timeouts)
+  i18n.py                 every user-facing string (en, uk)
+  errors.py               AmbiguousTopicError, TopicNotFoundError, ArticleMissingError, ApiError
+  validate.py             schema + KPI recompute
+  resolution/
+    topic_resolver.py     documented confidence rules; never chooses a disambiguation
+  clients/
+    http.py               the only HTTP: User-Agent, retries, archive, cache
+    wikimedia.py          pageviews per-article and project aggregate
+    wikidata.py           Wikidata + Wikipedia Action API (titles, sitelinks, search, morelike)
+  data/
+    raw_store.py          immutable envelopes under data/raw/<source>/<endpoint>/
+    cache.py              Cache protocol; JsonFileCache (complete months never expire)
+    normalizer.py         raw items → MonthlyPoint; edition_totals
+  models/
+    topic.py              TopicResolution, ArticleRef
+    metrics.py            demand, growth, seasonality, anomalies, signals, Criteria
+    analysis.py           AnalysisResult, ComparisonResult, PortfolioResult
+  analytics/              pure functions over MonthlyPoint (no HTTP)
+    periods.py            last-complete-month windows (3y, 2y, 18m, or start/end)
+    demand.py growth.py seasonality.py anomalies.py localization.py quality.py
+    signals.py            five separate labels + evidence sentences
+    recommend.py          validate_first / monitor / deprioritise
+    ecosystem.py          cluster concentration and related-topic KPIs
+    portfolio.py          matrix rows, filters, quadrants
+    summary.py            key-observation sentences
+    formulas.py           named registry written into every JSON
+  reporting/              reads the result model only
+    generator.py          dated folders listed above
+    markdown.py comparison.py portfolio.py
+    breakdown.py charts.py html.py pdf.py
+```
+
+**Invariants**
+
+- One command answers one question. Stdout is a digest; files hold the report.
+- Analytics never see an API payload. Reporting never fetches.
+- HTTP exists only in `clients/http.py`. A new source is a client plus a normalizer that emits `MonthlyPoint`; KPI functions do not change.
+- Missing months stay `None`. Unique devices and country mix are not published at article level.
+- Signals are never combined into a score. Causes of anomalies are never inferred.
+- `--question` selects report language (en / uk; others fall back to English). JSON stays English so `validate` is language-independent.
+
+---
+
+## Development
+
+
+
+### Running tests
+
+```bash
+# Unit tests
 pytest
+
+# Integration tests (hits live Wikimedia API)
 pytest -m integration
 ```
 
-[Wikimedia Pageviews API](https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/reference/page-views.html)
+
+
+### Adding a new language
+
+1. Open `src/wiki_market_intel/i18n.py`
+2. Copy the `"en"` block and create a new block for your language code
+3. Translate all strings (keep `{placeholders}` unchanged)
+4. Run `pytest tests/reporting/test_i18n.py` to validate all keys are present
+
+
+
+### Extending the tool
+
+**New data source:** Create a new client in `clients/` and a normalizer that emits `MonthlyPoint` records. KPI functions remain unchanged.
+
+**New recommendation logic:** Edit `analytics/recommend.py` and update `analytics/formulas.py` for new KPIs.
+
+**Report shape changes:** Modify `reporting/markdown.py` (maintains the four-section structure) and re-run evals with a cheap model.
+
+---
+
+## Best practices
+
+### Before you invest
+
+1. **Validate first** tier? Check:
+  - Search volume (Google Trends, Keyword Planner)
+  - App store demand (iOS App Store, Google Play)
+  - Customer interviews
+2. **Monitor** tier? Revisit after one quarter
+3. **Deprioritise** tier? Confirm decision with other teams before rejecting
+
+
+
+### Interpreting anomalies
+
+Anomalies flag months far from seasonal baseline. This tool identifies *that* a spike or drop happened, not *why*. Always pair with qualitative research.
+
+### Cross-language comparison tips
+
+- Wikipedia editions are not countries (de.wikipedia is read globally)
+- Smaller editions may have higher volatility
+- Affinity is relative to your comparison set—add or remove editions and affinity scores shift
+
+---
+
+## Contributing
+
+We welcome issues and pull requests. Before starting:
+
+1. Read the **Architecture** section above
+2. Write tests for new behavior
+3. Update this README if you change flags or commands
+4. Run `pytest` and `pytest -m integration` locally
+5. If you modify SKILL.md or CLI stdout, re-run evals on a cheap model
+
+---
+
