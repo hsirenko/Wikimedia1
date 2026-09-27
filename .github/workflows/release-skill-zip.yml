@@ -1,0 +1,27 @@
+# Publishes the Claude-uploadable skill zip when a version tag is pushed.
+# Asset name is always wiki-market-intel-skill.zip so this URL stays stable:
+#   https://github.com/hsirenko/Wikimedia1/releases/latest/download/wiki-market-intel-skill.zip
+name: Release skill zip
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build skill zip
+        run: sh wiki-market-intel/scripts/build_zip.sh "$GITHUB_WORKSPACE/wiki-market-intel-skill.zip"
+      - name: Attach zip to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: wiki-market-intel-skill.zip
+          name: wiki-market-intel ${{ github.ref_name }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true

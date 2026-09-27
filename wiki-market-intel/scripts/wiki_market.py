@@ -2,7 +2,8 @@
 """Skill launcher: run wiki-market-intel straight from the skill folder.
 
 * puts the bundled package (`src/`) on the import path, so nothing needs installing;
-* installs any missing third-party library once, with pip;
+* requires CPython 3.13 and installs *exactly* the versions in requirements.lock
+  (hashes required), upgrading anything that does not match;
 * writes data and reports to the current folder (or a temp folder if it is read-only),
   never into the skill directory, which is read-only in some agents;
 * copies each new report to /mnt/user-data/outputs when that folder exists (Claude.ai),
@@ -11,23 +12,20 @@
 
 from __future__ import annotations
 
-import importlib.util
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
+from importlib import metadata
 from pathlib import Path
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SKILL_DIR / "src"))
 
-MIN_VERSION = (3, 10)
-# import name -> package name. Versions come from requirements.lock (pinned with
-# `uv pip compile pyproject.toml --extra pdf -o requirements.lock`), so every install is the same.
-PACKAGES = {"httpx": "httpx", "pydantic": "pydantic", "tenacity": "tenacity", "dateutil": "python-dateutil",
-            "jinja2": "jinja2", "matplotlib": "matplotlib", "yaml": "pyyaml"}
-PDF_PACKAGES = {"reportlab": "reportlab"}                 # installed only when the `pdf` command is used
+MIN_VERSION = (3, 13)
+MAX_VERSION = (3, 14)   # 3.13.x only — matches requires-python and .python-version
+LOCK = SKILL_DIR / "requirements.lock"
 OUTPUTS = Path("/mnt/user-data/outputs")
 
 
@@ -42,6 +40,10 @@ def _python_version(executable: str) -> tuple[int, int] | None:
         return int(major), int(minor)
     except (OSError, ValueError, subprocess.TimeoutExpired):
         return None
+
+
+def _acceptable(version: tuple[int, int] | None) -> bool:
+    return version is not None and MIN_VERSION <= version < MAX_VERSION
 
 
 def _newer_python() -> str | None:
@@ -60,47 +62,74 @@ def _newer_python() -> str | None:
         if not resolved or resolved in seen or not os.access(path, os.X_OK):
             continue
         seen.add(resolved)
-        version = _python_version(resolved)
-        if version and version >= MIN_VERSION:
+        if _acceptable(_python_version(resolved)):
             return resolved
     return None
 
 
 def ensure_python() -> None:
-    if sys.version_info >= MIN_VERSION:
+    if _acceptable(sys.version_info[:2]):
         return
     found = _newer_python()
     if found:
         os.execv(found, [found, str(Path(__file__).resolve()), *sys.argv[1:]])
     sys.exit(
-        f"wiki-market-intel needs Python 3.10 or newer; this is {sys.version.split()[0]}. "
-        "Install one (e.g. `brew install python`) and rerun, or call the script with that interpreter: "
-        "`/opt/homebrew/bin/python3 scripts/wiki_market.py ...`.")
+        f"wiki-market-intel needs CPython 3.13 (see .python-version); this is {sys.version.split()[0]}. "
+        "Install 3.13 (e.g. `brew install python@3.13`) and rerun, or call the script with that interpreter.")
 
 
-def pinned(packages: dict[str, str]) -> dict[str, str]:
-    """{import name: 'package==version'} from requirements.lock (unpinned if the lock is missing)."""
-    lock = SKILL_DIR / "requirements.lock"
-    versions = {}
-    if lock.is_file():
-        for line in lock.read_text("utf-8").splitlines():
-            if "==" in line and not line.lstrip().startswith("#"):
-                name, version = line.split(";")[0].strip().split("==")
-                versions[name.lower()] = version
-    return {module: f"{pkg}=={versions[pkg]}" if pkg in versions else pkg for module, pkg in packages.items()}
+def lock_pins(lock: Path | None = None) -> dict[str, str]:
+    """{distribution_name: exact version} from a uv/pip lockfile, including hashed ones."""
+    path = lock or LOCK
+    pins: dict[str, str] = {}
+    if not path.is_file():
+        return pins
+    for raw in path.read_text("utf-8").splitlines():
+        line = raw.split("#", 1)[0].strip().rstrip("\\").strip()
+        if not line or line.startswith("--") or "==" not in line:
+            continue
+        req = line.split(";")[0].strip()
+        name, version = req.split("==", 1)
+        pins[name.strip().lower()] = version.strip()
+    return pins
 
 
-def ensure_dependencies(packages: dict[str, str] = PACKAGES) -> None:
-    missing = [req for module, req in pinned(packages).items() if importlib.util.find_spec(module) is None]
-    if not missing:
+def environment_matches_lock(lock: Path | None = None) -> bool:
+    """True only when every locked distribution is installed at the locked version."""
+    pins = lock_pins(lock)
+    if not pins:
+        return False
+    for name, want in pins.items():
+        try:
+            have = metadata.version(name)
+        except metadata.PackageNotFoundError:
+            return False
+        if have != want:
+            return False
+    return True
+
+
+def ensure_dependencies() -> None:
+    """Install or upgrade to the hashed lock. Never keep a pre-existing mismatched version."""
+    if not LOCK.is_file():
+        sys.exit(f"wiki-market-intel is missing {LOCK.name}; the skill zip is incomplete.")
+    if environment_matches_lock():
         return
     print(f"Installing missing libraries (first run only): {', '.join(missing)}", file=sys.stderr)
     base = [sys.executable, "-m", "pip", "install", "--quiet", *missing]
     for extra in ([], ["--user"], ["--break-system-packages"]):
         if subprocess.run(base + extra, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE).returncode == 0:
-            importlib.invalidate_caches()
-            return
-    sys.exit("Could not install: " + " ".join(missing) + ". Install them with pip and run again.")
+            importlib_invalidate()
+            if environment_matches_lock():
+                return
+    sys.exit(
+        f"Could not install hashed dependencies from {LOCK}. "
+        "Use CPython 3.13 and: python3 -m pip install --require-hashes -r requirements.lock")
+
+
+def importlib_invalidate() -> None:
+    from importlib import invalidate_caches
+    invalidate_caches()
 
 
 def writable_base() -> Path:
@@ -113,8 +142,6 @@ def writable_base() -> Path:
 def main() -> int:
     ensure_python()
     ensure_dependencies()
-    if sys.argv[1:2] == ["pdf"]:
-        ensure_dependencies(PDF_PACKAGES)
     base = writable_base()
     os.environ.setdefault("WMI_DATA_DIR", str(base / "wiki_market_data"))
     os.environ.setdefault("WMI_REPORTS_DIR", str(base / "wiki_market_reports"))

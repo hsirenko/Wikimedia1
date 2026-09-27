@@ -2,7 +2,7 @@
 name: wiki-market-intel
 description: Measures reader interest in topics on Wikipedia in any language edition, from Wikimedia pageview data, for B2C teams choosing which topic, course or language market to validate next. Answers questions such as is interest in a topic growing in a language, how far can that growth be trusted, compare interest across language editions, which audiences to research next, and which related topics draw readers. Each report opens with an evidence-based recommendation (validate first, monitor, deprioritise) and a KPI breakdown (views, year-over-year growth against the whole edition, 3-year CAGR, momentum, seasonality, anomalies, data quality), with charts, HTML and a one-page PDF. Use it for any question about Wikipedia pageviews or interest by language, in any language the user writes in (for example Ukrainian). It measures attention and never gives go/no-go or invest verdicts.
 license: MIT
-compatibility: Python 3.10+ with outbound access to wikimedia.org, *.wikipedia.org and www.wikidata.org. Missing libraries are installed on first run at the versions pinned in requirements.lock.
+compatibility: CPython 3.13 with outbound access to wikimedia.org, *.wikipedia.org and www.wikidata.org. Dependencies are installed from requirements.lock with hashes on first run (or if any installed version does not match the lock).
 metadata:
   version: "0.2.0"
 ---
@@ -42,9 +42,9 @@ the report language: Ukrainian or English; other languages get English):
 | A one-page PDF of a report (after the user says yes) | `pdf <report folder>` (`--full` for every section) |
 
 Every command is `python3 <skill-dir>/scripts/wiki_market.py <command> ... --question "<the user's words>"`.
-If that `python3` is older than 3.10 (common on macOS: `/usr/bin/python3` is 3.9), the launcher
-re-execs Homebrew or the skill `.venv`. If it still exits with a version error, run the same
-command with `/opt/homebrew/bin/python3` or another 3.10+ interpreter.
+The skill needs **CPython 3.13** (see `.python-version`). If `python3` is another version
+(common on macOS: `/usr/bin/python3` is 3.9), the launcher re-execs `python3.13` or the
+skill `.venv`. If it still exits with a version error, run it with `python3.13`.
 
 - `--language` / `--languages`: Wikipedia edition codes (`en`, `de`, `fr`, `es`, `pt`, `it`,
   `nl`, `pl`, `cs`, `sk`, `uk`, `ru`, `tr`, `ro`, `hu`, `sv`, `fi`, `da`, `no`, `el`, `bg`,

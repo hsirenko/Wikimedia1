@@ -18,7 +18,7 @@ def test_zip_contains_every_source_file_and_no_samples(tmp_path):
     prefix = f"{ROOT.name}/"
     expected = {prefix + str(p.relative_to(ROOT)) for p in (ROOT / "src").rglob("*.py") if "__pycache__" not in p.parts}
     assert expected <= names, sorted(expected - names)[:5]
-    for required in ("SKILL.md", "scripts/wiki_market.py", "requirements.lock", "README.md"):
+    for required in ("SKILL.md", "scripts/wiki_market.py", "requirements.lock", ".python-version", "README.md"):
         assert prefix + required in names
     assert not any(n.startswith(prefix + d) for n in names for d in ("examples/", "evals/", ".venv/", "data/"))
 

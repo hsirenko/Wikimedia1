@@ -33,11 +33,15 @@ Wikipedia Market Intelligence (WMI) helps product teams validate topic selection
 
 ---
 
+
+
 ## Quick Start
+
+
 
 ### Requirements
 
-- **Python** 3.12 or later
+- **CPython 3.13** (pinned in `.python-version`; `requires-python = ">=3.13,<3.14"`)
 - **Network access** to Wikimedia domains
 - **Claude plan**: Pro, Max, Team, or Enterprise with code execution enabled (for claude.ai usage)
 
@@ -45,38 +49,44 @@ Wikipedia Market Intelligence (WMI) helps product teams validate topic selection
 
 ### Installation
 
-#### Option 1: Clone and run locally
+#### Download the skill zip
+
+The file Claude.ai can upload is a **GitHub Release** asset, not a zip of this repository.
+
+1. Download **[wiki-market-intel-skill.zip](https://github.com/hsirenko/Wikimedia1/releases/latest/download/wiki-market-intel-skill.zip)**
+2. In Claude.ai, open **Customize → Skills** (or **Settings → Features → Skills**)
+3. Click **+** → **Upload a skill** and select that zip
+4. Toggle **wiki-market-intel** on and start a new chat
+
+Do **not** use GitHub’s **Code → Download ZIP**. That archive is the whole repo. Claude needs a zip whose top folder is `wiki-market-intel/` with `SKILL.md` at its root.
+
+To rebuild the same package locally (contributors):
+
+```bash
+cd wiki-market-intel
+sh scripts/build_zip.sh
+```
+
+To publish a new downloadable zip, tag a release (see [Releasing a skill zip](#releasing-a-skill-zip)).
+
+#### Clone and run locally
 
 ```bash
 git clone https://github.com/hsirenko/Wikimedia1.git
 cd Wikimedia1/wiki-market-intel
 
-# Using uv (recommended)
-uv venv --python 3.13 && uv pip sync requirements.lock && uv pip install -e ".[dev]" --no-deps
+# Using uv (recommended) — installs the hashed lock, including pytest
+uv venv --python 3.13 && uv pip sync requirements-dev.lock && uv pip install -e . --no-deps
 
 # OR using standard venv
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.lock
-.venv/bin/pip install -e ".[dev]" --no-deps
+python3.13 -m venv .venv
+.venv/bin/pip install --require-hashes -r requirements-dev.lock
+.venv/bin/pip install -e . --no-deps
 ```
 
 
 
-#### Option 2: Upload to claude.ai as a custom Skill
-
-1. From `wiki-market-intel/`, build the skill package:
-  ```bash
-   sh scripts/build_zip.sh
-  ```
-   This creates `wiki-market-intel-skill-<N>.zip` in the parent directory.
-2. In Claude.ai, open **Customize → Skills** (or **Settings → Features → Skills** on some accounts)
-3. Click **+** → **Upload a skill** and select the zip file
-4. Toggle **wiki-market-intel** on
-5. Start a new chat and ask your question naturally
-
-
-
-#### Option 3: Use with Claude Code or Cursor
+#### Claude Code or Cursor
 
 **Claude Code:**
 
@@ -98,7 +108,11 @@ cp -R wiki-market-intel ~/.cursor/skills/wiki-market-intel
 
 ---
 
+
+
 ## Usage
+
+
 
 ### Basic syntax
 
@@ -202,6 +216,8 @@ wiki-market validate reports/astronomy/uk/2026-09-27
 
 ---
 
+
+
 ## Understanding the output
 
 
@@ -246,6 +262,8 @@ Every report leads with a recommendation based on attention signals:
 
 ---
 
+
+
 ## Customization
 
 Override default recommendation thresholds with flags:
@@ -260,7 +278,11 @@ wiki-market analyze --topic meditation --language de \
 
 ---
 
+
+
 ## Configuration
+
+
 
 ### Environment variables
 
@@ -297,6 +319,8 @@ Use Wikipedia edition codes, not country codes:
 
 ---
 
+
+
 ## Output languages
 
 Reports follow the language of your `--question`:
@@ -309,7 +333,11 @@ JSON output is always English.
 
 ---
 
+
+
 ## Examples
+
+
 
 ### Example 1: Single-topic growth analysis
 
@@ -342,6 +370,8 @@ wiki-market portfolio \
 **Output:** Side-by-side comparison of multiple topics and editions, highlighting which combinations meet validation thresholds.
 
 ---
+
+
 
 ## Python API
 
@@ -379,6 +409,8 @@ except AmbiguousTopicError as e:
 ```
 
 ---
+
+
 
 ## Troubleshooting
 
@@ -424,9 +456,11 @@ Then use the exact article title from the candidates list.
 
 ---
 
+
+
 ## Architecture
 
-The skill is the `wiki-market-intel/` folder. `SKILL.md` is the agent contract (which command to run, reply order, no invented numbers). `scripts/wiki_market.py` is the launcher: it puts `src/` on `sys.path`, installs missing packages from `requirements.lock`, writes `data/` and `reports/` into the current working directory (never into the skill folder), and copies new reports to `/mnt/user-data/outputs` when that path exists (claude.ai). All application code is `src/wiki_market_intel/`.
+The skill is the `wiki-market-intel/` folder. `SKILL.md` is the agent contract (which command to run, reply order, no invented numbers). `scripts/wiki_market.py` is the launcher: it requires CPython 3.13, puts `src/` on `sys.path`, installs the hashed `requirements.lock` (or upgrades any mismatch), writes `data/` and `reports/` into the current working directory (never into the skill folder), and copies new reports to `/mnt/user-data/outputs` when that path exists (claude.ai). All application code is `src/wiki_market_intel/`.
 
 `service.py` is the only orchestrator. It holds no formulas. The pipeline for one article is:
 
@@ -530,7 +564,35 @@ src/wiki_market_intel/
 
 ---
 
+
+
+## Reproducible environment
+
+The same CPython minor and the same package versions must come out of a fresh clone:
+
+| Pin | File |
+|---|---|
+| CPython 3.13 | `.python-version`, `requires-python` in `pyproject.toml` |
+| Direct dependencies | exact `==` versions in `pyproject.toml` |
+| Every transitive + SHA256 | `requirements.lock` (runtime + PDF) and `requirements-dev.lock` (+ pytest) |
+
+The skill launcher (`scripts/wiki_market.py`) refuses anything other than 3.13 and runs
+`pip install --require-hashes -r requirements.lock` unless **every** locked distribution is
+already at the locked version. It will not keep a pre-installed older `httpx`.
+
+Refresh the locks after changing `pyproject.toml`:
+
+```bash
+sh scripts/lock.sh
+```
+
+Commit both lockfiles. CI (`test.yml`) installs with `--require-hashes` on 3.13 and runs pytest.
+
+---
+
 ## Development
+
+
 
 ### Running tests
 
@@ -563,7 +625,11 @@ pytest -m integration
 
 ---
 
+
+
 ## Best practices
+
+
 
 ### Before you invest
 
@@ -588,6 +654,8 @@ Anomalies flag months far from seasonal baseline. This tool identifies *that* a 
 
 ---
 
+
+
 ## Contributing
 
 We welcome issues and pull requests. Before starting:
@@ -597,6 +665,24 @@ We welcome issues and pull requests. Before starting:
 3. Update this README if you change flags or commands
 4. Run `pytest` and `pytest -m integration` locally
 5. If you modify SKILL.md or CLI stdout, re-run evals on a cheap model
+
+
+
+### Releasing a skill zip
+
+Do not commit zips. Publish one named `wiki-market-intel-skill.zip` on a GitHub Release so the latest-download URL stays stable.
+
+From a **clean** commit that contains the skill (this branch, not an old default-branch snapshot):
+
+```bash
+sh wiki-market-intel/scripts/release.sh 0.2.0
+```
+
+That tags `v0.2.0`, pushes the tag, and attaches the zip. Pushing any `v*` tag also runs `.github/workflows/release-skill-zip.yml`, which rebuilds the same asset.
+
+Users then download:
+
+`https://github.com/hsirenko/Wikimedia1/releases/latest/download/wiki-market-intel-skill.zip`
 
 ---
 

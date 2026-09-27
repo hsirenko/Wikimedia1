@@ -1,7 +1,12 @@
 .venv/
+.env
 __pycache__/
 .pytest_cache/
-data/
-reports/
 *.egg-info/
 .DS_Store
+
+# Written when the CLI is run from this folder (not the launcher)
+/data/
+/reports/
+wiki_market_data/
+wiki_market_reports/

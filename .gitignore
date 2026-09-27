@@ -1,4 +1,27 @@
+# Python / local env
 .DS_Store
+.env
 .venv/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 __pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Runtime data from the skill launcher (cwd of the agent or this repo)
+wiki_market_data/
+wiki_market_reports/
+
+# Built skill packages
+*.zip
+
+# Older skill copies — wiki-market-intel/ is the skill to ship
+/wikipedia-topic-interest/
+/wikipedia-topic-interest 2/
+/wikipedia-topic-interest-*/
+
+# Editor skill install (symlink / local copy)
+.cursor/skills/
