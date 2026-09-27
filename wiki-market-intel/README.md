@@ -33,7 +33,11 @@ Wikipedia Market Intelligence (WMI) helps product teams validate topic selection
 
 ---
 
+
+
 ## Quick Start
+
+
 
 ### Requirements
 
@@ -45,7 +49,27 @@ Wikipedia Market Intelligence (WMI) helps product teams validate topic selection
 
 ### Installation
 
-#### Option 1: Clone and run locally
+#### Download the skill zip
+
+The file Claude.ai can upload is a **GitHub Release** asset, not a zip of this repository.
+
+1. Download **[wiki-market-intel-skill.zip](https://github.com/hsirenko/Wikimedia1/releases/latest/download/wiki-market-intel-skill.zip)**
+2. In Claude.ai, open **Customize → Skills** (or **Settings → Features → Skills**)
+3. Click **+** → **Upload a skill** and select that zip
+4. Toggle **wiki-market-intel** on and start a new chat
+
+Do **not** use GitHub’s **Code → Download ZIP**. That archive is the whole repo. Claude needs a zip whose top folder is `wiki-market-intel/` with `SKILL.md` at its root.
+
+To rebuild the same package locally (contributors):
+
+```bash
+cd wiki-market-intel
+sh scripts/build_zip.sh
+```
+
+To publish a new downloadable zip, tag a release (see [Releasing a skill zip](#releasing-a-skill-zip)).
+
+#### Clone and run locally
 
 ```bash
 git clone https://github.com/hsirenko/Wikimedia1.git
@@ -62,21 +86,7 @@ python3 -m venv .venv
 
 
 
-#### Option 2: Upload to claude.ai as a custom Skill
-
-1. From `wiki-market-intel/`, build the skill package:
-  ```bash
-   sh scripts/build_zip.sh
-  ```
-   This creates `wiki-market-intel-skill-<N>.zip` in the parent directory.
-2. In Claude.ai, open **Customize → Skills** (or **Settings → Features → Skills** on some accounts)
-3. Click **+** → **Upload a skill** and select the zip file
-4. Toggle **wiki-market-intel** on
-5. Start a new chat and ask your question naturally
-
-
-
-#### Option 3: Use with Claude Code or Cursor
+#### Claude Code or Cursor
 
 **Claude Code:**
 
@@ -98,7 +108,11 @@ cp -R wiki-market-intel ~/.cursor/skills/wiki-market-intel
 
 ---
 
+
+
 ## Usage
+
+
 
 ### Basic syntax
 
@@ -202,6 +216,8 @@ wiki-market validate reports/astronomy/uk/2026-09-27
 
 ---
 
+
+
 ## Understanding the output
 
 
@@ -246,6 +262,8 @@ Every report leads with a recommendation based on attention signals:
 
 ---
 
+
+
 ## Customization
 
 Override default recommendation thresholds with flags:
@@ -260,7 +278,11 @@ wiki-market analyze --topic meditation --language de \
 
 ---
 
+
+
 ## Configuration
+
+
 
 ### Environment variables
 
@@ -297,6 +319,8 @@ Use Wikipedia edition codes, not country codes:
 
 ---
 
+
+
 ## Output languages
 
 Reports follow the language of your `--question`:
@@ -309,7 +333,11 @@ JSON output is always English.
 
 ---
 
+
+
 ## Examples
+
+
 
 ### Example 1: Single-topic growth analysis
 
@@ -342,6 +370,8 @@ wiki-market portfolio \
 **Output:** Side-by-side comparison of multiple topics and editions, highlighting which combinations meet validation thresholds.
 
 ---
+
+
 
 ## Python API
 
@@ -379,6 +409,8 @@ except AmbiguousTopicError as e:
 ```
 
 ---
+
+
 
 ## Troubleshooting
 
@@ -423,6 +455,8 @@ Then use the exact article title from the candidates list.
 - Run `validate` to see which months are affected
 
 ---
+
+
 
 ## Architecture
 
@@ -530,7 +564,11 @@ src/wiki_market_intel/
 
 ---
 
+
+
 ## Development
+
+
 
 ### Running tests
 
@@ -563,7 +601,11 @@ pytest -m integration
 
 ---
 
+
+
 ## Best practices
+
+
 
 ### Before you invest
 
@@ -588,6 +630,8 @@ Anomalies flag months far from seasonal baseline. This tool identifies *that* a 
 
 ---
 
+
+
 ## Contributing
 
 We welcome issues and pull requests. Before starting:
@@ -597,6 +641,24 @@ We welcome issues and pull requests. Before starting:
 3. Update this README if you change flags or commands
 4. Run `pytest` and `pytest -m integration` locally
 5. If you modify SKILL.md or CLI stdout, re-run evals on a cheap model
+
+
+
+### Releasing a skill zip
+
+Do not commit zips. Publish one named `wiki-market-intel-skill.zip` on a GitHub Release so the latest-download URL stays stable.
+
+From a **clean** commit that contains the skill (this branch, not an old default-branch snapshot):
+
+```bash
+sh wiki-market-intel/scripts/release.sh 0.2.0
+```
+
+That tags `v0.2.0`, pushes the tag, and attaches the zip. Pushing any `v*` tag also runs `.github/workflows/release-skill-zip.yml`, which rebuilds the same asset.
+
+Users then download:
+
+`https://github.com/hsirenko/Wikimedia1/releases/latest/download/wiki-market-intel-skill.zip`
 
 ---
 
