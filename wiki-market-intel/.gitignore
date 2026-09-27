@@ -6,7 +6,7 @@ __pycache__/
 .DS_Store
 
 # Written when the CLI is run from this folder (not the launcher)
-data/
-reports/
+/data/
+/reports/
 wiki_market_data/
 wiki_market_reports/
