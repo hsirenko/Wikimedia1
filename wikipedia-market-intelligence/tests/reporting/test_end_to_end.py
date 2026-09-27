@@ -15,9 +15,9 @@ from wiki_market_intel.service import build_services
 from wiki_market_intel.validate import validate_file
 from tests.conftest import TODAY, FakeWikimedia, load
 
-SECTIONS = ["1. Executive Decision Card", "2. Topic Definition", "3. Demand", "4. Growth", "5. Seasonality",
-            "6. Language Opportunity", "7. Localization", "8. Topic Ecosystem", "9. Anomalies",
-            "10. Data Quality", "11. Business Implications"]
+SECTIONS = ["1. Recommendation", "2. KPI Breakdown", "3. Topic Definition", "4. Demand", "5. Growth",
+            "6. Seasonality", "7. Language Opportunity", "8. Localization", "9. Topic Ecosystem", "10. Anomalies",
+            "11. Data Quality", "12. Business Implications"]
 
 
 def expected_from_fixture():
@@ -119,9 +119,12 @@ def run_cli(settings, fake, monkeypatch):
 def test_cli_analyze_writes_json_markdown_and_chart(run_cli, settings, capsys):
     assert run_cli("analyze", "--topic", "meditation", "--language", "de", "--period", "3y") == 0
     out = capsys.readouterr().out
-    assert "YoY" in out and "quality HIGH" in out
+    assert out.index("RECOMMENDATION") < out.index("KPI BREAKDOWN") < out.index("OBSERVATIONS")
+    assert "Growth (year over year): -17.2%" in out and "Data quality: HIGH" in out
+    assert "PDF_OFFER folder:" in out and out.index("PDF_OFFER") > out.index("Wrote")
+    assert "Would you like this report as a PDF?" in out.strip().splitlines()[-1]   # the reply's last line
     written = list(settings.reports_dir.rglob("*"))
-    assert {p.name for p in written} >= {"analysis.json", "report.md", "trend.png"}
+    assert {p.name for p in written} >= {"analysis.json", "report.md", "report.html", "trend.png"}
 
 
 def test_cli_accepts_yaml_input(run_cli, tmp_path):

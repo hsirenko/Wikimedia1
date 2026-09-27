@@ -1,11 +1,11 @@
 ---
 name: wiki-market-intel
-description: KPI reports on reader attention to topics across Wikipedia language editions, from Wikimedia pageview data. For one edition it covers annual views, year-over-year growth, 3-year CAGR, momentum, seasonality, anomalies, penetration, data quality and five separate decision signals. Across editions it adds share, affinity and a demand-by-growth matrix; around a topic it measures related topics; for many topics and editions at once it builds a portfolio matrix with filters. Output is JSON, Markdown, a self-contained HTML report and charts. Use when someone asks how much attention a topic gets in a language, whether it is growing, which language markets or product categories show the most interest, which related topics draw readers, or wants a reproducible market-intelligence report. It measures attention and does not give buy or invest recommendations.
+description: Reports on reader attention to topics across Wikipedia language editions, from Wikimedia pageview data. Each report opens with an evidence-based recommendation (what to validate first, monitor or deprioritise), then a KPI breakdown of views, year-over-year growth, 3-year CAGR, momentum, seasonality, localization, anomalies, data quality and five decision signals. It compares editions (share, affinity, demand-by-growth matrix), measures related topics, and builds portfolio matrices of many topics and editions. Output is JSON, Markdown, HTML and charts, plus a PDF on request. Use when someone asks how much attention a topic gets in a language, whether it is growing, which language markets or product categories to validate first, which related topics draw readers, or wants a reproducible market-intelligence report. It measures attention and never gives go/no-go, buy or invest verdicts.
 license: MIT
 compatibility: Python 3.10+ and outbound access to wikimedia.org, *.wikipedia.org and www.wikidata.org. Libraries (httpx, pydantic, tenacity, python-dateutil, jinja2, matplotlib, pyyaml) are installed automatically on first run if missing.
 metadata:
   version: "0.1.0"
-  milestone: "5 - portfolio and HTML reports"
+  milestone: "6 - recommendation, KPI breakdown, PDF"
 ---
 
 # Wikipedia Market Intelligence (wiki-market-intel)
@@ -13,6 +13,11 @@ metadata:
 Measures the **size, trajectory and seasonality of attention** to a topic in one Wikipedia
 language edition, and states what the data cannot tell. All numbers come from the tool. **Never
 compute KPIs yourself, and never write your own analysis code.**
+
+**Every reply, in this order:** (1) the tool's recommendation, (2) the KPI breakdown, (3) the
+details asked for, the limits and the report paths, (4) **the last line is always the question
+"Would you like this report as a PDF? I can create it for you."**, in the user's language. The
+tool's output ends with this same checklist.
 
 ## Run it
 
@@ -69,30 +74,6 @@ python3 <skill-dir>/scripts/wiki_market.py cluster --topic "meditation" --langua
 
 It prints the usual analysis plus a `RELATED` table.
 
-**Many topics across many editions** (a portfolio: which categories and markets draw attention):
-
-```bash
-python3 <skill-dir>/scripts/wiki_market.py portfolio --topics meditation,yoga,sleep --languages de,fr,es \
-  --question "<the user's request, copied word for word>"
-```
-
-- `--topics` and `--languages` take a comma list or a YAML file. Topics can carry a category:
-  `topics: [{topic: sleep, category: sleep}, ...]`.
-- Filters: `--min-views 20000`, `--min-growth 5` or `--min-growth -10` (percent; with a % sign
-  write `--min-growth=-10%`), `--category sleep,mindfulness`. There is no country filter:
-  Wikimedia publishes no per-article country data.
-- It prints one row per topic and edition, in the order given, then a `READY ANSWER` grouped by
-  quadrant. **Give the `READY ANSWER` to the user as written** (translated if needed). Rows are
-  never sorted by size or growth. Don't sort them yourself, don't pick a "best" topic or market,
-  and don't add a verdict.
-- When the output prints `RANKING REQUEST` (the user asked for a "top 3", the "best" topic or
-  what to build), start your reply with the sentence it gives. Then list the `READY ANSWER` groups
-  as they are: no numbered list, no "top", "best", "primary" or "should build", and no
-  generalisations the rows don't state (such as "German markets are stronger").
-- `HIDDEN` rows were removed by a filter or couldn't be measured (ambiguous topic, no article).
-  Say which ones and why. An ambiguous topic needs an exact title or Wikidata ID; ask the user.
-- Affinity in a portfolio is measured within each topic, across the listed editions.
-- Output goes to `./wiki_market_reports/portfolio/<name>/<date>/` (`--name wellness`).
 - **Each row** gives the related article, its relationship, its views, its size relative to the
   topic, its YoY and its YoY relative to the whole edition, plus a signal.
 - **Relationship values:** `broader`, `narrower`, `facet_of` and `has_facet` come from Wikidata.
@@ -108,16 +89,37 @@ python3 <skill-dir>/scripts/wiki_market.py portfolio --topics meditation,yoga,sl
 - **"better / worse than its edition by X%"** is the topic's growth compared with its whole
   edition. The edition's own YoY is printed once, in the `RELATED:` header. Don't confuse the two.
 - **Topics marked `*` were found by text similarity only.** Say so whenever you mention one.
-- **Your reply is the `READY ANSWER` block**, which comes right after the `RELATED:` header.
-  Give it to the user as written (translated into the user's language if needed), then add the
-  report path and the limits. Keep every sentence, including "found by text similarity only",
-  and the group names as they are. Don't add headings such as "Best", "Primary", "Secondary",
-  "Resilient" or "Most viable", and don't pick a winner, even when the user asks for "the best".
-  The first sentence of the block already answers that question. The `DETAIL TABLE` below it
-  is for reference only.
+- **`RELATED TOPICS BY SIGNAL` is part 3 of your reply**, after the recommendation and the KPI
+  breakdown. Give its sentences as written (translated if needed), including "found by text
+  similarity only" and the group names. Don't add headings such as "Best", "Primary",
+  "Secondary", "Resilient" or "Most viable". The `DETAIL TABLE` below it is for reference only.
 - **Concentration** (top 1 / top 5 share) is neither good nor bad: describe it, don't judge it.
   The `RELATED:` header names the largest article. It's often a broader concept, not the topic
   itself.
+
+**Many topics across many editions** (a portfolio: which categories and markets draw attention):
+
+```bash
+python3 <skill-dir>/scripts/wiki_market.py portfolio --topics meditation,yoga,sleep --languages de,fr,es \
+  --question "<the user's request, copied word for word>"
+```
+
+- `--topics` and `--languages` take a comma list or a YAML file. Topics can carry a category:
+  `topics: [{topic: sleep, category: sleep}, ...]`.
+- Filters: `--min-views 20000`, `--min-growth 5` or `--min-growth -10` (percent; with a % sign
+  write `--min-growth=-10%`), `--category sleep,mindfulness`. There is no country filter:
+  Wikimedia publishes no per-article country data.
+- It prints the `RECOMMENDATION` and `KPI BREAKDOWN` first, then a `DETAIL TABLE` (one row per
+  topic and edition, in the order given) and the `QUADRANTS`. Answer in the reply order below.
+- The recommendation's "validate first" order is the tool's written rule. Keep it as printed.
+  Don't add your own "top N", "best" or "winner" list, don't re-sort the rows, and don't add
+  generalisations the rows don't state (such as "German markets are stronger").
+- When the output prints `DECISION REQUEST` (the user asked for a "top 3", the "best" topic or what
+  to build), start your reply with the sentence it gives, then continue with the recommendation.
+- `HIDDEN` rows were removed by a filter or couldn't be measured (ambiguous topic, no article).
+  Say which ones and why. An ambiguous topic needs an exact title or Wikidata ID; ask the user.
+- Affinity in a portfolio is measured within each topic, across the listed editions.
+- Output goes to `./wiki_market_reports/portfolio/<name>/<date>/` (`--name wellness`).
 
 Only resolving a topic, without fetching views:
 `python3 <skill-dir>/scripts/wiki_market.py topic --topic meditation --languages en,de,fr`
@@ -139,14 +141,30 @@ Only resolving a topic, without fetching views:
     output repeats the observations in Ukrainian. Quote those lines.
   - When it prints `REPORT_LANGUAGE en ... has no report translation yet`, reply in the user's
     language and tell them the report file is in English.
-- **Lead with the measured facts** from the printed summary: annual views, YoY, 3-year CAGR,
-  3-month momentum, peak and trough months, data-quality level.
+- **Structure every reply in this order:**
+  1. **Recommendation.** Give the `RECOMMENDATION` block first, as written (translated if needed):
+     the headline, its points and the "Basis" sentence. It is evidence-based next steps (what to
+     validate first, what to monitor or deprioritise), not a go/no-go or investment call.
+     **Nothing of your own goes before it**, no "short answer", no "don't launch", no "go". When
+     the user asks for a short version, the recommendation's headline *is* the short version. When
+     the output prints `DECISION REQUEST` ("should we launch?", "top 3", "best"), start with the
+     sentence it gives, then the recommendation.
+  2. **KPI breakdown.** Give the `KPI BREAKDOWN` block next, one item per KPI, as written: demand,
+     growth (YoY and 3-year CAGR), momentum, seasonality, localization, anomalies, data quality.
+  3. **Details the user asked about** (related topics, signals per edition, hidden rows), then
+     the limits and where the report files are (`report.html` is the easiest to share).
+  4. **Last line of every reply, always: offer a PDF.** End with "Would you like this report as a
+     PDF? I can create it for you." (in the user's language). Don't skip it, even in a short
+     reply. If they say yes, run `python3 <skill-dir>/scripts/wiki_market.py pdf <folder>`, using
+     the folder on the `PDF_OFFER` line, and give them the path of `report.pdf`.
+  When the output has a `REPORT_LANGUAGE` block, use the recommendation and KPI breakdown
+  printed there, which are already in the user's language.
 - **"Growing?" means year over year first.** Answer questions about growth with the YoY change
   (last 12 months vs the 12 before) and, when present, the 3-year CAGR. The 3-month figure is
   short-term momentum and can be swung by seasonality. Mention it only after YoY, and never present
   it alone as growth. If every edition declined year over year, say so plainly, even when some
   recent 3-month figures are positive.
-- **Anomalies (`ANOMALY ...` lines, section 9 of the report):** say the month, the views, the
+- **Anomalies (`ANOMALY ...` lines, section 10 of the report):** say the month, the views, the
   expected views and the gap, as printed. **Never suggest a cause**, not even a likely one: the
   tool reports "cause unknown", and so do you. Call flags in the last 3 months provisional.
   When the summary says the year-over-year change would differ with the flagged months replaced,
@@ -158,18 +176,17 @@ Only resolving a topic, without fetching views:
 - **When a KPI is `n/a`, give its reason** from the report (for example, unique devices and
   country data are published by Wikimedia only for whole editions, not per article). Never
   replace it with an estimate.
-- **Decision signals (`SIGNALS` lines; the table in section 1 of the report):** five separate
-  readings: market size, growth, momentum, localization and stability. Each comes with its
-  evidence and rule.
+- **Decision signals** (in the KPI breakdown; section 2 of the report): five separate readings:
+  market size, growth, momentum, localization and stability. Each comes with its evidence and rule.
   - Give each one with its evidence, as printed, for example: "growth: declining (3-year CAGR
     -15.1%; de.wikipedia as a whole changed -7.3%)".
-  - **Never combine them** into an overall score, grade, verdict or recommendation. Never say
-    "buy", "invest", "go" or "no-go", even when the user asks "should we launch?". Answer with the
-    five readings and what they can't show.
+  - **Never combine them** into a score or grade. The only recommendation is the tool's
+    `RECOMMENDATION` block. Never turn it into "buy", "invest", "go" or "no-go", even when the
+    user asks "should we launch?".
   - Market size is absolute reader attention in that edition, not market size in money or users.
     Larger editions read higher for the same topic.
-  - In `compare`, give the `READY ANSWER on signals` block as written (translated if needed).
-    Its labels are the tool's: if every edition reads "market size low", say "low" for each.
+  - In `compare`, the `SIGNALS per edition` lines carry each edition's labels. Use them as
+    written: if every edition reads "market size low", say "low" for each.
     Don't re-rank them as highest, medium or lowest, and don't add an "assessment", a "most
     favourable" market or a go/no-go line per market.
   - Localization only exists in `compare`. In a single-edition analysis it is `n/a`; give that

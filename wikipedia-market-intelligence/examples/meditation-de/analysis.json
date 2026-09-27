@@ -5,8 +5,8 @@
     "project": "de.wikipedia",
     "period_start": "2023-09",
     "period_end": "2026-08",
-    "generated_at": "2026-09-27T12:04:48+00:00",
-    "data_retrieved_at": "2026-09-27T12:04:48+00:00",
+    "generated_at": "2026-09-27T12:36:28+00:00",
+    "data_retrieved_at": "2026-09-27T12:36:28+00:00",
     "source": "Wikimedia",
     "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
     "access": "all-access",
@@ -252,6 +252,42 @@
       "momentum": "Last 3 months +3.1% against the 3 before them -10.1% (+13.2 points); above +5 points is accelerating, below -5 decelerating, otherwise stable.",
       "stability": "The peak month, January, is 1.29x the average month; 2 flagged months out of 36, in 2 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal."
     }
+  },
+  "recommendation": {
+    "scope": "analysis",
+    "items": [
+      {
+        "label": "Meditation · de.wikipedia",
+        "project": "de.wikipedia",
+        "tier": "monitor",
+        "reasons": [
+          "sizeable",
+          "behind"
+        ],
+        "annual_views": 56910,
+        "yoy": -0.1718568102444703,
+        "edition_yoy": -0.07341253486465138,
+        "relative": -0.10624391013690104
+      }
+    ],
+    "median": null,
+    "lead_label": "Meditation · de.wikipedia",
+    "peak_month": "January",
+    "peak_ratio": 1.2912851814174295,
+    "momentum": "accelerating",
+    "recent_growth": 0.030592285423675758,
+    "provisional_anomaly": "2026-08",
+    "provisional_change": 0.4051,
+    "related_explore": [],
+    "related_context": [],
+    "related_declining": [],
+    "text": [
+      "Monitor before spending on validation.",
+      "Meditation · de.wikipedia: 56,910 views a year; -17.2% year over year, against -7.3% for the whole edition: 10.6% worse than the edition as a whole.",
+      "Timing: attention to Meditation · de.wikipedia peaks in January (1.29× the average month), so plan launches and campaigns ahead of it.",
+      "For Meditation · de.wikipedia, momentum is accelerating: the last 3 months changed +3.1% on the 3 before, after a weaker 3 months before that. The latest flagged month (2026-08, +40.5% against its baseline) is provisional, so confirm the rise before relying on it.",
+      "Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews."
+    ]
   },
   "observations": [
     "Annual pageviews (2025-09..2026-08) were 56.9K (about 4.7K a month).",
@@ -997,6 +1033,11 @@
       "edge_cases": "never combined into a single score, never a BUY / INVEST recommendation"
     },
     {
+      "name": "recommendation_tier",
+      "definition": "deprioritise: < 12,000 views/yr or share-adjusted YoY <= -25%; validate_first: >= 12,000 views/yr, share-adjusted YoY >= -10% and (with several options) demand >= the set's median; monitor: the rest. Within a tier, by audience size",
+      "edge_cases": "evidence-based next steps from reader attention only; never a go/no-go or investment call; raw YoY when the edition total is missing"
+    },
+    {
       "name": "quadrant",
       "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
       "edge_cases": ""
@@ -1006,14 +1047,14 @@
     {
       "endpoint": "pageviews/per-article",
       "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/user/Meditation/monthly/2020090100/2026083100",
-      "retrieved_at": "2026-09-27T12:04:48+00:00",
-      "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120448_2b682df09582.json"
+      "retrieved_at": "2026-09-27T12:36:28+00:00",
+      "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T123628_2b682df09582.json"
     },
     {
       "endpoint": "pageviews/aggregate",
       "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/de.wikipedia/all-access/user/monthly/2020090100/2026083100",
-      "retrieved_at": "2026-09-27T12:04:48+00:00",
-      "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120448_c49dec8c1d36.json"
+      "retrieved_at": "2026-09-27T12:36:28+00:00",
+      "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T123628_c49dec8c1d36.json"
     }
   ]
 }

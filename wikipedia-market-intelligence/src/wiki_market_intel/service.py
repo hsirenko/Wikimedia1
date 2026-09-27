@@ -17,6 +17,7 @@ from wiki_market_intel.analytics import formulas, growth as growth_kpis, quality
 from wiki_market_intel.analytics import anomalies as anomaly_kpis
 from wiki_market_intel.analytics import localization as localization_kpis
 from wiki_market_intel.analytics import portfolio as portfolio_kpis
+from wiki_market_intel.analytics import recommend
 from wiki_market_intel.analytics import signals as signal_kpis
 from wiki_market_intel.analytics import seasonality as seasonality_kpis
 from wiki_market_intel.analytics.periods import build_periods, fetch_window, parse_period
@@ -143,6 +144,7 @@ def _analyze_article(services: Services, topic: str, language: str, resolution: 
         signals=signals,
     )
     result.signals.evidence = signal_kpis.explain(result, Translator("en"))
+    result.recommendation = recommend.of_analysis(result)
     return result
 
 
@@ -233,7 +235,7 @@ def compare_languages(topic: str, languages: list[str], period: str = "3y", *, s
 
     periods = build_periods(end_month, months)
     retrieved = sorted(r.metadata.data_retrieved_at for r in analyses.values() if r.metadata.data_retrieved_at)
-    return ComparisonResult(
+    comparison = ComparisonResult(
         metadata=ComparisonMetadata(
             topic=topic, languages=languages, period_start=f"{periods['requested'].start:%Y-%m}",
             period_end=f"{periods['requested'].end:%Y-%m}",
@@ -242,6 +244,8 @@ def compare_languages(topic: str, languages: list[str], period: str = "3y", *, s
             question=question, report_language=report_lang),
         resolution=resolution, rows=rows, analyses=analyses, demand_threshold=threshold,
         observations=comparison_observations(rows), notes=notes, formulas=formulas.REGISTRY)
+    comparison.recommendation = recommend.of_comparison(comparison)
+    return comparison
 
 
 # ---------------------------------------------------------------------------
@@ -350,6 +354,7 @@ def analyze_cluster(topic: str, language: str, period: str = "3y", *, start: dat
                                  capped_from=capped_from, has_wikidata=bool(qid), notes=notes)
     result.quality.missing_metrics = [m for m in result.quality.missing_metrics
                                       if m.metric != "ecosystem.related_topics"]
+    result.recommendation = recommend.of_analysis(result)       # now with related topics
     return result
 
 
@@ -417,7 +422,7 @@ def portfolio(topics: list[str | PortfolioTopic | dict], languages: list[str], p
     retrieved = sorted(x.metadata.data_retrieved_at for c in comparisons.values() for x in c.analyses.values()
                        if x.metadata.data_retrieved_at)
     retrieved += sorted(a.metadata.data_retrieved_at for a in analyses.values() if a.metadata.data_retrieved_at)
-    return PortfolioResult(
+    result = PortfolioResult(
         metadata=PortfolioMetadata(
             name=name or "portfolio", topics=items, languages=languages,
             period_start=f"{periods['requested'].start:%Y-%m}", period_end=f"{periods['requested'].end:%Y-%m}",
@@ -426,3 +431,5 @@ def portfolio(topics: list[str | PortfolioTopic | dict], languages: list[str], p
             question=question, report_language=report_lang, filters=filters),
         rows=rows, comparisons=comparisons, analyses=analyses, demand_threshold=threshold,
         observations=portfolio_kpis.observations(rows), notes=notes, formulas=formulas.REGISTRY)
+    result.recommendation = recommend.of_portfolio(result)
+    return result

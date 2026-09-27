@@ -5,7 +5,9 @@ from __future__ import annotations
 from jinja2 import Environment, StrictUndefined
 
 from wiki_market_intel.analytics import portfolio as portfolio_kpis
+from wiki_market_intel.analytics import recommend
 from wiki_market_intel.analytics import signals as signal_kpis
+from wiki_market_intel.reporting import breakdown
 from wiki_market_intel.i18n import Translator
 from wiki_market_intel.models.analysis import PortfolioResult
 
@@ -14,6 +16,22 @@ TEMPLATE = """\
 
 _{{ t("pf_meta", topics=topics, editions=editions, start=p.metadata.period_start, end=p.metadata.period_end, generated=p.metadata.generated_at) }}_
 
+## {{ t("rec_title") }}
+
+**{{ rec_lines[0] }}**
+
+{% for line in rec_lines[1:-1] -%}
+- {{ line }}
+{% endfor %}
+{{ rec_lines[-1] }}
+
+_{{ rec_rule }}_
+
+## {{ t("kpi_title") }}
+
+{% for line in kpi_lines -%}
+- {{ line }}
+{% endfor %}
 ## {{ t("p1") }}
 
 {% for o in observations -%}
@@ -139,7 +157,10 @@ def render(p: PortfolioResult, chart: str | None, lang: str = "en") -> str:
     env = Environment(undefined=StrictUndefined, autoescape=False)
     env.globals.update(t=tr, num=num, rate=rate, dec=dec, sig_names=signal_kpis.SIGNAL_NAMES)
     shown = p.visible
+    rec = p.recommendation or recommend.of_portfolio(p)
     return env.from_string(TEMPLATE).render(
+        rec_lines=recommend.sentences(rec, tr), rec_rule=recommend.rule_text(rec, tr),
+        kpi_lines=breakdown.multi_lines(breakdown.portfolio_units(p), tr),
         p=p, chart=chart, shown=shown, hidden=[r for r in p.rows if r.excluded_by],
         has_categories=any(t.category for t in p.metadata.topics),
         topics=", ".join(t.topic for t in p.metadata.topics),

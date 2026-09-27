@@ -94,23 +94,27 @@ def test_comparison_fills_localization_from_affinity(services):
     assert "### Decision signals" in text and "| de.wikipedia |" in text
 
 
-@pytest.mark.parametrize("lang, heading, na", [("en", "### Decision signals", "not computed"),
-                                               ("uk", "### Сигнали для ухвалення рішень", "не обчислено")])
-def test_report_card_lists_the_five_signals(services, lang, heading, na):
+@pytest.mark.parametrize("lang, heading, na", [("en", "## 2. KPI Breakdown", "not computed"),
+                                               ("uk", "## 2. Розбивка за показниками", "не обчислено")])
+def test_kpi_breakdown_reads_each_kpi_with_its_signal(services, lang, heading, na):
+    from wiki_market_intel.i18n import Translator
+    tr = Translator(lang)
     r = analyze("meditation", "de", "3y", services=services)
     section = markdown.render(r, None, lang).split(heading)[1].split("###")[0]
-    assert section.count("\n| ") == 6                                # header + five signals
+    assert section.count("\n| ") == 9                                # header + eight KPIs
+    for name in ("market_size", "growth", "momentum", "stability"):
+        assert f"**{tr(f'sig.{name}.' + getattr(r.signals, name))}**" in section
     assert na in section                                             # localization, with its reason
     if lang == "uk":
         for english in ("views in the last", "declining", "Market size", "points"):
             assert english not in section
 
 
-def test_cli_prints_signals_with_evidence(run_cli, capsys):  # noqa: F811
+def test_cli_kpi_breakdown_carries_each_signal_with_evidence(run_cli, capsys):  # noqa: F811
     run_cli("analyze", "--topic", "meditation", "--language", "de")
-    out = capsys.readouterr().out
-    assert "SIGNALS (five separate readings; never combined" in out
-    assert "market size: " in out and "localization: n/a. Only defined across several editions" in out
+    out = capsys.readouterr().out.split("KPI BREAKDOWN")[1].split("OBSERVATIONS")[0]
+    assert "Demand (views, last 12 months): 56,910" in out and "views in the last 12 months; low is" in out
+    assert "Localization:" in out and "not computed (Only defined across several editions" in out
 
 
 def test_validate_catches_an_edited_signal(run_cli, settings):  # noqa: F811
@@ -123,10 +127,11 @@ def test_validate_catches_an_edited_signal(run_cli, settings):  # noqa: F811
     assert any(p.startswith("signals.growth:") for p in validate_file(path))
 
 
-def test_compare_cli_prints_a_ready_answer_without_a_verdict(run_cli, capsys):  # noqa: F811
+def test_compare_cli_leads_with_the_recommendation_and_lists_signals(run_cli, capsys):  # noqa: F811
     run_cli("compare", "--topic", "meditation", "--languages", "de,en,fr")
     out = capsys.readouterr().out
-    block = out.split("READY ANSWER on signals")[1]
-    assert "cannot give a go/no-go" in block
+    assert out.index("RECOMMENDATION") < out.index("KPI BREAKDOWN") < out.index("DETAIL TABLE")
+    block = out.split("SIGNALS per edition")[1]
+    assert "not combined into a score" in block and "go/no-go" in block
     line = next(l for l in block.splitlines() if l.strip().startswith("- de.wikipedia:"))
     assert "market size" in line and "views in the last 12 months" in line and "affinity" in line

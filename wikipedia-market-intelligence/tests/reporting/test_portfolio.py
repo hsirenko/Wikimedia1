@@ -68,15 +68,15 @@ def test_ready_answer_groups_by_quadrant_without_ranking(pf):
         assert word not in text
 
 
-@pytest.mark.parametrize("lang, heading", [("en", "## 2. Portfolio Matrix"), ("uk", "## 2. Матриця портфеля")])
+@pytest.mark.parametrize("lang, heading", [("en", "## 4. Portfolio Matrix"), ("uk", "## 4. Матриця портфеля")])
 def test_report_in_both_languages(pf, lang, heading):
     text = portfolio_report.render(pf, "charts/portfolio.png", lang)
     assert heading in text and "![" in text
-    section4 = text.split("## 4.")[1].split("## 5.")[0]
-    assert "Mercury" in section4
+    filters = text.split("## 6.")[1].split("## 7.")[0]
+    assert "Mercury" in filters
     if lang == "uk":
         for english in ("Topic", "Reason", "ambiguous topic", "Filters applied", "No filters"):
-            assert english not in text.split("## 6.")[0]
+            assert english not in text.split("## 8.")[0]
 
 
 def test_writer_produces_json_markdown_chart_and_self_contained_html(pf, settings):
@@ -103,7 +103,7 @@ def test_cli_portfolio_from_yaml_with_category_filter(run_cli, settings, tmp_pat
     assert run_cli("portfolio", "--topics", str(topics), "--languages", "de,en,fr", "--category", "sleep",
                    "--min-growth", "-100", "--name", "wellness") == 0
     out = capsys.readouterr().out
-    assert "READY ANSWER" in out and portfolio_kpis.NO_VERDICT in out
+    assert out.index("RECOMMENDATION") < out.index("QUADRANTS") and portfolio_kpis.NO_VERDICT in out
     assert "HIDDEN (3 rows" in out and "meditation de: category" in out
     path = next(settings.reports_dir.rglob("portfolio.json"))
     assert path.parent.parent.name == "wellness" and validate_file(path) == []
@@ -112,7 +112,7 @@ def test_cli_portfolio_from_yaml_with_category_filter(run_cli, settings, tmp_pat
 def test_other_reports_also_write_html(run_cli, settings):  # noqa: F811
     run_cli("analyze", "--topic", "meditation", "--language", "de")
     page = next(settings.reports_dir.rglob("report.html")).read_text("utf-8")
-    assert "<h2>1. Executive Decision Card</h2>" in page and "data:image/png;base64," in page
+    assert "<h2>1. Recommendation</h2>" in page and "data:image/png;base64," in page
 
 
 @pytest.mark.parametrize("question, phrase", [
@@ -130,6 +130,15 @@ def test_cli_opens_a_ranking_request_with_the_no_ranking_sentence(run_cli, capsy
     run_cli("portfolio", "--topics", "meditation,sleep", "--languages", "de,en",
             "--question", "What are the top 3 combos we should build for?")
     out = capsys.readouterr().out
-    assert "RANKING REQUEST: the user asked for 'top 3'" in out
-    assert "You asked for 'top 3'. Wikipedia pageviews can't say which topic or market is best" in out
-    assert out.index("RANKING REQUEST") < out.index("READY ANSWER")
+    assert "DECISION REQUEST: the user asked 'top 3'" in out
+    assert "You asked 'top 3'. Wikipedia pageviews can't decide that" in out
+    assert out.index("DECISION REQUEST") < out.index("RECOMMENDATION")
+
+
+def test_launch_questions_get_the_opener_in_a_single_analysis_too(run_cli, capsys):  # noqa: F811
+    run_cli("analyze", "--topic", "meditation", "--language", "de",
+            "--question", "Should we launch our meditation app in Germany?")
+    out = capsys.readouterr().out
+    assert "DECISION REQUEST: the user asked 'Should we launch'" in out
+    assert out.index("DECISION REQUEST") < out.index("RECOMMENDATION")
+    assert "Would you like this report as a PDF?" in out.strip().splitlines()[-1]

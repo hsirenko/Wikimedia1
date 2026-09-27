@@ -20,7 +20,10 @@ decision.
 - **Decision signals:** five separate readings (market size, growth, momentum, localization,
   stability), each with its evidence and rule, and never combined into a score or verdict.
 - **Portfolio mode** (`portfolio`): many topics × many editions in one matrix and chart, with
-  filters, the decision signals for every pair, and no ranking.
+  filters and the decision signals for every pair.
+- **Recommendation first:** every report opens with evidence-based next steps (what to validate
+  first, monitor or deprioritise), followed by a KPI-by-KPI breakdown.
+- **PDF on request:** `wiki-market pdf <report folder>` writes `report.pdf`.
 - **HTML reports:** every command also writes a self-contained `report.html`, with the charts
   embedded, in light and dark mode.
 
@@ -28,7 +31,8 @@ decision.
 
 ```text
 topic + language → topic resolution → Wikimedia collection → raw archive → normalized records
-                 → KPIs (demand, growth, seasonality, quality) → JSON + Markdown + HTML + charts
+                 → KPIs (demand, growth, seasonality, quality) → recommendation + KPI breakdown
+                 → JSON + Markdown + HTML + charts (+ PDF on request)
 ```
 
 The layers are separate packages. `clients/` is the only place that does HTTP. `data/` holds the
@@ -58,6 +62,9 @@ cd wikipedia-market-intelligence
 uv venv --python 3.13 && uv pip install -e ".[dev]"      # or: python -m venv .venv && pip install -e ".[dev]"
 ```
 
+PDF output needs `reportlab` (`pip install -e ".[pdf]"`). The skill installs it the first time
+`pdf` is used.
+
 ## 4. Configuration
 
 Settings come from `WMI_*` environment variables (see `.env.example`):
@@ -80,6 +87,7 @@ wiki-market cluster --topic meditation --language de           # analyze + relat
 wiki-market portfolio --topics examples/wellness-topics.yaml --languages de,en,fr,es
 wiki-market portfolio --topics meditation,yoga,sleep --languages de,fr --min-views 20000 --min-growth -10
 wiki-market topic --topic meditation --languages en,de,fr      # resolution only
+wiki-market pdf reports/meditation/de/2026-09-27                # report.pdf from a saved report
 wiki-market validate                                             # check every saved report
 wiki-market cache clear
 ```
@@ -312,6 +320,47 @@ that are a name or `{topic: name, category: label}`
 [`examples/wellness-portfolio/`](examples/wellness-portfolio/report.md) holds five wellness
 topics across four editions. On this data, all 19 pairs with a year-over-year figure declined.
 
+## Recommendation and KPI breakdown
+
+Every report (analysis, comparison, cluster, portfolio) starts with two sections:
+
+1. **Recommendation:** evidence-based next steps from written rules. Each option (a topic in one
+   edition) gets one tier, the first rule that matches:
+
+   | Tier | Rule |
+   |---|---|
+   | deprioritise | under 12,000 views a year, or 25% or more behind its edition (share-adjusted YoY) |
+   | validate first | at least 12,000 views a year, within 10% of its edition or ahead of it, and (with several options) demand at or above the set's median |
+   | monitor | everything else |
+
+   - **Order:** within a tier, options are ordered by audience size.
+   - **Extra notes:** timing from the lead option's seasonal peak; a caution when recent momentum
+     rests on a provisional anomaly; for `cluster`, related topics to explore (text-similar ones
+     marked `*`) and typed relations falling faster than the edition.
+   - **Never a verdict:** every recommendation ends with its basis. It is Wikipedia reader
+     attention only, not a go/no-go or investment call, and should be confirmed with search
+     volume, app-store demand and interviews.
+   - **Validated:** the rule is printed under the recommendation, and `validate` rebuilds the tiers.
+2. **KPI breakdown:** one entry per KPI, namely demand, growth (YoY against the edition, and the
+   3-year CAGR), momentum, seasonality and stability, localization, anomalies and data quality.
+   For one topic it's a table whose "Reading" column carries the decision signal and its
+   evidence. For several options it's one line per KPI across all of them.
+
+The detailed sections follow, renumbered from 3.
+
+The CLI prints the same two blocks first (`RECOMMENDATION`, `KPI BREAKDOWN`), and ends with a
+`PDF_OFFER` line. The skill tells the agent to answer in that order and to end every reply by
+offering a PDF of the report.
+
+## PDF reports
+
+`wiki-market pdf <report folder | report.md | result JSON>` turns a saved report into an A4
+`report.pdf` next to it:
+- in the report's language (DejaVu fonts from matplotlib, so Ukrainian renders);
+- with the charts embedded;
+- with table headers repeated across pages;
+- with a footer reminding readers that pageviews measure attention.
+
 ## HTML reports
 
 Every report folder also has `report.html`: the Markdown report as one self-contained page. The
@@ -382,7 +431,7 @@ KPI functions would not change.
 ## 13. Tests
 
 ```bash
-pytest                    # 183 offline tests; the network is replaced by a fake Wikimedia
+pytest                    # 205 offline tests; the network is replaced by a fake Wikimedia
 pytest -m integration     # 5 tests against the live API
 ```
 
@@ -401,6 +450,10 @@ response. The tests cover:
 - **Portfolio:** input order, per-topic failures, the median split, filters, one-language
   portfolios, the ready answer, both report languages, the chart and self-contained HTML.
 - **HTML:** tables, alignment, escaping, inline marks and embedded images.
+- **Recommendation:** every tier boundary, share adjustment, comparison, cluster and portfolio
+  recommendations, no verdict wording in either language, the report order, and `validate`
+  catching an edited recommendation.
+- **PDF:** the Markdown subset, key/value tables, and the `pdf` command in both languages.
 - **`validate`,** including catching a tampered report.
 
 ## Roadmap
@@ -416,5 +469,7 @@ In the order the spec (§40) sets:
    each with its evidence. Kept separate, with no single score.
 5. ~~**HTML report and portfolio mode**~~ (done): `report.html` for every report; `portfolio`
    with the matrix, chart, filters and signals.
+6. ~~**Recommendation, KPI breakdown and PDF**~~ (done): every report opens with evidence-based
+   next steps and a KPI-by-KPI breakdown; `pdf` on request.
 
 [aqs]: https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/reference/page-views.html

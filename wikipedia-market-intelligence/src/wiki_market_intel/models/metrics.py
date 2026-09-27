@@ -174,3 +174,33 @@ class Signals(BaseModel):
     stability: Literal["stable", "moderately_seasonal", "highly_seasonal", "volatile"] | None = None
     growth_basis: Literal["three_year_cagr", "yoy"] | None = None
     evidence: dict[str, str] = Field(default_factory=dict)   # English; the report rebuilds it per language
+
+
+class RecommendationItem(BaseModel):
+    """One option (a topic in one edition) and its tier; `reasons` are the rule codes that applied."""
+    label: str
+    project: str | None = None
+    tier: Literal["validate_first", "monitor", "deprioritise"]
+    reasons: list[str] = Field(default_factory=list)
+    annual_views: int | None = None
+    yoy: float | None = None
+    edition_yoy: float | None = None
+    relative: float | None = None               # share-adjusted YoY (raw YoY without edition data)
+
+
+class Recommendation(BaseModel):
+    """Evidence-based next steps (what to validate first), never a go/no-go or investment verdict."""
+    scope: Literal["analysis", "comparison", "portfolio"]
+    items: list[RecommendationItem] = Field(default_factory=list)
+    median: float | None = None                 # demand median of the compared set
+    lead_label: str | None = None               # the option the timing and momentum notes describe
+    peak_month: str | None = None
+    peak_ratio: float | None = None
+    momentum: str | None = None
+    recent_growth: float | None = None
+    provisional_anomaly: str | None = None
+    provisional_change: float | None = None
+    related_explore: list[str] = Field(default_factory=list)      # " *" marks text similarity only
+    related_context: list[str] = Field(default_factory=list)
+    related_declining: list[str] = Field(default_factory=list)
+    text: list[str] = Field(default_factory=list)                 # English; the report rebuilds it per language

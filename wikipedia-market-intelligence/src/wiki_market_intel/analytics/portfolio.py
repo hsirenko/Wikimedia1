@@ -19,6 +19,7 @@ import re
 import statistics
 
 from wiki_market_intel.analytics import formulas as f
+from wiki_market_intel.analytics import signals as signal_kpis
 from wiki_market_intel.models.analysis import (
     AnalysisResult, ComparisonResult, PortfolioFilters, PortfolioRow, PortfolioTopic,
 )
@@ -30,8 +31,8 @@ QUADRANT_MEANING = {
     "established": "not growing year over year, with demand at or above the portfolio median",
     "watch": "not growing year over year, with demand below the portfolio median",
 }
-NO_VERDICT = ("Wikipedia pageviews cannot rank these topics or markets, or give a go/no-go: they measure reader "
-              "attention, not revenue or demand for a product. The groups below are descriptive quadrants.")
+NO_VERDICT = ("The quadrants below describe demand and growth; they are not a verdict. Wikipedia pageviews measure "
+              "reader attention, not revenue or demand for a product.")
 
 
 def rows_from_comparison(item: PortfolioTopic, c: ComparisonResult) -> list[PortfolioRow]:
@@ -46,7 +47,8 @@ def rows_from_comparison(item: PortfolioTopic, c: ComparisonResult) -> list[Port
             annual_views=r.annual_views, yoy_growth=r.yoy_growth, three_year_cagr=r.three_year_cagr,
             three_month_growth=r.three_month_growth, momentum=r.momentum, topic_share=r.topic_share,
             topic_affinity=r.topic_affinity, topic_penetration=r.topic_penetration,
-            signals=a.signals if a else None, quality_level=r.quality_level, anomaly_count=r.anomaly_count))
+            signals=a.signals if a else None, quality_level=r.quality_level, anomaly_count=r.anomaly_count,
+            edition_yoy=signal_kpis.edition_yoy(a) if a else None))
     return rows
 
 
@@ -59,7 +61,7 @@ def row_from_analysis(item: PortfolioTopic, a: AnalysisResult) -> PortfolioRow:
         annual_views=a.demand.annual_views, yoy_growth=a.growth.yoy, three_year_cagr=a.growth.three_year_cagr,
         three_month_growth=a.growth.last_three_month_growth, momentum=a.growth.momentum,
         topic_penetration=a.localization.topic_penetration, signals=a.signals,
-        quality_level=a.quality.quality_level, anomaly_count=len(a.anomalies))
+        quality_level=a.quality.quality_level, anomaly_count=len(a.anomalies), edition_yoy=signal_kpis.edition_yoy(a))
 
 
 def failed_rows(item: PortfolioTopic, languages: list[str], status: str, reason: str) -> list[PortfolioRow]:
@@ -153,9 +155,9 @@ RANKING_WORDS = re.compile(
     r"should we (?:build|launch|pick|choose|go|enter|expand)|which (?:\w+ ){0,4}should|go/no-go|go or no-go)\b"
     r"|найкращ\w*|топ[\s-]*\d*|рейтинг\w*|пріоритет\w*|варто|обрати|вибрати",
     flags=re.IGNORECASE)
-RANKING_OPENER = ("You asked for {phrase}. Wikipedia pageviews can't say which topic or market is best or should come "
-                  "first: they measure how much people read about each one, not revenue or demand for a product. "
-                  "Here is what the data does show, grouped by quadrant and not ranked.")
+RANKING_OPENER = ("You asked {phrase}. Wikipedia pageviews can't decide that: they measure how much people read about "
+                  "a topic, not revenue or demand for a product. What they can show is where attention is sizeable "
+                  "and holding up, so the recommendation below gives the next step to validate.")
 
 
 def ranking_phrase(question: str | None) -> str | None:

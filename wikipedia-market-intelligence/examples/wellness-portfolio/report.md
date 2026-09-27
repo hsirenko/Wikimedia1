@@ -1,14 +1,39 @@
 # Portfolio Report: wellness
 
-_Topics: meditation, Mindfulness, yoga, sleep, insomnia · editions: de.wikipedia, en.wikipedia, fr.wikipedia, es.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T12:05:08+00:00 · source: Wikimedia Analytics API_
+_Topics: meditation, Mindfulness, yoga, sleep, insomnia · editions: de.wikipedia, en.wikipedia, fr.wikipedia, es.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T12:36:48+00:00 · source: Wikimedia Analytics API_
 
-## 1. Summary
+## 1. Recommendation
+
+**Validate Yoga · de.wikipedia first.**
+
+- Yoga · de.wikipedia: 98,454 views a year, at or above the median of the compared set (41,038); -16.1% year over year, against -7.3% for the whole edition: 9.4% behind the edition as a whole, within the 10% margin.
+- Monitor: Yoga · en.wikipedia, Meditation · en.wikipedia, Sleep · en.wikipedia, Insomnia · en.wikipedia, Yoga · es.wikipedia and 5 more.
+- Deprioritise: Mindfulness · en.wikipedia (193,075 views a year; -31.2% year over year, against -7.0% for the whole edition: 26.0% worse than the edition as a whole), Meditation · fr.wikipedia (31,017 views a year; -44.4% year over year, against -10.6% for the whole edition: 37.8% worse than the edition as a whole), Sleep · fr.wikipedia (29,299 views a year; -33.8% year over year, against -10.6% for the whole edition: 26.0% worse than the edition as a whole), Meditation · es.wikipedia (25,633 views a year; -57.1% year over year, against -20.9% for the whole edition: 45.8% worse than the edition as a whole) and 5 more.
+- Timing: attention to Yoga · de.wikipedia peaks in January (1.30× the average month), so plan launches and campaigns ahead of it.
+- For Yoga · de.wikipedia, momentum is accelerating: the last 3 months changed -0.0% on the 3 before, after a weaker 3 months before that.
+
+Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews.
+
+_Rule: validate first = at least 12,000 views a year, demand at or above the median of the compared set and a year-over-year change within 10% of the edition's (share-adjusted) or better; deprioritise = under 12,000 views a year, or 25% or more behind the edition; monitor = the rest._
+
+## 2. KPI Breakdown
+
+- **Demand (views, last 12 months):** from 3,273 (Insomnia · de.wikipedia) to 548,597 (Yoga · en.wikipedia)
+- **Growth (year over year):** from -58.0% (Insomnia · es.wikipedia) to -16.1% (Yoga · de.wikipedia)
+- **Growth (3-year CAGR):** from -39.6% (Meditation · es.wikipedia) to -7.9% (Insomnia · fr.wikipedia)
+- **Momentum (last 3 months):** accelerating: 10; decelerating: 5; stable: 5
+- **Affinity:** from 0.12 (Insomnia · de.wikipedia) to 1.63 (Meditation · de.wikipedia)
+- **Seasonality and stability:** moderately seasonal: 13; highly seasonal: 6; n/a: 1
+- **Anomalies:** from 0 (Meditation · fr.wikipedia) to 3 (Meditation · en.wikipedia)
+- **Data quality:** HIGH: 19; LOW: 1
+
+## 3. Summary
 
 - 20 topic and edition pairs are shown, across 5 topics and 4 editions.
 - Yoga · en.wikipedia had the most pageviews: 548,597 in the last 12 months.
 - Every shown pair with a year-over-year figure (19) declined year over year.
 
-## 2. Portfolio Matrix
+## 4. Portfolio Matrix
 
 One row per topic and edition, in the order given. Share and affinity are measured within each topic, across these editions. Rows are not sorted by any KPI, because that order would read as a ranking.
 
@@ -46,7 +71,7 @@ Quadrant split: growth above 0% year over year; demand at or above the median of
 
 Quadrant names are descriptive labels, not investment recommendations.
 
-## 3. Decision Signals
+## 5. Decision Signals
 
 Five separate signals, each from one written rule. They are evidence for a human decision: they are not combined into a score and are not a recommendation to buy or invest.
 
@@ -75,7 +100,7 @@ Five separate signals, each from one written rule. They are evidence for a human
 
 Rules: market size by views in the last 12 months (very low under 12,000, low under 60,000, medium under 300,000, high under 1,500,000); growth by the 3-year CAGR (declining under -3%, stable under +3%, growing under +15%); momentum by ±5 points of acceleration; localization by affinity (weak under 0.80, strong from 1.25); stability by anomaly episodes, then the seasonal peak (moderately seasonal from 1.12x, highly from 1.30x). Each edition's own report explains its readings with the numbers.
 
-## 4. Filters and Excluded Rows
+## 6. Filters and Excluded Rows
 
 No filters: every measured pair is shown.
 
@@ -83,7 +108,7 @@ No rows are hidden.
 
 Country filtering is not available: Wikimedia does not publish per-article pageviews by country.
 
-## 5. Topic Definitions
+## 7. Topic Definitions
 
 | Topic | Canonical topic | Wikidata ID | Articles |
 |---|---|---|---|
@@ -93,7 +118,7 @@ Country filtering is not available: Wikimedia does not publish per-article pagev
 | sleep | Sleep | Q35831 | de: Schlaf, en: Sleep, fr: Sommeil, es: Sueño |
 | insomnia | Insomnia | Q1869874 | de: Insomnie, en: Insomnia, fr: Insomnie, es: Insomnio |
 
-## 6. Data Quality
+## 8. Data Quality
 
 | Topic | Edition | Status | Quality | Anomalies |
 |---|---|---|---|---:|
@@ -118,7 +143,7 @@ Country filtering is not available: Wikimedia does not publish per-article pagev
 | Insomnia | fr.wikipedia | OK | HIGH | 1 |
 | Insomnia | es.wikipedia | OK | HIGH | 1 |
 
-## 7. Business Implications
+## 9. Business Implications
 
 ### What the data supports
 

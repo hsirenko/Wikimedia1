@@ -79,14 +79,14 @@ def test_analyze_does_not_compute_the_ecosystem(services):
     assert gap.status == "unavailable" and "cluster" in gap.reason
 
 
-def test_report_section_8_en_and_uk(cluster):
-    en = markdown.render(cluster, None, "en", "charts/ecosystem.png").split("## 8. Topic Ecosystem")[1].split("## 9.")[0]
+def test_report_section_9_en_and_uk(cluster):
+    en = markdown.render(cluster, None, "en", "charts/ecosystem.png").split("## 9. Topic Ecosystem")[1].split("## 10.")[0]
     assert "| **Meditation** |" in en and "| Buddhismus | facet of |" in en and "larger category" in en
     assert "### Interest concentration" in en and "n/a (fewer than 10 articles)" in en
     assert "adjacent interest signal" in en and "no article in this edition" in en
     for word in ("BUY", "best", "winner", "product-market"):
         assert word not in en
-    uk = markdown.render(cluster, None, "uk", "charts/ecosystem.png").split("## 8. Екосистема теми")[1].split("## 9.")[0]
+    uk = markdown.render(cluster, None, "uk", "charts/ecosystem.png").split("## 9. Екосистема теми")[1].split("## 10.")[0]
     assert "ширша категорія" in uk and "Концентрація інтересу" in uk
     for english in ("larger category", "facet of", "similar text", "Interest concentration", "Topic", "skipped"):
         assert english not in uk, english
@@ -138,4 +138,4 @@ def test_headline_counts_topics_that_outpaced_the_edition(cluster):
 def test_cli_prints_the_summary_before_the_detail_table(run_cli, capsys):  # noqa: F811
     run_cli("cluster", "--topic", "meditation", "--language", "de")
     out = capsys.readouterr().out
-    assert out.index("READY ANSWER") < out.index("DETAIL TABLE")
+    assert out.index("RECOMMENDATION") < out.index("RELATED TOPICS BY SIGNAL") < out.index("DETAIL TABLE")

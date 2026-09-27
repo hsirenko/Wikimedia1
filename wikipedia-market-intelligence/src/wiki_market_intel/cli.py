@@ -15,6 +15,7 @@ from pathlib import Path
 import yaml
 
 from wiki_market_intel.analytics import portfolio as portfolio_kpis
+from wiki_market_intel.analytics import recommend
 from wiki_market_intel.analytics import signals as signal_kpis
 from wiki_market_intel.analytics.summary import compact, pct
 from wiki_market_intel.config import Settings
@@ -22,7 +23,7 @@ from wiki_market_intel.data.cache import JsonFileCache
 from wiki_market_intel.errors import AmbiguousTopicError, ApiError, ArticleMissingError, TopicNotFoundError
 from wiki_market_intel.analytics.summary import comparison_observations, observations_from_spans
 from wiki_market_intel.i18n import SUPPORTED, Translator, resolve_report_language
-from wiki_market_intel.reporting import generator, markdown
+from wiki_market_intel.reporting import breakdown, generator, markdown
 from wiki_market_intel.service import (
     analyze, analyze_cluster, build_services, compare_languages, portfolio, resolve_topic,
 )
@@ -83,14 +84,13 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
     if args.json:
         print(result.model_dump_json(indent=2))
         return 0
-    d, g, q = result.demand, result.growth, result.quality
     print(f"{result.topic.canonical_name} | {result.metadata.project} '{result.topic.article_title}' | "
           f"{result.metadata.period_start}..{result.metadata.period_end}")
-    print(f"  annual views {compact(d.annual_views)} | YoY {pct(g.yoy)} | 3Y CAGR {pct(g.three_year_cagr)} | "
-          f"3M {pct(g.last_three_month_growth)} ({g.momentum or 'n/a'}) | quality {q.quality_level}")
+    _decision_request(question)
+    _answer_blocks(result.recommendation, _analysis_kpi_lines(result, Translator("en")))
+    print("  OBSERVATIONS:")
     for observation in result.observations:
         print(f"  - {observation}")
-    _print_signals(result)
     if result.ecosystem.computed:
         eco = result.ecosystem
         c = eco.concentration
@@ -99,8 +99,8 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
               f"articles): the largest article, {c.largest}, holds {pct(c.top_1, False)}; the top 5 hold "
               f"{pct(c.top_5, False)}.")
         from wiki_market_intel.analytics.ecosystem import quote_ready
-        print("  READY ANSWER (give this to the user as written, translated if needed; groups are descriptive, "
-              "not a ranking):")
+        print("  RELATED TOPICS BY SIGNAL (part 3 of your reply, after the KPI breakdown: give these sentences as "
+              "written, translated if needed; groups are descriptive):")
         for line in quote_ready(eco.related_topics, eco.edition_yoy, result.metadata.project):
             print(f"    {line}")
         print("  DETAIL TABLE. Signals are adjacent interest signals (descriptive), not ranked opportunities. "
@@ -125,19 +125,63 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
         for observation in observations_from_spans(result.demand, result.growth, result.seasonality,
                                                    markdown._spans(result), tr):
             print(f"  - {observation}")
-        print(f"  {tr('sig_title')}:")
-        explained = signal_kpis.explain(result, tr)
-        for name in signal_kpis.SIGNAL_NAMES:
-            label = getattr(result.signals, name)
-            reading = tr(f"sig.{name}.{label}") if label else tr("na")
-            print(f"    {tr('sig_name.' + name)}: {reading}. {explained.get(name, '')}".rstrip())
+        _answer_blocks(result.recommendation, _analysis_kpi_lines(result, tr), tr)
     elif wanted != "en":
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
               f"and reply to them in their language.")
     print(f"Wrote {files.json}\n      {files.markdown}\n      {files.html}" + (f"\n      {files.chart}" if files.chart else "")
           + (f"\n      {files.eco_chart}" if files.eco_chart else ""))
+    _pdf_offer(files.directory)
     return 0
+
+
+def _plain(text: str) -> str:
+    return text.replace("**", "")
+
+
+def _answer_blocks(rec, kpi_lines: list[str], tr=None) -> None:
+    """RECOMMENDATION then KPI BREAKDOWN: the first two parts of the agent's reply."""
+    tr = tr or Translator("en")
+    head = "" if tr.lang == "en" else f" in {tr.lang}"
+    print(f"  RECOMMENDATION{head} (part 1 of your reply: give it first, as written, translated if needed; "
+          f"evidence-based next steps, not a go/no-go):")
+    for line in recommend.sentences(rec, tr):
+        print(f"    {line}")
+    print(f"  KPI BREAKDOWN{head} (part 2 of your reply: one item per KPI, as written):")
+    for line in kpi_lines:
+        print(f"    - {_plain(line)}")
+
+
+def _analysis_kpi_lines(result, tr) -> list[str]:
+    reasons = {m.metric: m for m in result.quality.missing_metrics}
+
+    def missing(metric: str) -> str:
+        m = reasons.get(metric)
+        return tr("sig_missing", reason=m.reason.rstrip(".")) if m else tr("na")
+
+    q = result.quality.quality_reasons if tr.lang == "en" else markdown._quality_reasons(result, tr)
+    return [f"{kpi}: {value}. {reading}".rstrip(". ") + "." if reading else f"{kpi}: {value}."
+            for kpi, value, reading in breakdown.analysis_rows(result, tr, missing, q)]
+
+
+def _decision_request(question: str | None) -> None:
+    """A question that asks the data to decide ("should we launch", "top 3", "best") gets an opener."""
+    phrase = portfolio_kpis.ranking_phrase(question)
+    if phrase:
+        print(f"  DECISION REQUEST: the user asked {phrase}. Start your reply with this sentence (translated if "
+              f"needed), then give the RECOMMENDATION and the KPI BREAKDOWN. Write no verdict of your own:")
+        print(f"    {portfolio_kpis.RANKING_OPENER.format(phrase=phrase)}")
+
+
+def _pdf_offer(folder) -> None:
+    print(f"PDF_OFFER folder: {folder}  (if the user says yes, run the pdf command on this folder)")
+    print("REPLY CHECKLIST, in this order:")
+    print("  1. RECOMMENDATION, as written (after the DECISION REQUEST sentence, if one was printed)")
+    print("  2. KPI BREAKDOWN, one item per KPI")
+    print("  3. details the user asked for, the limits, and where the report files are")
+    print("  4. END YOUR REPLY WITH THIS QUESTION (translated if needed): "
+          "\"Would you like this report as a PDF? I can create it for you.\"")
 
 
 def _print_signals(result) -> None:
@@ -180,6 +224,9 @@ def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
         return 0
     print(f"{result.resolution.canonical_topic} ({result.resolution.wikidata_id}) | "
           f"{result.metadata.period_start}..{result.metadata.period_end}")
+    _decision_request(args.question)
+    _answer_blocks(result.recommendation, breakdown.multi_lines(breakdown.comparison_units(result), Translator("en")))
+    print("  DETAIL TABLE:")
     print(f"  {'edition':<14}{'views 12M':>10}{'YoY':>9}{'share':>8}{'pen./M':>9}{'affinity':>10}  quadrant")
     for r in result.rows:
         if r.status != "ok":
@@ -191,8 +238,7 @@ def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
               f"{(f'{r.topic_affinity:.2f}' if r.topic_affinity is not None else 'n/a'):>10}  {r.quadrant or 'n/a'}")
     for observation in result.observations:
         print(f"  - {observation}")
-    print("  READY ANSWER on signals (give this to the user as written, translated if needed; do not add a "
-          "verdict, score, ranking or 'assessment' per market):")
+    print("  SIGNALS per edition (use these labels as written; they are separate readings, not a score):")
     print(f"    {signal_kpis.NO_VERDICT}")
     for analysis in result.analyses.values():
         print(f"    - {signal_kpis.brief(analysis)}")
@@ -203,11 +249,15 @@ def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
               f"Reply to the user in it too. The same observations in {report_lang}:")
         for observation in comparison_observations(result.rows, Translator(report_lang)):
             print(f"  - {observation}")
+        _answer_blocks(result.recommendation,
+                       breakdown.multi_lines(breakdown.comparison_units(result), Translator(report_lang)),
+                       Translator(report_lang))
     elif wanted != "en":
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
               f"and reply to them in their language.")
     print(f"Wrote {files.json}\n      {files.markdown}\n      {files.html}" + "".join(f"\n      {c}" for c in files.charts))
+    _pdf_offer(files.directory)
     return 0
 
 
@@ -290,6 +340,9 @@ def cmd_portfolio(args: argparse.Namespace, settings: Settings) -> int:
         return 0
     print(f"Portfolio '{result.metadata.name}' | {len(result.metadata.topics)} topics x "
           f"{len(result.metadata.languages)} editions | {result.metadata.period_start}..{result.metadata.period_end}")
+    _decision_request(args.question)
+    _answer_blocks(result.recommendation, breakdown.multi_lines(breakdown.portfolio_units(result), Translator("en")))
+    print("  DETAIL TABLE:")
     print(f"  {'topic':<22}{'edition':<15}{'views 12M':>10}{'YoY':>9}{'3M':>9}  {'momentum':<13}{'affinity':>9}  quadrant")
     for r in result.visible:
         print(f"  {(r.canonical_topic or r.topic)[:21]:<22}{r.project:<15}{compact(r.annual_views):>10}"
@@ -304,13 +357,7 @@ def cmd_portfolio(args: argparse.Namespace, settings: Settings) -> int:
               f"({result.demand_threshold:,.0f} views, before filters).")
     for observation in result.observations:
         print(f"  - {observation}")
-    phrase = portfolio_kpis.ranking_phrase(args.question)
-    if phrase:
-        print(f"  RANKING REQUEST: the user asked for {phrase}. Start your reply with this sentence (translated if "
-              f"needed), then give the READY ANSWER groups below without numbering, reordering or picking from them:")
-        print(f"    {portfolio_kpis.RANKING_OPENER.format(phrase=phrase)}")
-    print("  READY ANSWER (give this to the user as written, translated if needed; do not rank topics or markets, "
-          "and do not add a verdict or a 'best' pick):")
+    print("  QUADRANTS (descriptive groups, for reference; the RECOMMENDATION above sets what to validate first):")
     for line in portfolio_kpis.ready_answer(result.rows):
         print(f"    {line}")
     for note in result.notes:
@@ -320,11 +367,38 @@ def cmd_portfolio(args: argparse.Namespace, settings: Settings) -> int:
               f"Reply to the user in it too. The same observations in {report_lang}:")
         for observation in portfolio_kpis.observations(result.rows, Translator(report_lang)):
             print(f"  - {observation}")
+        _answer_blocks(result.recommendation,
+                       breakdown.multi_lines(breakdown.portfolio_units(result), Translator(report_lang)),
+                       Translator(report_lang))
     elif wanted != "en":
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
               f"and reply to them in their language.")
     print(f"Wrote {files.json}\n      {files.markdown}\n      {files.html}" + "".join(f"\n      {c}" for c in files.charts))
+    _pdf_offer(files.directory)
+    return 0
+
+
+def cmd_pdf(args: argparse.Namespace, settings: Settings) -> int:
+    """report folder / report.md / result JSON -> report.pdf next to report.md."""
+    path = Path(args.path)
+    folder = path if path.is_dir() else path.parent
+    md = folder / "report.md"
+    if not md.is_file():
+        print(f"error: no report.md in {folder}", file=sys.stderr)
+        return 2
+    lang = "en"
+    for name in ("analysis.json", "comparison.json", "portfolio.json"):
+        if (folder / name).is_file():
+            lang = json.loads((folder / name).read_text("utf-8")).get("metadata", {}).get("report_language", "en")
+            break
+    try:
+        from wiki_market_intel.reporting import pdf
+        out = pdf.write(md, lang)
+    except ImportError:
+        print("error: PDF output needs the reportlab library: pip install reportlab", file=sys.stderr)
+        return 2
+    print(f"Wrote {out}")
     return 0
 
 
@@ -395,6 +469,10 @@ def build_parser() -> argparse.ArgumentParser:
     c = sub.add_parser("cache", help="manage the response cache")
     c.add_argument("action", choices=["clear"])
     c.set_defaults(func=cmd_cache)
+
+    pd = sub.add_parser("pdf", help="turn a saved report into report.pdf (A4, charts included)")
+    pd.add_argument("path", help="a report folder, its report.md, or its analysis/comparison/portfolio JSON")
+    pd.set_defaults(func=cmd_pdf)
 
     v = sub.add_parser("validate", help="check saved analysis.json / comparison.json / portfolio.json: schema "
                                         "and recomputed KPIs")

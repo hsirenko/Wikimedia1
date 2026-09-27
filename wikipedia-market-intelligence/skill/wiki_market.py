@@ -28,13 +28,14 @@ REQUIREMENTS = {
     "dateutil": "python-dateutil>=2.9", "jinja2": "jinja2>=3.1", "matplotlib": "matplotlib>=3.8",
     "yaml": "pyyaml>=6.0",
 }
+PDF_REQUIREMENTS = {"reportlab": "reportlab>=4.0"}   # installed only when the `pdf` command is used
 OUTPUTS = Path("/mnt/user-data/outputs")
 
 
-def ensure_dependencies() -> None:
+def ensure_dependencies(requirements: dict[str, str] = REQUIREMENTS) -> None:
     if sys.version_info < (3, 10):
         sys.exit("wiki-market-intel needs Python 3.10 or newer.")
-    missing = [req for module, req in REQUIREMENTS.items() if importlib.util.find_spec(module) is None]
+    missing = [req for module, req in requirements.items() if importlib.util.find_spec(module) is None]
     if not missing:
         return
     print(f"Installing missing libraries (first run only): {', '.join(missing)}", file=sys.stderr)
@@ -55,6 +56,8 @@ def writable_base() -> Path:
 
 def main() -> int:
     ensure_dependencies()
+    if sys.argv[1:2] == ["pdf"]:
+        ensure_dependencies(PDF_REQUIREMENTS)
     base = writable_base()
     os.environ.setdefault("WMI_DATA_DIR", str(base / "wiki_market_data"))
     os.environ.setdefault("WMI_REPORTS_DIR", str(base / "wiki_market_reports"))
@@ -75,10 +78,10 @@ def main() -> int:
 
 
 def results(reports: Path) -> dict[Path, float]:
-    """{result file: modification time} for every analysis, comparison and portfolio report."""
+    """{result file: modification time} for every analysis, comparison and portfolio report, and every PDF."""
     if not reports.exists():
         return {}
-    return {p: p.stat().st_mtime for name in ("analysis.json", "comparison.json", "portfolio.json")
+    return {p: p.stat().st_mtime for name in ("analysis.json", "comparison.json", "portfolio.json", "report.pdf")
             for p in reports.rglob(name)}
 
 

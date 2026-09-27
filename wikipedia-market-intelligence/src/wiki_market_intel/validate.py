@@ -14,7 +14,9 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from wiki_market_intel.analytics import anomalies, demand, growth, localization, portfolio, seasonality, signals
+from wiki_market_intel.analytics import (
+    anomalies, demand, growth, localization, portfolio, recommend, seasonality, signals,
+)
 from wiki_market_intel.analytics.periods import build_periods
 from wiki_market_intel.models.analysis import AnalysisResult, ComparisonResult, PortfolioResult, PortfolioRow
 from wiki_market_intel.models.metrics import LanguageOpportunityMetrics
@@ -80,12 +82,23 @@ def _check_analysis(result: AnalysisResult, stored_raw: dict, prefix: str = "") 
             if getattr(result.signals, field) != getattr(again, field):
                 problems.append(f"{prefix}signals.{field}: stored {getattr(result.signals, field)!r} "
                                 f"!= recomputed {getattr(again, field)!r}")
+    if result.recommendation is not None and "recommendation" in stored_raw:
+        problems += _check_recommendation(result.recommendation, recommend.of_analysis(result), prefix)
     if result.edition_monthly:
         pen, _ = localization.penetration(result.monthly, result.edition_monthly, periods["last_12m"], True)
         if not _same(result.localization.topic_penetration, pen):
             problems.append(f"{prefix}localization.topic_penetration: stored "
                             f"{result.localization.topic_penetration!r} != recomputed {pen!r}")
     return problems
+
+
+def _check_recommendation(stored, again, prefix: str = "") -> list[str]:
+    """The tiers and their order must follow from the report's own KPIs."""
+    before = [(i.label, i.tier) for i in stored.items]
+    after = [(i.label, i.tier) for i in again.items]
+    if before != after:
+        return [f"{prefix}recommendation: stored {before} != recomputed {after}"]
+    return []
 
 
 def _check_comparison(result: ComparisonResult, raw: dict) -> list[str]:
@@ -103,6 +116,8 @@ def _check_comparison(result: ComparisonResult, raw: dict) -> list[str]:
     threshold, _ = localization.compare(fresh, edition_annual)
     if not _same(result.demand_threshold, threshold):
         problems.append(f"demand_threshold: stored {result.demand_threshold!r} != recomputed {threshold!r}")
+    if result.recommendation is not None and "recommendation" in raw:
+        problems += _check_recommendation(result.recommendation, recommend.of_comparison(result))
     for stored, again in zip(result.rows, fresh):
         for field in ("topic_share", "topic_affinity", "quadrant"):
             if not _same(getattr(stored, field), getattr(again, field)):
@@ -133,6 +148,8 @@ def _check_portfolio(result: PortfolioResult, raw: dict) -> list[str]:
         problems.append(f"demand_threshold: stored {result.demand_threshold!r} != recomputed {threshold!r}")
     if len(fresh) != len(result.rows):
         return problems + [f"rows: stored {len(result.rows)} != recomputed {len(fresh)}"]
+    if result.recommendation is not None and "recommendation" in raw:
+        problems += _check_recommendation(result.recommendation, recommend.of_portfolio(result))
     for stored, again in zip(result.rows, fresh):
         for field in ("annual_views", "yoy_growth", "three_month_growth", "topic_affinity", "quadrant", "excluded_by"):
             if not _same(getattr(stored, field), getattr(again, field)):

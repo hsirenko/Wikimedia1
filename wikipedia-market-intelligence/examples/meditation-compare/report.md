@@ -1,15 +1,39 @@
 # Language Comparison Report: Meditation
 
-_Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T12:04:53+00:00 · source: Wikimedia Analytics API_
+_Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T12:36:32+00:00 · source: Wikimedia Analytics API_
 
-## 1. Summary
+## 1. Recommendation
+
+**No option stands out on reader attention yet.**
+
+- No option has both a sizeable audience (12,000 views a year or more, at or above the median) and a change within 10% of its edition. Treat every option as unproven until other sources confirm demand.
+- The largest audience is en.wikipedia: 311,869 views a year, at or above the median of the compared set (31,017); -20.8% year over year, against -7.0% for the whole edition: 14.9% worse than the edition as a whole.
+- Monitor: en.wikipedia, de.wikipedia, it.wikipedia.
+- Deprioritise: fr.wikipedia (31,017 views a year; -44.4% year over year, against -10.6% for the whole edition: 37.8% worse than the edition as a whole), es.wikipedia (25,633 views a year; -57.1% year over year, against -20.9% for the whole edition: 45.8% worse than the edition as a whole).
+
+Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews.
+
+_Rule: validate first = at least 12,000 views a year, demand at or above the median of the compared set and a year-over-year change within 10% of the edition's (share-adjusted) or better; deprioritise = under 12,000 views a year, or 25% or more behind the edition; monitor = the rest._
+
+## 2. KPI Breakdown
+
+- **Demand (views, last 12 months):** en.wikipedia 311,869 · de.wikipedia 56,910 · fr.wikipedia 31,017 · es.wikipedia 25,633 · it.wikipedia 17,203
+- **Growth (year over year):** en.wikipedia -20.8% · de.wikipedia -17.2% · fr.wikipedia -44.4% · es.wikipedia -57.1% · it.wikipedia -20.5%
+- **Growth (3-year CAGR):** en.wikipedia -17.9% · de.wikipedia -15.1% · fr.wikipedia -19.8% · es.wikipedia -39.6% · it.wikipedia -31.4%
+- **Momentum (last 3 months):** accelerating: en.wikipedia, de.wikipedia, fr.wikipedia, it.wikipedia; decelerating: es.wikipedia
+- **Affinity:** en.wikipedia 0.94 · de.wikipedia 1.64 · fr.wikipedia 1.06 · es.wikipedia 0.96 · it.wikipedia 0.91
+- **Seasonality and stability:** moderately seasonal: en.wikipedia, de.wikipedia; highly seasonal: fr.wikipedia, es.wikipedia, it.wikipedia
+- **Anomalies:** en.wikipedia 3 · de.wikipedia 2 · fr.wikipedia 0 · es.wikipedia 0 · it.wikipedia 1
+- **Data quality:** HIGH: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia
+
+## 3. Summary
 
 - en.wikipedia had the most pageviews: 311.9K in the last 12 months (70.5% of the topic's views across the compared editions).
 - The topic took the largest share of its edition's traffic in de.wikipedia: 6.7 views per million.
 - The highest topic affinity was in de.wikipedia: 1.64× the compared average.
 - Year-over-year change ranged from -57.1% (es.wikipedia) to -17.2% (de.wikipedia).
 
-## 2. Topic Definition
+## 4. Topic Definition
 
 | | |
 |---|---|
@@ -26,7 +50,7 @@ _Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia 
 | es.wikipedia | Meditación | 72116 |
 | it.wikipedia | Meditazione | 16979 |
 
-## 3. Language Opportunity
+## 5. Language Opportunity
 
 | Edition | Views (12M) | YoY | 3Y CAGR | 3M | Unique devices | Topic share | Penetration (per M) | Affinity | Quadrant |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---|
@@ -50,7 +74,7 @@ Five separate signals, each from one written rule. They are evidence for a human
 
 Rules: market size by views in the last 12 months (very low under 12,000, low under 60,000, medium under 300,000, high under 1,500,000); growth by the 3-year CAGR (declining under -3%, stable under +3%, growing under +15%); momentum by ±5 points of acceleration; localization by affinity (weak under 0.80, strong from 1.25); stability by anomaly episodes, then the seasonal peak (moderately seasonal from 1.12x, highly from 1.30x). Each edition's own report explains its readings with the numbers.
 
-## 4. Opportunity Matrix
+## 6. Opportunity Matrix
 
 ![Opportunity matrix](charts/opportunity.png)
 
@@ -63,7 +87,7 @@ Each edition is a point: historical growth (YoY) across, absolute demand (views 
 
 Quadrant names are descriptive labels, not investment recommendations.
 
-## 5. Localization
+## 7. Localization
 
 ![Topic penetration over time](charts/penetration.png)
 
@@ -76,14 +100,14 @@ Topic penetration: the topic's views per million views of its edition, month by 
 - A language edition is not a country: readers of es.wikipedia live in many countries.
 - A language edition is not a country: readers of it.wikipedia live in many countries.
 
-## 6. Definitions
+## 8. Definitions
 
 - Topic share: an edition's topic views / topic views across the compared editions (last 12 months).
 - Wikipedia topic penetration: topic views / all views of that edition (last 12 months), shown per million views. Not market penetration.
 - Topic affinity: (topic views / edition views) / (topic views / edition views across the compared editions). 1.0 means the same share of attention as the compared set; it is this system's own measure, relative to the editions compared, not an official Wikimedia metric.
 - Unique devices: Wikimedia publishes them per edition only, never per article, so the column is always n/a.
 
-## 7. Data Quality
+## 9. Data Quality
 
 | Edition | Status | Coverage | Quality | Anomalies |
 |---|---|---:|---|---|
@@ -94,7 +118,7 @@ Topic penetration: the topic's views per million views of its edition, month by 
 | it.wikipedia | OK | 100.0% | HIGH | 2026-08 +60.2% |
 
 
-## 8. Business Implications
+## 10. Business Implications
 
 ### What the data supports
 

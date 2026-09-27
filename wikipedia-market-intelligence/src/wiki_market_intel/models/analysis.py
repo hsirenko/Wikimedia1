@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 from wiki_market_intel.models.metrics import (
     Anomaly, AnomalyAnalysis, Concentration, Demand, Formula, Growth, LanguageOpportunityMetrics, Localization,
-    MissingMetric, MonthlyPoint, PeriodRef, RelatedTopic, Seasonality, Signals,
+    MissingMetric, MonthlyPoint, PeriodRef, Recommendation, RelatedTopic, Seasonality, Signals,
 )
 from wiki_market_intel.models.topic import TopicResolution
 
@@ -88,6 +88,7 @@ class AnalysisResult(BaseModel):
     ecosystem: Ecosystem = Field(default_factory=Ecosystem)
     quality: Quality
     signals: Signals = Field(default_factory=Signals)
+    recommendation: Recommendation | None = None
     observations: list[str] = Field(default_factory=list)
     monthly: list[MonthlyPoint] = Field(default_factory=list)
     edition_monthly: list[MonthlyPoint] = Field(default_factory=list)   # whole-edition totals (denominator)
@@ -120,6 +121,7 @@ class ComparisonResult(BaseModel):
     resolution: TopicResolution
     rows: list[LanguageOpportunityMetrics]
     analyses: dict[str, AnalysisResult] = Field(default_factory=dict)   # full per-language results
+    recommendation: Recommendation | None = None
     demand_threshold: float | None = None       # median annual views of compared editions (quadrant split)
     growth_threshold: float = 0.0
     observations: list[str] = Field(default_factory=list)
@@ -164,6 +166,7 @@ class PortfolioRow(BaseModel):
     signals: Signals | None = None
     quality_level: Literal["HIGH", "MEDIUM", "LOW"] | None = None
     anomaly_count: int | None = None
+    edition_yoy: float | None = None            # the whole edition's YoY, for share-adjusted comparisons
     quadrant: Literal["investigate", "explore", "established", "watch"] | None = None   # portfolio-wide split
     excluded_by: str | None = None
 
@@ -197,6 +200,7 @@ class PortfolioResult(BaseModel):
     rows: list[PortfolioRow]
     comparisons: dict[str, ComparisonResult] = Field(default_factory=dict)
     analyses: dict[str, AnalysisResult] = Field(default_factory=dict)
+    recommendation: Recommendation | None = None
     demand_threshold: float | None = None       # median annual views of all measured pairs (before filters)
     growth_threshold: float = 0.0
     observations: list[str] = Field(default_factory=list)

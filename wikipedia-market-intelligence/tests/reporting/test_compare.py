@@ -88,7 +88,7 @@ def test_comparison_files_and_validation(cmp, tmp_path):
 def test_english_comparison_report(cmp):
     text = comparison_report.render(cmp, "charts/opportunity.png", "charts/penetration.png", "en")
     assert text.startswith("# Language Comparison Report: Meditation")
-    assert [int(n) for n in re.findall(r"^## (\d+)\.", text, re.M)] == list(range(1, 9))
+    assert [int(n) for n in re.findall(r"^## (\d+)\.", text, re.M)] == list(range(1, 11))
     assert "| uk.wikipedia | no article |" in text and "| es.wikipedia | no data |" in text
     assert "not an official Wikimedia metric" in text and "descriptive labels, not investment" in text
     for word in ("BUY", "SELL", "BEST", "WINNER"):

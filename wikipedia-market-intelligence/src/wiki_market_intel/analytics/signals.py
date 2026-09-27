@@ -186,9 +186,9 @@ def explain(result, tr) -> dict[str, str]:
     return out
 
 
-NO_VERDICT = ("Wikipedia pageviews cannot give a go/no-go, a score or a ranking of markets: they measure reader "
-              "attention, not revenue or demand for a product. Each edition has five separate signals, and they "
-              "are not combined.")
+NO_VERDICT = ("Each edition has five separate signals; they are not combined into a score. Wikipedia pageviews "
+              "measure reader attention, not revenue or demand for a product, so neither these signals nor the "
+              "recommendation are a go/no-go.")
 
 
 def brief(result) -> str:

@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from jinja2 import Environment, StrictUndefined
 
+from wiki_market_intel.analytics import recommend
 from wiki_market_intel.analytics import signals as signal_kpis
+from wiki_market_intel.reporting import breakdown
 from wiki_market_intel.analytics.summary import comparison_observations
 from wiki_market_intel.i18n import Translator
 from wiki_market_intel.models.analysis import ComparisonResult
@@ -14,6 +16,22 @@ TEMPLATE = """\
 
 _{{ t("cmp_meta", editions=editions, start=c.metadata.period_start, end=c.metadata.period_end, generated=c.metadata.generated_at) }}_
 
+## {{ t("rec_title") }}
+
+**{{ rec_lines[0] }}**
+
+{% for line in rec_lines[1:-1] -%}
+- {{ line }}
+{% endfor %}
+{{ rec_lines[-1] }}
+
+_{{ rec_rule }}_
+
+## {{ t("kpi_title") }}
+
+{% for line in kpi_lines -%}
+- {{ line }}
+{% endfor %}
 ## {{ t("c1") }}
 
 {% for o in observations -%}
@@ -150,7 +168,10 @@ def render(c: ComparisonResult, matrix: str | None, penetration: str | None, lan
 
     env = Environment(undefined=StrictUndefined, autoescape=False, trim_blocks=False)
     env.globals.update(t=tr, num=num, rate=rate, dec=dec, per_m=per_m, sig_names=signal_kpis.SIGNAL_NAMES)
+    rec = c.recommendation or recommend.of_comparison(c)
     return env.from_string(TEMPLATE).render(
         c=c, matrix=matrix, penetration=penetration, notes=_notes(c, tr),
+        rec_lines=recommend.sentences(rec, tr), rec_rule=recommend.rule_text(rec, tr),
+        kpi_lines=breakdown.multi_lines(breakdown.comparison_units(c), tr),
         editions=", ".join(f"{l}.wikipedia" for l in c.metadata.languages),
         observations=comparison_observations(c.rows, tr))

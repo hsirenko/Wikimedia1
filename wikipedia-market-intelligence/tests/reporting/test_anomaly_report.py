@@ -18,10 +18,10 @@ def test_analysis_carries_anomalies_and_counts_them(services):
     assert "anomalies" not in {m.metric for m in r.quality.missing_metrics}
 
 
-def test_report_section_9_lists_anomalies_without_causes(services):
+def test_report_section_10_lists_anomalies_without_causes(services):
     r = analyze("meditation", "de", "3y", services=services)
     text = markdown.render(r, None, "en")
-    section = text.split("## 9. Anomalies")[1].split("## 10.")[0]
+    section = text.split("## 10. Anomalies")[1].split("## 11.")[0]
     assert "| Month | Actual | Expected (baseline) | Change vs baseline |" in section
     assert "Potential anomaly detected: 2025-11 pageviews were" in section and "Cause: unknown." in section
     for invented in ("because", "due to", "caused by", "news"):
@@ -30,7 +30,7 @@ def test_report_section_9_lists_anomalies_without_causes(services):
 
 def test_ukrainian_anomaly_section(services):
     r = analyze("meditation", "de", "3y", services=services)
-    section = markdown.render(r, None, "uk").split("## 9. Аномалії")[1].split("## 10.")[0]
+    section = markdown.render(r, None, "uk").split("## 10. Аномалії")[1].split("## 11.")[0]
     assert "Можлива аномалія: у 2025-11 перегляди були на" in section and "Причина: невідома." in section
     for english in ("Potential anomaly", "Month", "Expected", "Severity", "provisional", "Cause"):
         assert english not in section

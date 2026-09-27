@@ -10,8 +10,8 @@
     ],
     "period_start": "2023-09",
     "period_end": "2026-08",
-    "generated_at": "2026-09-27T12:04:53+00:00",
-    "data_retrieved_at": "2026-09-27T12:04:48+00:00",
+    "generated_at": "2026-09-27T12:36:32+00:00",
+    "data_retrieved_at": "2026-09-27T12:36:28+00:00",
     "source": "Wikimedia",
     "software_version": "0.1.0",
     "question": null,
@@ -165,8 +165,8 @@
         "project": "en.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T12:04:52+00:00",
-        "data_retrieved_at": "2026-09-27T12:04:52+00:00",
+        "generated_at": "2026-09-27T12:36:31+00:00",
+        "data_retrieved_at": "2026-09-27T12:36:31+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -429,6 +429,42 @@
           "localization": "Affinity 0.94 (this edition's share of the topic compared with the compared editions); moderate is 0.80 to under 1.25.",
           "stability": "The peak month, January, is 1.19x the average month; 3 flagged months out of 36, in 1 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal."
         }
+      },
+      "recommendation": {
+        "scope": "analysis",
+        "items": [
+          {
+            "label": "Meditation · en.wikipedia",
+            "project": "en.wikipedia",
+            "tier": "monitor",
+            "reasons": [
+              "sizeable",
+              "behind"
+            ],
+            "annual_views": 311869,
+            "yoy": -0.20832571788310794,
+            "edition_yoy": -0.06982758500252506,
+            "relative": -0.14889511949347456
+          }
+        ],
+        "median": null,
+        "lead_label": "Meditation · en.wikipedia",
+        "peak_month": "January",
+        "peak_ratio": 1.192134184327139,
+        "momentum": "accelerating",
+        "recent_growth": 0.5839927377260004,
+        "provisional_anomaly": "2026-08",
+        "provisional_change": 0.4558,
+        "related_explore": [],
+        "related_context": [],
+        "related_declining": [],
+        "text": [
+          "Monitor before spending on validation.",
+          "Meditation · en.wikipedia: 311,869 views a year; -20.8% year over year, against -7.0% for the whole edition: 14.9% worse than the edition as a whole.",
+          "Timing: attention to Meditation · en.wikipedia peaks in January (1.19× the average month), so plan launches and campaigns ahead of it.",
+          "For Meditation · en.wikipedia, momentum is accelerating: the last 3 months changed +58.4% on the 3 before, after a weaker 3 months before that. The latest flagged month (2026-08, +45.6% against its baseline) is provisional, so confirm the rise before relying on it.",
+          "Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews."
+        ]
       },
       "observations": [
         "Annual pageviews (2025-09..2026-08) were 311.9K (about 26.0K a month).",
@@ -1174,6 +1210,11 @@
           "edge_cases": "never combined into a single score, never a BUY / INVEST recommendation"
         },
         {
+          "name": "recommendation_tier",
+          "definition": "deprioritise: < 12,000 views/yr or share-adjusted YoY <= -25%; validate_first: >= 12,000 views/yr, share-adjusted YoY >= -10% and (with several options) demand >= the set's median; monitor: the rest. Within a tier, by audience size",
+          "edge_cases": "evidence-based next steps from reader attention only; never a go/no-go or investment call; raw YoY when the edition total is missing"
+        },
+        {
           "name": "quadrant",
           "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
           "edge_cases": ""
@@ -1183,14 +1224,14 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Meditation/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:52+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120452_bde0ce522f31.json"
+          "retrieved_at": "2026-09-27T12:36:31+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T123631_bde0ce522f31.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/en.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:52+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120452_c361e5c5945d.json"
+          "retrieved_at": "2026-09-27T12:36:31+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T123631_c361e5c5945d.json"
         }
       ]
     },
@@ -1201,8 +1242,8 @@
         "project": "de.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T12:04:52+00:00",
-        "data_retrieved_at": "2026-09-27T12:04:48+00:00",
+        "generated_at": "2026-09-27T12:36:31+00:00",
+        "data_retrieved_at": "2026-09-27T12:36:28+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -1454,6 +1495,42 @@
           "localization": "Affinity 1.64 (this edition's share of the topic compared with the compared editions); strong is 1.25 or more.",
           "stability": "The peak month, January, is 1.29x the average month; 2 flagged months out of 36, in 2 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal."
         }
+      },
+      "recommendation": {
+        "scope": "analysis",
+        "items": [
+          {
+            "label": "Meditation · de.wikipedia",
+            "project": "de.wikipedia",
+            "tier": "monitor",
+            "reasons": [
+              "sizeable",
+              "behind"
+            ],
+            "annual_views": 56910,
+            "yoy": -0.1718568102444703,
+            "edition_yoy": -0.07341253486465138,
+            "relative": -0.10624391013690104
+          }
+        ],
+        "median": null,
+        "lead_label": "Meditation · de.wikipedia",
+        "peak_month": "January",
+        "peak_ratio": 1.2912851814174295,
+        "momentum": "accelerating",
+        "recent_growth": 0.030592285423675758,
+        "provisional_anomaly": "2026-08",
+        "provisional_change": 0.4051,
+        "related_explore": [],
+        "related_context": [],
+        "related_declining": [],
+        "text": [
+          "Monitor before spending on validation.",
+          "Meditation · de.wikipedia: 56,910 views a year; -17.2% year over year, against -7.3% for the whole edition: 10.6% worse than the edition as a whole.",
+          "Timing: attention to Meditation · de.wikipedia peaks in January (1.29× the average month), so plan launches and campaigns ahead of it.",
+          "For Meditation · de.wikipedia, momentum is accelerating: the last 3 months changed +3.1% on the 3 before, after a weaker 3 months before that. The latest flagged month (2026-08, +40.5% against its baseline) is provisional, so confirm the rise before relying on it.",
+          "Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews."
+        ]
       },
       "observations": [
         "Annual pageviews (2025-09..2026-08) were 56.9K (about 4.7K a month).",
@@ -2199,6 +2276,11 @@
           "edge_cases": "never combined into a single score, never a BUY / INVEST recommendation"
         },
         {
+          "name": "recommendation_tier",
+          "definition": "deprioritise: < 12,000 views/yr or share-adjusted YoY <= -25%; validate_first: >= 12,000 views/yr, share-adjusted YoY >= -10% and (with several options) demand >= the set's median; monitor: the rest. Within a tier, by audience size",
+          "edge_cases": "evidence-based next steps from reader attention only; never a go/no-go or investment call; raw YoY when the edition total is missing"
+        },
+        {
           "name": "quadrant",
           "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
           "edge_cases": ""
@@ -2208,14 +2290,14 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/user/Meditation/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:48+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120448_2b682df09582.json"
+          "retrieved_at": "2026-09-27T12:36:28+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T123628_2b682df09582.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/de.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:48+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120448_c49dec8c1d36.json"
+          "retrieved_at": "2026-09-27T12:36:28+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T123628_c49dec8c1d36.json"
         }
       ]
     },
@@ -2226,8 +2308,8 @@
         "project": "fr.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T12:04:52+00:00",
-        "data_retrieved_at": "2026-09-27T12:04:52+00:00",
+        "generated_at": "2026-09-27T12:36:32+00:00",
+        "data_retrieved_at": "2026-09-27T12:36:32+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -2456,6 +2538,41 @@
           "localization": "Affinity 1.06 (this edition's share of the topic compared with the compared editions); moderate is 0.80 to under 1.25.",
           "stability": "The peak month, January, is 1.32x the average month; 0 flagged months out of 36, in 0 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal."
         }
+      },
+      "recommendation": {
+        "scope": "analysis",
+        "items": [
+          {
+            "label": "Meditation · fr.wikipedia",
+            "project": "fr.wikipedia",
+            "tier": "deprioritise",
+            "reasons": [
+              "far_behind"
+            ],
+            "annual_views": 31017,
+            "yoy": -0.44416966829740334,
+            "edition_yoy": -0.1059082278306519,
+            "relative": -0.37832966480165975
+          }
+        ],
+        "median": null,
+        "lead_label": "Meditation · fr.wikipedia",
+        "peak_month": "January",
+        "peak_ratio": 1.3230775679584181,
+        "momentum": "accelerating",
+        "recent_growth": 0.09523145566090352,
+        "provisional_anomaly": null,
+        "provisional_change": null,
+        "related_explore": [],
+        "related_context": [],
+        "related_declining": [],
+        "text": [
+          "Low priority on this evidence.",
+          "Meditation · fr.wikipedia: 31,017 views a year; -44.4% year over year, against -10.6% for the whole edition: 37.8% worse than the edition as a whole.",
+          "Timing: attention to Meditation · fr.wikipedia peaks in January (1.32× the average month), so plan launches and campaigns ahead of it.",
+          "For Meditation · fr.wikipedia, momentum is accelerating: the last 3 months changed +9.5% on the 3 before, after a weaker 3 months before that.",
+          "Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews."
+        ]
       },
       "observations": [
         "Annual pageviews (2025-09..2026-08) were 31.0K (about 2.6K a month).",
@@ -3201,6 +3318,11 @@
           "edge_cases": "never combined into a single score, never a BUY / INVEST recommendation"
         },
         {
+          "name": "recommendation_tier",
+          "definition": "deprioritise: < 12,000 views/yr or share-adjusted YoY <= -25%; validate_first: >= 12,000 views/yr, share-adjusted YoY >= -10% and (with several options) demand >= the set's median; monitor: the rest. Within a tier, by audience size",
+          "edge_cases": "evidence-based next steps from reader attention only; never a go/no-go or investment call; raw YoY when the edition total is missing"
+        },
+        {
           "name": "quadrant",
           "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
           "edge_cases": ""
@@ -3210,14 +3332,14 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/fr.wikipedia/all-access/user/M%C3%A9ditation/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:52+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120452_db7ec53d2678.json"
+          "retrieved_at": "2026-09-27T12:36:32+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T123632_db7ec53d2678.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/fr.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:52+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120452_d163f0e2aa54.json"
+          "retrieved_at": "2026-09-27T12:36:32+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T123632_d163f0e2aa54.json"
         }
       ]
     },
@@ -3228,8 +3350,8 @@
         "project": "es.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T12:04:52+00:00",
-        "data_retrieved_at": "2026-09-27T12:04:52+00:00",
+        "generated_at": "2026-09-27T12:36:32+00:00",
+        "data_retrieved_at": "2026-09-27T12:36:32+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -3458,6 +3580,41 @@
           "localization": "Affinity 0.96 (this edition's share of the topic compared with the compared editions); moderate is 0.80 to under 1.25.",
           "stability": "The peak month, September, is 1.35x the average month; 0 flagged months out of 36, in 0 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal."
         }
+      },
+      "recommendation": {
+        "scope": "analysis",
+        "items": [
+          {
+            "label": "Meditation · es.wikipedia",
+            "project": "es.wikipedia",
+            "tier": "deprioritise",
+            "reasons": [
+              "far_behind"
+            ],
+            "annual_views": 25633,
+            "yoy": -0.570715613538544,
+            "edition_yoy": -0.20867489161681407,
+            "relative": -0.45751198601727905
+          }
+        ],
+        "median": null,
+        "lead_label": "Meditation · es.wikipedia",
+        "peak_month": "September",
+        "peak_ratio": 1.352216197790726,
+        "momentum": "decelerating",
+        "recent_growth": -0.1519633738334214,
+        "provisional_anomaly": null,
+        "provisional_change": null,
+        "related_explore": [],
+        "related_context": [],
+        "related_declining": [],
+        "text": [
+          "Low priority on this evidence.",
+          "Meditation · es.wikipedia: 25,633 views a year; -57.1% year over year, against -20.9% for the whole edition: 45.8% worse than the edition as a whole.",
+          "Timing: attention to Meditation · es.wikipedia peaks in September (1.35× the average month), so plan launches and campaigns ahead of it.",
+          "For Meditation · es.wikipedia, momentum is slowing: the last 3 months changed -15.2% on the 3 before, after a stronger 3 months before that.",
+          "Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews."
+        ]
       },
       "observations": [
         "Annual pageviews (2025-09..2026-08) were 25.6K (about 2.1K a month).",
@@ -4203,6 +4360,11 @@
           "edge_cases": "never combined into a single score, never a BUY / INVEST recommendation"
         },
         {
+          "name": "recommendation_tier",
+          "definition": "deprioritise: < 12,000 views/yr or share-adjusted YoY <= -25%; validate_first: >= 12,000 views/yr, share-adjusted YoY >= -10% and (with several options) demand >= the set's median; monitor: the rest. Within a tier, by audience size",
+          "edge_cases": "evidence-based next steps from reader attention only; never a go/no-go or investment call; raw YoY when the edition total is missing"
+        },
+        {
           "name": "quadrant",
           "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
           "edge_cases": ""
@@ -4212,14 +4374,14 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/es.wikipedia/all-access/user/Meditaci%C3%B3n/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:52+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120452_1e60c1d3dbbb.json"
+          "retrieved_at": "2026-09-27T12:36:32+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T123632_1e60c1d3dbbb.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/es.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:52+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120452_e8ece5a18d58.json"
+          "retrieved_at": "2026-09-27T12:36:32+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T123632_e8ece5a18d58.json"
         }
       ]
     },
@@ -4230,8 +4392,8 @@
         "project": "it.wikipedia",
         "period_start": "2023-09",
         "period_end": "2026-08",
-        "generated_at": "2026-09-27T12:04:53+00:00",
-        "data_retrieved_at": "2026-09-27T12:04:53+00:00",
+        "generated_at": "2026-09-27T12:36:32+00:00",
+        "data_retrieved_at": "2026-09-27T12:36:32+00:00",
         "source": "Wikimedia",
         "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
         "access": "all-access",
@@ -4472,6 +4634,42 @@
           "localization": "Affinity 0.91 (this edition's share of the topic compared with the compared editions); moderate is 0.80 to under 1.25.",
           "stability": "The peak month, January, is 1.36x the average month; 1 flagged months out of 36, in 1 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal."
         }
+      },
+      "recommendation": {
+        "scope": "analysis",
+        "items": [
+          {
+            "label": "Meditation · it.wikipedia",
+            "project": "it.wikipedia",
+            "tier": "validate_first",
+            "reasons": [
+              "sizeable",
+              "keeps_pace"
+            ],
+            "annual_views": 17203,
+            "yoy": -0.20547755403657864,
+            "edition_yoy": -0.12997736789255632,
+            "relative": -0.08677956567766432
+          }
+        ],
+        "median": null,
+        "lead_label": "Meditation · it.wikipedia",
+        "peak_month": "January",
+        "peak_ratio": 1.3570934787618094,
+        "momentum": "accelerating",
+        "recent_growth": 0.07943578322197475,
+        "provisional_anomaly": "2026-08",
+        "provisional_change": 0.6025,
+        "related_explore": [],
+        "related_context": [],
+        "related_declining": [],
+        "text": [
+          "Worth validating further with other sources.",
+          "Meditation · it.wikipedia: 17,203 views a year; -20.5% year over year, against -13.0% for the whole edition: 8.7% behind the edition as a whole, within the 10% margin.",
+          "Timing: attention to Meditation · it.wikipedia peaks in January (1.36× the average month), so plan launches and campaigns ahead of it.",
+          "For Meditation · it.wikipedia, momentum is accelerating: the last 3 months changed +7.9% on the 3 before, after a weaker 3 months before that. The latest flagged month (2026-08, +60.2% against its baseline) is provisional, so confirm the rise before relying on it.",
+          "Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews."
+        ]
       },
       "observations": [
         "Annual pageviews (2025-09..2026-08) were 17.2K (about 1.4K a month).",
@@ -5217,6 +5415,11 @@
           "edge_cases": "never combined into a single score, never a BUY / INVEST recommendation"
         },
         {
+          "name": "recommendation_tier",
+          "definition": "deprioritise: < 12,000 views/yr or share-adjusted YoY <= -25%; validate_first: >= 12,000 views/yr, share-adjusted YoY >= -10% and (with several options) demand >= the set's median; monitor: the rest. Within a tier, by audience size",
+          "edge_cases": "evidence-based next steps from reader attention only; never a go/no-go or investment call; raw YoY when the edition total is missing"
+        },
+        {
           "name": "quadrant",
           "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
           "edge_cases": ""
@@ -5226,17 +5429,104 @@
         {
           "endpoint": "pageviews/per-article",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/it.wikipedia/all-access/user/Meditazione/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:53+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T120453_af414b80c12b.json"
+          "retrieved_at": "2026-09-27T12:36:32+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-per-article/20260927T123632_af414b80c12b.json"
         },
         {
           "endpoint": "pageviews/aggregate",
           "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/it.wikipedia/all-access/user/monthly/2020090100/2026083100",
-          "retrieved_at": "2026-09-27T12:04:53+00:00",
-          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T120453_a7e558859bee.json"
+          "retrieved_at": "2026-09-27T12:36:32+00:00",
+          "raw_path": "data/raw/wikimedia/pageviews-aggregate/20260927T123632_a7e558859bee.json"
         }
       ]
     }
+  },
+  "recommendation": {
+    "scope": "comparison",
+    "items": [
+      {
+        "label": "en.wikipedia",
+        "project": "en.wikipedia",
+        "tier": "monitor",
+        "reasons": [
+          "above_median",
+          "behind"
+        ],
+        "annual_views": 311869,
+        "yoy": -0.20832571788310794,
+        "edition_yoy": -0.06982758500252506,
+        "relative": -0.14889511949347456
+      },
+      {
+        "label": "de.wikipedia",
+        "project": "de.wikipedia",
+        "tier": "monitor",
+        "reasons": [
+          "above_median",
+          "behind"
+        ],
+        "annual_views": 56910,
+        "yoy": -0.1718568102444703,
+        "edition_yoy": -0.07341253486465138,
+        "relative": -0.10624391013690104
+      },
+      {
+        "label": "it.wikipedia",
+        "project": "it.wikipedia",
+        "tier": "monitor",
+        "reasons": [
+          "below_median",
+          "keeps_pace"
+        ],
+        "annual_views": 17203,
+        "yoy": -0.20547755403657864,
+        "edition_yoy": -0.12997736789255632,
+        "relative": -0.08677956567766432
+      },
+      {
+        "label": "fr.wikipedia",
+        "project": "fr.wikipedia",
+        "tier": "deprioritise",
+        "reasons": [
+          "far_behind"
+        ],
+        "annual_views": 31017,
+        "yoy": -0.44416966829740334,
+        "edition_yoy": -0.1059082278306519,
+        "relative": -0.37832966480165975
+      },
+      {
+        "label": "es.wikipedia",
+        "project": "es.wikipedia",
+        "tier": "deprioritise",
+        "reasons": [
+          "far_behind"
+        ],
+        "annual_views": 25633,
+        "yoy": -0.570715613538544,
+        "edition_yoy": -0.20867489161681407,
+        "relative": -0.45751198601727905
+      }
+    ],
+    "median": 31017.0,
+    "lead_label": null,
+    "peak_month": null,
+    "peak_ratio": null,
+    "momentum": null,
+    "recent_growth": null,
+    "provisional_anomaly": null,
+    "provisional_change": null,
+    "related_explore": [],
+    "related_context": [],
+    "related_declining": [],
+    "text": [
+      "No option stands out on reader attention yet.",
+      "No option has both a sizeable audience (12,000 views a year or more, at or above the median) and a change within 10% of its edition. Treat every option as unproven until other sources confirm demand.",
+      "The largest audience is en.wikipedia: 311,869 views a year, at or above the median of the compared set (31,017); -20.8% year over year, against -7.0% for the whole edition: 14.9% worse than the edition as a whole.",
+      "Monitor: en.wikipedia, de.wikipedia, it.wikipedia.",
+      "Deprioritise: fr.wikipedia (31,017 views a year; -44.4% year over year, against -10.6% for the whole edition: 37.8% worse than the edition as a whole), es.wikipedia (25,633 views a year; -57.1% year over year, against -20.9% for the whole edition: 45.8% worse than the edition as a whole).",
+      "Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews."
+    ]
   },
   "demand_threshold": 31017.0,
   "growth_threshold": 0.0,
@@ -5402,6 +5692,11 @@
       "name": "decision_signals",
       "definition": "five separate labels (market size, growth, momentum, localization, stability)",
       "edge_cases": "never combined into a single score, never a BUY / INVEST recommendation"
+    },
+    {
+      "name": "recommendation_tier",
+      "definition": "deprioritise: < 12,000 views/yr or share-adjusted YoY <= -25%; validate_first: >= 12,000 views/yr, share-adjusted YoY >= -10% and (with several options) demand >= the set's median; monitor: the rest. Within a tier, by audience size",
+      "edge_cases": "evidence-based next steps from reader attention only; never a go/no-go or investment call; raw YoY when the edition total is missing"
     },
     {
       "name": "quadrant",

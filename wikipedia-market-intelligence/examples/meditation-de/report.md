@@ -1,33 +1,33 @@
 # Wikipedia Market Intelligence Report
 
-## 1. Executive Decision Card
+_Topic: Meditation · Language edition: de.wikipedia · Analysis period: 2023-09 to 2026-08_
 
-| | |
-|---|---|
-| Topic | Meditation |
-| Language edition | de.wikipedia (a language edition, not a country) |
-| Analysis period | 2023-09 to 2026-08 |
-| Annual views (last 12 months) | 56,910 |
-| Monthly average | 4,742 |
-| Unique devices | n/a (unsupported: Wikimedia publishes unique devices per project (whole language edition) only, never per article.) |
-| YoY | -17.2% |
-| 3Y CAGR | -15.1% |
-| Momentum | accelerating |
-| Seasonality | peak January, trough July |
-| Localization metrics | Wikipedia topic penetration: 6.7 per million edition views |
-| Data quality | **HIGH** (full coverage, confident topic match, at least two years of data) |
+## 1. Recommendation
 
-### Decision signals
+**Monitor before spending on validation.**
+
+- Meditation · de.wikipedia: 56,910 views a year; -17.2% year over year, against -7.3% for the whole edition: 10.6% worse than the edition as a whole.
+- Timing: attention to Meditation · de.wikipedia peaks in January (1.29× the average month), so plan launches and campaigns ahead of it.
+- For Meditation · de.wikipedia, momentum is accelerating: the last 3 months changed +3.1% on the 3 before, after a weaker 3 months before that. The latest flagged month (2026-08, +40.5% against its baseline) is provisional, so confirm the rise before relying on it.
+
+Basis: Wikipedia reader attention only, not revenue or product demand. This is not a go/no-go or investment call: before committing budget, confirm with search volume, app-store demand and customer interviews.
+
+_Rule: validate first = at least 12,000 views a year and a year-over-year change within 10% of the edition's (share-adjusted) or better; deprioritise = under 12,000 views a year, or 25% or more behind the edition; monitor = the rest._
+
+## 2. KPI Breakdown
+
+| KPI | Value | Reading |
+|---|---|---|
+| Demand (views, last 12 months) | 56,910 (4,742 a month) | **low**. 56,910 views in the last 12 months; low is 12,000 to under 60,000. This is absolute: larger editions reach more readers. |
+| Growth (year over year) | -17.2% | against -7.3% for the whole edition: 10.6% worse |
+| Growth (3-year CAGR) | -15.1% | **declining**. 3-year CAGR -15.1%; declining is under -3.0% a year. For context, de.wikipedia as a whole changed -7.3% year over year. |
+| Momentum (last 3 months) | +3.1% against -10.1% before | **accelerating**. Last 3 months +3.1% against the 3 before them -10.1% (+13.2 points); above +5 points is accelerating, below -5 decelerating, otherwise stable. |
+| Seasonality and stability | peak January (1.29×), trough July | **moderately seasonal**. The peak month, January, is 1.29x the average month; 2 flagged months out of 36, in 2 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal. |
+| Localization | 6.7 views per million edition views | not computed (Only defined across several editions: run `compare` with the languages to compare.) |
+| Anomalies | 2 flagged | 2025-11 +43.3%; 2026-08 +40.5%, provisional; cause unknown |
+| Data quality | **HIGH** | full coverage, confident topic match, at least two years of data |
 
 Five separate signals, each from one written rule. They are evidence for a human decision: they are not combined into a score and are not a recommendation to buy or invest.
-
-| Signal | Reading | Evidence and rule |
-|---|---|---|
-| Market size (reader attention) | **low** | 56,910 views in the last 12 months; low is 12,000 to under 60,000. This is absolute: larger editions reach more readers. |
-| Growth | **declining** | 3-year CAGR -15.1%; declining is under -3.0% a year. For context, de.wikipedia as a whole changed -7.3% year over year. |
-| Momentum | **accelerating** | Last 3 months +3.1% against the 3 before them -10.1% (+13.2 points); above +5 points is accelerating, below -5 decelerating, otherwise stable. |
-| Localization | n/a | not computed (Only defined across several editions: run `compare` with the languages to compare.) |
-| Stability | **moderately seasonal** | The peak month, January, is 1.29x the average month; 2 flagged months out of 36, in 2 separate episodes. From 1.12x the topic is moderately seasonal, from 1.30x highly seasonal. |
 
 ### Key observations
 
@@ -37,7 +37,7 @@ Five separate signals, each from one written rule. They are evidence for a human
 - The last 3 months were +3.1% against the previous 3 months; momentum accelerating.
 - 2 potential anomalies flagged; the largest was +43.3% against its baseline in 2025-11 (cause unknown). With the flagged months replaced by their expected values, the year-over-year change would be -22.7%.
 
-## 2. Topic Definition
+## 3. Topic Definition
 
 | | |
 |---|---|
@@ -49,7 +49,7 @@ Five separate signals, each from one written rule. They are evidence for a human
 | Language mappings | de: Meditation |
 | Related topics | n/a (unavailable: Not computed by `analyze`: run `cluster` to measure related topics.) |
 
-## 3. Demand
+## 4. Demand
 
 | KPI | Value |
 |---|---:|
@@ -62,7 +62,7 @@ Five separate signals, each from one written rule. They are evidence for a human
 
 ![Monthly pageviews](charts/trend.png)
 
-## 4. Growth
+## 5. Growth
 
 | KPI | Value |
 |---|---:|
@@ -75,7 +75,7 @@ Five separate signals, each from one written rule. They are evidence for a human
 
 These are historical measurements, not forecasts. A growth chart is planned for a later milestone; the Demand chart shows the trend.
 
-## 5. Seasonality
+## 6. Seasonality
 
 | KPI | Value |
 |---|---:|
@@ -87,11 +87,11 @@ These are historical measurements, not forecasts. A growth chart is planned for 
 
 Basis: calendar-month means over 2023-09..2026-08 (3 observation(s) per month).
 
-## 6. Language Opportunity
+## 7. Language Opportunity
 
 n/a (unavailable: Only defined across several editions: run `compare` with the languages to compare.)
 
-## 7. Localization
+## 8. Localization
 
 | Metric | Value |
 |---|---|
@@ -101,12 +101,12 @@ n/a (unavailable: Only defined across several editions: run `compare` with the l
 
 A language edition is not a country: de.wikipedia is read wherever that language is read.
 
-## 8. Topic Ecosystem
+## 9. Topic Ecosystem
 
 Not computed by `analyze`: run `cluster` to measure related topics.
 
 
-## 9. Anomalies
+## 10. Anomalies
 
 Months far from their expected value. Expected = the median of the 6 months before and after, times the usual seasonal factor for that calendar month (from other years), so recurring seasonal peaks are not flagged. Flagged when the robust z-score exceeds 3.5 and the gap is at least 25.0%. Causes are not investigated.
 
@@ -123,13 +123,13 @@ Months far from their expected value. Expected = the median of the 6 months befo
 YoY with flagged months replaced by their expected values: -22.7% (reported YoY: -17.2%).
 
 
-## 10. Data Quality
+## 11. Data Quality
 
 | | |
 |---|---|
 | Source | Wikimedia Analytics API (https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article), access=all-access, agent=user |
-| Data retrieved | 2026-09-27T12:04:48+00:00 |
-| Report generated | 2026-09-27T12:04:48+00:00 (software 0.1.0) |
+| Data retrieved | 2026-09-27T12:36:28+00:00 |
+| Report generated | 2026-09-27T12:36:28+00:00 (software 0.1.0) |
 | Coverage | 100.0% |
 | Missing data | none |
 | Topic resolution confidence | 0.98 |
@@ -151,9 +151,9 @@ Metrics not computed:
 | ecosystem.related_topics | unavailable | Not computed by `analyze`: run `cluster` to measure related topics. |
 | signals.localization | unavailable | Only defined across several editions: run `compare` with the languages to compare. |
 
-Raw responses: `data/raw/wikimedia/pageviews-per-article/20260927T120448_2b682df09582.json`, `data/raw/wikimedia/pageviews-aggregate/20260927T120448_c49dec8c1d36.json`
+Raw responses: `data/raw/wikimedia/pageviews-per-article/20260927T123628_2b682df09582.json`, `data/raw/wikimedia/pageviews-aggregate/20260927T123628_c49dec8c1d36.json`
 
-## 11. Business Implications
+## 12. Business Implications
 
 ### What the data supports
 

@@ -10,7 +10,9 @@ from __future__ import annotations
 
 from jinja2 import Environment, StrictUndefined
 
+from wiki_market_intel.analytics import recommend
 from wiki_market_intel.analytics import signals as signal_kpis
+from wiki_market_intel.reporting import breakdown
 from wiki_market_intel.analytics.summary import observations_from_spans
 from wiki_market_intel.i18n import REASON_KEYS, Translator
 from wiki_market_intel.models.analysis import AnalysisResult
@@ -19,32 +21,30 @@ from wiki_market_intel.models.metrics import AnomalyAnalysis
 TEMPLATE = """\
 # {{ t("title") }}
 
+_{{ t("topic") }}: {{ r.topic.canonical_name or r.metadata.topic }} · {{ t("edition") }}: {{ r.metadata.project }} · {{ t("period") }}: {{ t("period_value", start=r.metadata.period_start, end=r.metadata.period_end) }}_
+
+## {{ t("rec_title") }}
+
+{% if rec_head -%}
+**{{ rec_head }}**
+
+{% for line in rec_points -%}
+- {{ line }}
+{% endfor %}
+{{ rec_basis }}
+
+_{{ rec_rule }}_
+{%- endif %}
+
 ## {{ t("s1") }}
 
-| | |
-|---|---|
-| {{ t("topic") }} | {{ r.topic.canonical_name or r.metadata.topic }} |
-| {{ t("edition") }} | {{ r.metadata.project }} ({{ t("edition_note") }}) |
-| {{ t("period") }} | {{ t("period_value", start=r.metadata.period_start, end=r.metadata.period_end) }} |
-| {{ t("annual") }} | {{ num(r.demand.annual_views, "demand.annual_views") }} |
-| {{ t("monthly") }} | {{ num(r.demand.monthly_average, "demand.annual_views") }} |
-| {{ t("unique") }} | {{ num(r.demand.unique_devices, "demand.unique_devices") }} |
-| {{ t("yoy") }} | {{ rate(r.growth.yoy, "growth.yoy") }} |
-| {{ t("cagr") }} | {{ rate(r.growth.three_year_cagr, "growth.three_year_cagr") }} |
-| {{ t("momentum") }} | {{ t("momentum." ~ r.growth.momentum) if r.growth.momentum else missing("growth.last_three_month_growth") }} |
-| {{ t("seasonality") }} | {% if r.seasonality.peak_month %}{{ t("season_value", peak=month_mid(r.seasonality.peak_month), trough=month_mid(r.seasonality.trough_month)) }}{% else %}{{ missing("seasonality.peak_month") }}{% endif %} |
-| {{ t("localization") }} | {{ t("penetration") }}: {{ pen(r.localization.topic_penetration) }} |
-| {{ t("quality") }} | **{{ t("level." ~ r.quality.quality_level) }}** ({{ quality_reasons | join("; ") }}) |
-
-### {{ t("sig_title") }}
-
+| {{ t("kpi_col_kpi") }} | {{ t("kpi_col_value") }} | {{ t("kpi_col_reading") }} |
+|---|---|---|
+{% for kpi, value, reading in kpi_rows -%}
+| {{ kpi }} | {{ value }} | {{ reading }} |
+{% endfor %}
 {{ t("sig_intro") }}
 
-| {{ t("sig_col_signal") }} | {{ t("sig_col_label") }} | {{ t("sig_col_evidence") }} |
-|---|---|---|
-{% for name, label, text in signal_rows -%}
-| {{ t("sig_name." ~ name) }} | {% if label %}**{{ t("sig." ~ name ~ "." ~ label) }}**{% else %}{{ t("na") }}{% endif %} | {{ text }} |
-{% endfor %}
 ### {{ t("observations") }}
 
 {% for o in observations -%}
@@ -330,13 +330,14 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
     else:
         basis = ""
 
-    explained = signal_kpis.explain(result, tr)
-    signal_rows = []
-    for name in signal_kpis.SIGNAL_NAMES:
-        label = getattr(result.signals, name)
-        gap = reasons.get(f"signals.{name}")
-        text = explained.get(name) or (tr("sig_missing", reason=reason(gap)) if gap else tr("na"))
-        signal_rows.append((name, label, text))
+    def signal_missing(metric: str) -> str:
+        gap = reasons.get(metric)
+        return tr("sig_missing", reason=reason(gap)) if gap else missing(metric)
+
+    q_reasons = _quality_reasons(result, tr)
+    kpi_rows = breakdown.analysis_rows(result, tr, signal_missing, q_reasons)
+    rec = result.recommendation or recommend.of_analysis(result)
+    rec_lines = recommend.sentences(rec, tr)
 
     env = Environment(undefined=StrictUndefined, autoescape=False)
     def month_mid(name):
@@ -348,10 +349,11 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
                        times=times, share=share,
                        month=tr.month, month_mid=month_mid)
     return env.from_string(TEMPLATE).render(
-        r=result, chart=chart_path, basis=basis, signal_rows=signal_rows,
+        r=result, chart=chart_path, basis=basis, kpi_rows=kpi_rows,
+        rec_head=rec_lines[0], rec_points=rec_lines[1:-1], rec_basis=rec_lines[-1], rec_rule=recommend.rule_text(rec, tr),
         observations=observations_from_spans(result.demand, result.growth, result.seasonality, _spans(result), tr,
                                              result.anomalies, result.anomaly_analysis),
         an_info=result.anomaly_analysis or AnomalyAnalysis(),
         eco=result.ecosystem, eco_chart=eco_chart, eco_notes=_eco_notes(result, tr) if result.ecosystem.computed else [],
-        quality_reasons=_quality_reasons(result, tr), notes=_notes(result, tr),
+        quality_reasons=q_reasons, notes=_notes(result, tr),
         missing_months=[tr("missing_month", month=line[:7]) for line in result.quality.missing_data])

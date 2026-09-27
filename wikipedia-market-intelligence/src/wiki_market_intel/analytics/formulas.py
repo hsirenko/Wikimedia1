@@ -228,6 +228,12 @@ REGISTRY: list[Formula] = [
     Formula(name="decision_signals",
             definition="five separate labels (market size, growth, momentum, localization, stability)",
             edge_cases="never combined into a single score, never a BUY / INVEST recommendation"),
+    Formula(name="recommendation_tier",
+            definition="deprioritise: < 12,000 views/yr or share-adjusted YoY <= -25%; validate_first: >= 12,000 "
+                       "views/yr, share-adjusted YoY >= -10% and (with several options) demand >= the set's median; "
+                       "monitor: the rest. Within a tier, by audience size",
+            edge_cases="evidence-based next steps from reader attention only; never a go/no-go or investment call; "
+                       "raw YoY when the edition total is missing"),
     Formula(name="quadrant",
             definition="growth: YoY > 0; demand: annual views >= median of compared editions; "
                        "labels investigate / explore / established / watch are descriptive, not recommendations"),

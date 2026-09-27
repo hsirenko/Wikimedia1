@@ -20,7 +20,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+pdf = ["reportlab>=4.0"]            # `wiki-market pdf`
+dev = ["pytest>=8.0", "reportlab>=4.0"]
 
 [project.scripts]
 wiki-market = "wiki_market_intel.cli:main"
