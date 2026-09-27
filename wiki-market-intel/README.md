@@ -51,9 +51,9 @@ Wikipedia Market Intelligence (WMI) helps product teams validate topic selection
 
 #### Download the skill zip
 
-The file Claude.ai can upload is a **GitHub Release** asset, not a zip of this repository.
+The current release is **v0.3.0** (CPython 3.13, hashed lockfiles). The file Claude.ai can upload is that **GitHub Release** asset, not a zip of this repository.
 
-1. Download **[wiki-market-intel-skill.zip](https://github.com/hsirenko/Wikimedia1/releases/latest/download/wiki-market-intel-skill.zip)**
+1. Download **[wiki-market-intel-skill.zip](https://github.com/hsirenko/Wikimedia1/releases/latest/download/wiki-market-intel-skill.zip)** (always the latest) or the pinned [v0.3.0 zip](https://github.com/hsirenko/Wikimedia1/releases/download/v0.3.0/wiki-market-intel-skill.zip)
 2. In Claude.ai, open **Customize → Skills** (or **Settings → Features → Skills**)
 3. Click **+** → **Upload a skill** and select that zip
 4. Toggle **wiki-market-intel** on and start a new chat
@@ -675,10 +675,10 @@ Do not commit zips. Publish one named `wiki-market-intel-skill.zip` on a GitHub 
 From a **clean** commit that contains the skill (this branch, not an old default-branch snapshot):
 
 ```bash
-sh wiki-market-intel/scripts/release.sh 0.2.0
+sh wiki-market-intel/scripts/release.sh 0.3.0
 ```
 
-That tags `v0.2.0`, pushes the tag, and attaches the zip. Pushing any `v*` tag also runs `.github/workflows/release-skill-zip.yml`, which rebuilds the same asset.
+That tags `v0.3.0`, pushes the tag, and attaches the zip. Pushing any `v*` tag also runs `.github/workflows/release-skill-zip.yml`, which rebuilds the same asset.
 
 Users then download:
 
