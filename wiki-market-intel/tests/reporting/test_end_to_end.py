@@ -152,6 +152,16 @@ def test_cli_reports_api_errors(settings, monkeypatch, capsys):
     assert "API error" in capsys.readouterr().err
 
 
+def test_cli_does_not_print_a_digest_when_validation_fails(run_cli, settings, capsys, monkeypatch):
+    monkeypatch.setattr(cli, "validate_file", lambda path: ["growth.yoy: stored 0.5 != recomputed -0.172"])
+    assert run_cli("analyze", "--topic", "meditation", "--language", "de") == 1
+    captured = capsys.readouterr()
+    assert "RECOMMENDATION" not in captured.out
+    assert "VALIDATION FAILED" in captured.err
+    assert "numbers were not printed" in captured.err
+    assert next(settings.reports_dir.rglob("analysis.json")).is_file()
+
+
 def test_validate_passes_and_catches_a_tampered_report(run_cli, settings, capsys):
     run_cli("analyze", "--topic", "meditation", "--language", "de")
     path = next(settings.reports_dir.rglob("analysis.json"))

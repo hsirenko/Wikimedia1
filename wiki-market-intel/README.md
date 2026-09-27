@@ -192,10 +192,12 @@ wiki-market pdf reports/astronomy/uk/2026-09-27
 
 #### `validate`
 
-Recompute recommendations and KPIs from an existing JSON report.
+`analyze`, `compare`, `cluster` and `portfolio` already run this check after writing the JSON
+and **before** printing the digest. A mismatch is exit code 1 and the numbers are not shown.
+Use the command later to re-check a saved report (or after someone edits the JSON):
 
 ```bash
-wiki-market validate reports/astronomy/uk/2026-09-27/report.json
+wiki-market validate reports/astronomy/uk/2026-09-27
 ```
 
 ---
@@ -447,7 +449,7 @@ question / CLI / Python API
   → result      AnalysisResult | ComparisonResult | PortfolioResult
                 JSON is always English; formulas.REGISTRY is embedded
   → report      report.md + report.html + charts/  (pdf is a separate command)
-  → validate    schema check + recompute every KPI from the stored monthly series
+  → validate    recompute every KPI from the written JSON; only then print the digest
 ```
 
 Commands compose that pipeline; they do not fetch or score on their own.

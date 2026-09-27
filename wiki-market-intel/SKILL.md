@@ -42,12 +42,22 @@ the report language: Ukrainian or English; other languages get English):
 | A one-page PDF of a report (after the user says yes) | `pdf <report folder>` (`--full` for every section) |
 
 Every command is `python3 <skill-dir>/scripts/wiki_market.py <command> ... --question "<the user's words>"`.
+If that `python3` is older than 3.10 (common on macOS: `/usr/bin/python3` is 3.9), the launcher
+re-execs Homebrew or the skill `.venv`. If it still exits with a version error, run the same
+command with `/opt/homebrew/bin/python3` or another 3.10+ interpreter.
 
-- `--language` / `--languages`: Wikipedia edition codes (`uk`, `pl`, `cs`, `de`, `es`, `en`, ...).
-  An edition is a language, **not a country**: say "uk.wikipedia readers", not "Ukraine".
+- `--language` / `--languages`: Wikipedia edition codes (`en`, `de`, `fr`, `es`, `pt`, `it`,
+  `nl`, `pl`, `cs`, `sk`, `uk`, `ru`, `tr`, `ro`, `hu`, `sv`, `fi`, `da`, `no`, `el`, `bg`,
+  `hr`, `sr`, `he`, `ar`, `fa`, `hi`, `id`, `vi`, `th`, `ja`, `ko`, `zh`, …). An unknown
+  code fails that edition only. An edition is a language, **not a country**: say
+  "uk.wikipedia readers", not "Ukraine".
 - `--period`: `3y` (default), `2y`, `18m`, or `--start 2023-09 --end 2026-08`. For "over the last
   two years" use `--period 2y`: the year-over-year figure then compares those two years.
-- The first run can take about 30 seconds while libraries install.
+- `--report-lang en|uk`: only if the user asks for the report in a different language from
+  their question. Default `auto` follows `--question`.
+- `--no-cache`: force a fresh fetch. `cache clear` wipes the on-disk cache.
+- The first run can take about 30 seconds while libraries install. After that, a cold
+  analyze is a few seconds per edition; a cached rerun is about a second.
 
 ## Choosing the topic
 
@@ -73,11 +83,25 @@ they ask for on any command:
   (default 10);
 - `--drop-margin 30`: how far behind the whole edition means deprioritise (default 25).
 
+## Language
+
+- **Reply in the language the user wrote in**, even when the saved report is English.
+- **Always pass the user's own words as `--question`**, unchanged and untranslated. That is
+  what sets report language (English and Ukrainian). Use `--report-lang` only if they ask
+  for a different report language than their question.
+- When the digest prints `REPORT_LANGUAGE uk` (or `en`), use that block. When it says the
+  user wrote in a language with **no report translation yet**, tell them the report files
+  are in English and still reply in their language.
+
 ## Follow-up questions
 
 Rerun the command with the changed assumption: another period, more languages, other criteria or a
-different concept. Responses are cached, so reruns are fast. Don't redo the maths yourself. To
-compare with an earlier answer, read that report's `analysis.json` / `comparison.json`.
+different concept. Responses are cached, so reruns are fast. Don't redo the maths yourself, and
+don't answer from memory of an earlier run. To compare with an earlier answer, read that report's
+`analysis.json` / `comparison.json` / `portfolio.json`. `cache clear` if they want fresh data.
+
+If the user's framing cannot be tested with pageviews (revenue, willingness to pay, a country,
+"should we launch"), say so and offer the closest question this tool can answer.
 
 ## Reading the output
 
@@ -102,7 +126,12 @@ four sections: Recommendation, Graph, Key Observations, KPI breakdown. It ends w
    - **"How far can we trust it?"**: answer with the data-quality level and its reasons, the
      anomaly flags (a spike can inflate growth; flags in the last 3 months are provisional; when
      the output gives the YoY with flagged months replaced, mention it), and the comparison with
-     the whole edition (Wikipedia traffic falls in many editions).
+     the whole edition. Wikipedia traffic falls in many editions (often ~7–25% year over year),
+     so a negative raw figure alone is not "interest fell". Always distinguish "this topic lost
+     share" from "the whole edition shrank". Pair every growth number with its quality level.
+   - **Seasonality:** if the output names a peak month or a strong cycle, never compare
+     consecutive months as if that were a trend; compare the same month year over year.
+     A spike is a one-off event, not a trend — if growth sits in flagged months, say so.
    - **Market size** is reader attention in that edition, not money or users. The five signals
      (market size, growth, momentum, localization, stability) are separate readings. Never combine
      them into a score.
@@ -142,6 +171,7 @@ four sections: Recommendation, Graph, Key Observations, KPI breakdown. It ends w
 | Code | Meaning | Your action |
 |---|---|---|
 | 0 | done | answer as above |
+| 1 | internal validation failed after compute | stop. Do not quote numbers. Tell the user the report failed an internal KPI check and was not shown |
 | 2 | bad input | fix the flags and rerun |
 | 3 | ambiguous topic; candidates printed | ask the user which one; rerun with `--topic "<exact title or Q-ID>"` |
 | 4 | topic not found, or no article in that language | say so; a missing article is itself a finding |
@@ -149,8 +179,22 @@ four sections: Recommendation, Graph, Key Observations, KPI breakdown. It ends w
 
 ## Checking a result
 
-`validate <report folder or JSON>` recomputes every KPI, signal and recommendation tier from the
-report's own stored monthly data. Run it when the user doubts a number or edits a report.
+Every `analyze` / `compare` / `cluster` / `portfolio` run recomputes KPIs from the just-written
+JSON **before** printing the digest. A mismatch is exit 1 and no numbers are printed. The
+standalone `validate <report folder or JSON>` command does the same check later, if the user
+doubts a number or edits a report.
+
+## Troubleshooting
+
+| Symptom | What to do |
+|---|---|
+| Exit 3, ambiguous topic | show the printed candidates; ask which one; rerun with that title or a Q-id |
+| Exit 4, no article | report the gap; ask before using a search-result stand-in |
+| Resolver picked the wrong concept | run `topic`, then rerun with the exact title or Q-id |
+| Everything looks like it is declining | expected on many editions — quote YoY against the whole edition, not raw alone |
+| Data quality low / many `n/a` | the topic is too thin on Wikipedia; offer a broader article or a bigger edition |
+| Exit 1, VALIDATION FAILED | do not quote numbers. Tell the user the internal KPI check failed |
+| Network / exit 5 | do not invent results. Ask the user to allow `wikimedia.org`, `*.wikipedia.org` and `www.wikidata.org` |
 
 More detail (KPI definitions, formulas, quality rules, data limitations, how the skill was
 verified and how to extend it): `README.md`.

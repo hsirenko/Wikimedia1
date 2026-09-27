@@ -31,6 +31,19 @@ from wiki_market_intel.service import (
 from wiki_market_intel.validate import find_reports, validate_file
 
 
+def _hold_if_invalid(json_path: Path) -> int | None:
+    """Recompute every KPI from the just-written JSON. Return 1 if the digest must not be printed."""
+    problems = validate_file(json_path)
+    if not problems:
+        return None
+    print(f"VALIDATION FAILED {json_path}", file=sys.stderr)
+    for problem in problems:
+        print(f"  {problem}", file=sys.stderr)
+    print("Calculations did not match a recompute from the stored monthly series. "
+          "The report files were written for debugging; numbers were not printed.", file=sys.stderr)
+    return 1
+
+
 def _load_input(path: str) -> dict:
     """YAML input as in spec §4: topic, language, period (e.g. 3y) or period: {start, end}."""
     data = yaml.safe_load(Path(path).read_text("utf-8")) or {}
@@ -98,6 +111,8 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
         services.http.close()
 
     files = generator.write(result, settings.reports_dir)
+    if held := _hold_if_invalid(files.json):
+        return held
     if args.json:
         print(result.model_dump_json(indent=2))
         return 0
@@ -242,6 +257,8 @@ def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
         services.http.close()
 
     files = generator.write_comparison(result, settings.reports_dir)
+    if held := _hold_if_invalid(files.json):
+        return held
     if args.json:
         print(result.model_dump_json(indent=2))
         return 0
@@ -358,6 +375,8 @@ def cmd_portfolio(args: argparse.Namespace, settings: Settings) -> int:
     finally:
         services.http.close()
     files = generator.write_portfolio(result, settings.reports_dir)
+    if held := _hold_if_invalid(files.json):
+        return held
     if args.json:
         print(result.model_dump_json(indent=2))
         return 0
