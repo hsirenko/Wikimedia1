@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wiki-market-intel"
+version = "0.1.0"
+description = "Market-intelligence engine built on Wikimedia pageview data: KPIs, not verdicts."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+    "httpx>=0.27,<1",
+    "pydantic>=2.7,<3",
+    "tenacity>=8.2",
+    "python-dateutil>=2.9",
+    "jinja2>=3.1",
+    "matplotlib>=3.8",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+pdf = ["reportlab>=4.0"]            # `wiki-market pdf`
+dev = ["pytest>=8.0", "reportlab>=4.0"]
+
+[project.scripts]
+wiki-market = "wiki_market_intel.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wiki_market_intel"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: calls the live Wikimedia APIs (run with: pytest -m integration)"]
+addopts = "-m 'not integration'"

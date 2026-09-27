@@ -1,0 +1,652 @@
+{
+ "items": [
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2020090100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 10752
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2020100100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 11959
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2020110100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 13072
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2020120100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 12950
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021010100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 17648
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021020100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 13471
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021030100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 13752
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021040100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 12664
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021050100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 11629
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021060100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8619
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021070100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8046
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021080100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8181
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021090100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7946
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021100100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8902
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021110100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 9637
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2021120100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8836
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022010100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 11573
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022020100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8678
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022030100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 9516
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022040100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8232
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022050100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7572
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022060100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7199
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022070100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6554
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022080100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6976
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022090100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7053
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022100100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7581
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022110100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8543
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2022120100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7145
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023010100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 10245
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023020100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7567
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023030100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8063
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023040100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7560
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023050100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7513
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023060100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7731
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023070100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7071
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023080100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7006
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023090100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6713
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023100100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7482
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023110100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7854
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2023120100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7310
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024010100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 10054
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024020100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8312
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024030100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 8426
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024040100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6678
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024050100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6071
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024060100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6243
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024070100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 5582
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024080100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 5973
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024090100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6251
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024100100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6912
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024110100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6755
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2024120100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6134
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025010100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7635
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025020100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 5972
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025030100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 6030
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025040100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 5022
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025050100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4846
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025060100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4391
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025070100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4068
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025080100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4704
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025090100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4498
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025100100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4895
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025110100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 7348
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2025120100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4574
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2026010100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 5159
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2026020100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4483
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2026030100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4573
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2026040100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4022
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2026050100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 4186
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2026060100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 3910
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2026070100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 3934
+  },
+  {
+   "project": "de.wikipedia",
+   "article": "Meditation",
+   "granularity": "monthly",
+   "timestamp": "2026080100",
+   "access": "all-access",
+   "agent": "user",
+   "views": 5328
+  }
+ ]
+}

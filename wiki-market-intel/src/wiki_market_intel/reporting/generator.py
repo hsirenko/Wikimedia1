@@ -1,0 +1,88 @@
+"""Write an analysis to reports/{topic}/{language}/{date}/ (spec §25)."""
+
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+from pathlib import Path
+
+from wiki_market_intel.models.analysis import AnalysisResult, ComparisonResult, PortfolioResult
+from wiki_market_intel.reporting import charts, comparison, html, markdown
+from wiki_market_intel.reporting import portfolio as portfolio_report
+
+
+@dataclass
+class ReportFiles:
+    directory: Path
+    json: Path
+    markdown: Path
+    chart: Path | None
+    eco_chart: Path | None = None
+    html: Path | None = None
+
+
+def slug(text: str) -> str:
+    return re.sub(r"[^\w-]+", "-", text.strip().lower(), flags=re.UNICODE).strip("-") or "topic"
+
+
+def write(result: AnalysisResult, reports_dir: Path, lang: str | None = None) -> ReportFiles:
+    """`lang` defaults to the language recorded in the result (from the user's question)."""
+    lang = lang or result.metadata.report_language
+    day = result.metadata.generated_at[:10]
+    kind = "cluster-" if result.ecosystem.computed else ""
+    directory = Path(reports_dir) / slug(result.metadata.topic) / f"{kind}{result.metadata.language}" / day
+    directory.mkdir(parents=True, exist_ok=True)
+
+    json_path = directory / "analysis.json"
+    json_path.write_text(result.model_dump_json(indent=2), "utf-8")
+
+    chart = charts.trend_chart(result, directory / "charts" / "trend.png", lang)
+    eco_chart = (charts.ecosystem_chart(result, directory / "charts" / "ecosystem.png", lang)
+                 if result.ecosystem.computed else None)
+    md_path = directory / "report.md"
+    md_path.write_text(markdown.render(result, "charts/trend.png" if chart else None, lang,
+                                       "charts/ecosystem.png" if eco_chart else None), "utf-8")
+    return ReportFiles(directory=directory, json=json_path, markdown=md_path, chart=chart, eco_chart=eco_chart,
+                       html=html.write(md_path, lang))
+
+
+@dataclass
+class ComparisonFiles:
+    directory: Path
+    json: Path
+    markdown: Path
+    charts: list[Path]
+    html: Path | None = None
+
+
+def write_comparison(result: ComparisonResult, reports_dir: Path, lang: str | None = None) -> ComparisonFiles:
+    """reports/{topic}/compare-{languages}/{date}/: comparison.json, report.md, charts/."""
+    lang = lang or result.metadata.report_language
+    day = result.metadata.generated_at[:10]
+    directory = (Path(reports_dir) / slug(result.metadata.topic) /
+                 ("compare-" + "-".join(result.metadata.languages)) / day)
+    directory.mkdir(parents=True, exist_ok=True)
+    json_path = directory / "comparison.json"
+    json_path.write_text(result.model_dump_json(indent=2), "utf-8")
+    matrix = charts.opportunity_matrix(result, directory / "charts" / "opportunity.png", lang)
+    penetration = charts.penetration_chart(result, directory / "charts" / "penetration.png", lang)
+    md_path = directory / "report.md"
+    md_path.write_text(comparison.render(result, "charts/opportunity.png" if matrix else None,
+                                         "charts/penetration.png" if penetration else None, lang), "utf-8")
+    return ComparisonFiles(directory=directory, json=json_path, markdown=md_path,
+                           charts=[p for p in (matrix, penetration) if p], html=html.write(md_path, lang))
+
+
+def write_portfolio(result: PortfolioResult, reports_dir: Path, lang: str | None = None) -> ComparisonFiles:
+    """reports/portfolio/{name}/{date}/: portfolio.json, report.md, report.html, charts/portfolio.png."""
+    lang = lang or result.metadata.report_language
+    day = result.metadata.generated_at[:10]
+    directory = Path(reports_dir) / "portfolio" / slug(result.metadata.name) / day
+    directory.mkdir(parents=True, exist_ok=True)
+    json_path = directory / "portfolio.json"
+    json_path.write_text(result.model_dump_json(indent=2), "utf-8")
+    chart = charts.portfolio_chart(result, directory / "charts" / "portfolio.png", lang)
+    md_path = directory / "report.md"
+    md_path.write_text(portfolio_report.render(result, "charts/portfolio.png" if chart else None, lang), "utf-8")
+    return ComparisonFiles(directory=directory, json=json_path, markdown=md_path, charts=[chart] if chart else [],
+                           html=html.write(md_path, lang))
