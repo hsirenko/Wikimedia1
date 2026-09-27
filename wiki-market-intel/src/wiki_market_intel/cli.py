@@ -104,10 +104,8 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
     print(f"{result.topic.canonical_name} | {result.metadata.project} '{result.topic.article_title}' | "
           f"{result.metadata.period_start}..{result.metadata.period_end}")
     _decision_request(question)
-    _answer_blocks(result.recommendation, _analysis_kpi_lines(result, Translator("en")))
-    print("  OBSERVATIONS:")
-    for observation in result.observations:
-        print(f"  - {observation}")
+    _answer_blocks(result.recommendation, _analysis_kpi_lines(result, Translator("en")),
+                   observations=result.observations)
     if result.ecosystem.computed:
         eco = result.ecosystem
         c = eco.concentration
@@ -142,7 +140,9 @@ def cmd_analyze(args: argparse.Namespace, settings: Settings) -> int:
         for observation in observations_from_spans(result.demand, result.growth, result.seasonality,
                                                    markdown._spans(result), tr):
             print(f"  - {observation}")
-        _answer_blocks(result.recommendation, _analysis_kpi_lines(result, tr), tr)
+        _answer_blocks(result.recommendation, _analysis_kpi_lines(result, tr), tr,
+                       observations=observations_from_spans(result.demand, result.growth, result.seasonality,
+                                                           markdown._spans(result), tr))
     elif wanted != "en":
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
@@ -157,13 +157,17 @@ def _plain(text: str) -> str:
     return text.replace("**", "")
 
 
-def _answer_blocks(rec, kpi_lines: list[str], tr=None) -> None:
-    """RECOMMENDATION then KPI BREAKDOWN: the first two parts of the agent's reply."""
+def _answer_blocks(rec, kpi_lines: list[str], tr=None, observations=None) -> None:
+    """RECOMMENDATION, then observations, then KPI BREAKDOWN — the report order."""
     tr = tr or Translator("en")
     head = "" if tr.lang == "en" else f" in {tr.lang}"
     print(f"  RECOMMENDATION{head}:")
     for line in recommend.sentences(rec, tr):
         print(f"    {line}")
+    if observations is not None:
+        print(f"  OBSERVATIONS{head}:")
+        for observation in observations:
+            print(f"  - {observation}")
     print(f"  KPI BREAKDOWN{head}:")
     for line in kpi_lines:
         print(f"    - {_plain(line)}")
@@ -195,9 +199,10 @@ def _pdf_offer(folder) -> None:
     print("REPLY CHECKLIST (instructions for you, not text for the user), in this order:")
     print("  1. the RECOMMENDATION lines, as written (after the DECISION REQUEST sentence, if one was printed); "
           "they are evidence-based next steps, not a go/no-go")
-    print("  2. the KPI BREAKDOWN lines, one item per KPI")
-    print("  3. details the user asked for, the limits, and where the report files are")
-    print("  4. END YOUR REPLY WITH THIS QUESTION (translated if needed): "
+    print("  2. the graph from the report (or a link to report.html)")
+    print("  3. the OBSERVATIONS lines")
+    print("  4. the KPI BREAKDOWN lines, one item per KPI")
+    print("  5. END YOUR REPLY WITH THIS QUESTION (translated if needed): "
           "\"Would you like a one-page PDF summary of this report? I can create it for you.\"")
 
 
@@ -243,7 +248,8 @@ def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
     print(f"{result.resolution.canonical_topic} ({result.resolution.wikidata_id}) | "
           f"{result.metadata.period_start}..{result.metadata.period_end}")
     _decision_request(args.question)
-    _answer_blocks(result.recommendation, breakdown.multi_lines(breakdown.comparison_units(result), Translator("en")))
+    _answer_blocks(result.recommendation, breakdown.multi_lines(breakdown.comparison_units(result), Translator("en")),
+                   observations=result.observations)
     print("  DETAIL TABLE:")
     print(f"  {'edition':<14}{'views 12M':>10}{'YoY':>9}{'share':>8}{'pen./M':>9}{'affinity':>10}  quadrant")
     for r in result.rows:
@@ -254,8 +260,6 @@ def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
               f"{pct(r.topic_share, False):>8}"
               f"{(f'{r.topic_penetration * 1e6:.1f}' if r.topic_penetration is not None else 'n/a'):>9}"
               f"{(f'{r.topic_affinity:.2f}' if r.topic_affinity is not None else 'n/a'):>10}  {r.quadrant or 'n/a'}")
-    for observation in result.observations:
-        print(f"  - {observation}")
     print("  SIGNALS per edition (use these labels as written; they are separate readings, not a score):")
     print(f"    {signal_kpis.NO_VERDICT}")
     for analysis in result.analyses.values():
@@ -269,7 +273,8 @@ def cmd_compare(args: argparse.Namespace, settings: Settings) -> int:
             print(f"  - {observation}")
         _answer_blocks(result.recommendation,
                        breakdown.multi_lines(breakdown.comparison_units(result), Translator(report_lang)),
-                       Translator(report_lang))
+                       Translator(report_lang),
+                       observations=comparison_observations(result.rows, Translator(report_lang)))
     elif wanted != "en":
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "
@@ -359,7 +364,8 @@ def cmd_portfolio(args: argparse.Namespace, settings: Settings) -> int:
     print(f"Portfolio '{result.metadata.name}' | {len(result.metadata.topics)} topics x "
           f"{len(result.metadata.languages)} editions | {result.metadata.period_start}..{result.metadata.period_end}")
     _decision_request(args.question)
-    _answer_blocks(result.recommendation, breakdown.multi_lines(breakdown.portfolio_units(result), Translator("en")))
+    _answer_blocks(result.recommendation, breakdown.multi_lines(breakdown.portfolio_units(result), Translator("en")),
+                   observations=result.observations)
     print("  DETAIL TABLE:")
     print(f"  {'topic':<22}{'edition':<15}{'views 12M':>10}{'YoY':>9}{'3M':>9}  {'momentum':<13}{'affinity':>9}  quadrant")
     for r in result.visible:
@@ -373,8 +379,6 @@ def cmd_portfolio(args: argparse.Namespace, settings: Settings) -> int:
     if result.demand_threshold is not None:
         print(f"  Quadrant split: YoY > 0%; demand >= the median of all measured pairs "
               f"({result.demand_threshold:,.0f} views, before filters).")
-    for observation in result.observations:
-        print(f"  - {observation}")
     print("  QUADRANTS (descriptive groups, for reference; the RECOMMENDATION above sets what to validate first):")
     for line in portfolio_kpis.ready_answer(result.rows):
         print(f"    {line}")
@@ -387,7 +391,8 @@ def cmd_portfolio(args: argparse.Namespace, settings: Settings) -> int:
             print(f"  - {observation}")
         _answer_blocks(result.recommendation,
                        breakdown.multi_lines(breakdown.portfolio_units(result), Translator(report_lang)),
-                       Translator(report_lang))
+                       Translator(report_lang),
+                       observations=portfolio_kpis.observations(result.rows, Translator(report_lang)))
     elif wanted != "en":
         print(f"REPORT_LANGUAGE en: the user wrote in '{wanted}', which has no report translation yet "
               f"(available: {', '.join(SUPPORTED)}). Tell the user the report is in English, "

@@ -81,6 +81,7 @@ def fake_get_json(url, user_agent=None):
 def stub_network(monkeypatch, tmp_path):
     monkeypatch.setattr(wm_api, "_get_json", fake_get_json)
     monkeypatch.setenv("WIKITRENDS_NO_CACHE", "1")
+    monkeypatch.setenv("WIKITRENDS_NO_ASSETS", "1")
     monkeypatch.chdir(tmp_path)
 
 
@@ -206,7 +207,7 @@ def test_no_pdf_needs_no_third_party_libraries():
         "out", "t", "T", "q", make_pdf=False,
     )
     assert "pdf" not in files
-    assert set(files) == {"json", "csv"}
+    assert set(files) == {"json", "csv", "report"}
 
 
 def test_auto_findings_always_pair_a_number_with_its_confidence():
@@ -221,6 +222,58 @@ def test_pdf_is_a_single_page():
     files = wikitrends.write_outputs(analysis, "out", "t", "Report", "q", make_pdf=True)
     assert os.path.getsize(files["pdf"]) > 1000
     assert "pdf_pages" not in files  # set only when it could not be compressed to one
+
+
+def test_analyze_saves_wikipedia_fetch_under_assets(monkeypatch, tmp_path, capsys):
+    folder = tmp_path / "assets"
+    monkeypatch.delenv("WIKITRENDS_NO_ASSETS", raising=False)
+    monkeypatch.setenv("WIKITRENDS_ASSETS_DIR", str(folder))
+    code = wikitrends.main([
+        "analyze", "--topic", "astronomy", "--langs", "uk",
+        "--months", str(MONTHS), "--no-pdf", "--out-dir", "cli-out", "--brief",
+    ])
+    assert code == 0
+    files = list(folder.glob("astronomy_*.json"))
+    assert len(files) == 1
+    name = files[0].name
+    assert name.startswith("astronomy_")
+    assert name.endswith(".json")
+    saved = json.loads(files[0].read_text(encoding="utf-8"))
+    assert saved["topics"] == ["astronomy"]
+    assert saved["languages"] == ["uk"]
+    assert saved["articles"][0]["title"] == "Астрономія"
+    assert saved["articles"][0]["points"]
+    assert "uk.wikipedia" in saved["edition_totals"]
+    assert "FILE wikipedia_fetch:" in capsys.readouterr().out
+
+
+def test_analyze_writes_a_reply_report_and_asks_about_pdf(capsys):
+    code = wikitrends.main([
+        "analyze", "--topic", "astronomy", "--langs", "uk,pl",
+        "--months", str(MONTHS), "--out-dir", "reply-out",
+    ])
+    out = capsys.readouterr().out
+    assert code == 0
+    assert "BEGIN_REPLY_REPORT" in out and "END_REPLY_REPORT" in out
+    assert "ASK_PDF" in out
+    assert out.index("END_REPLY_REPORT") < out.index("ASK_PDF")
+    assert "Would you also like a one-page PDF of this report?" in out
+    assert "FILE report:" in out
+    assert "FILE pdf:" not in out
+    assert os.path.exists("reply-out/wikitrends-astronomy-uk-pl.md")
+    assert not os.path.exists("reply-out/wikitrends-astronomy-uk-pl.pdf")
+
+
+def test_pdf_flag_writes_the_pdf(capsys):
+    code = wikitrends.main([
+        "analyze", "--topic", "astronomy", "--langs", "uk",
+        "--months", str(MONTHS), "--out-dir", "pdf-out", "--pdf",
+    ])
+    assert code == 0
+    out = capsys.readouterr().out
+    assert "FILE pdf:" in out
+    assert "ASK_PDF" not in out
+    assert os.path.exists("pdf-out/wikitrends-astronomy-uk.pdf")
 
 
 def test_cli_exits_zero_and_writes_files(capsys):
@@ -416,7 +469,7 @@ def test_pdf_is_a_one_page_decision_memo(capsys):
     """The PDF leads with a recommendation, not a table of numbers."""
     _first_look("m")
     code = wikitrends.main(["analyze", "--topic", "astronomy", "--langs", "uk,pl", "--months", str(MONTHS),
-                            "--out-dir", "m", "--summary", "Polish is LOSING GROUND."])
+                            "--out-dir", "m", "--pdf", "--summary", "Polish is LOSING GROUND."])
     out = capsys.readouterr().out
     assert code == 0
     assert "RECOMMENDATION" in out

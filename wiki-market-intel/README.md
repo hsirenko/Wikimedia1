@@ -360,7 +360,7 @@ topics across four editions. On this data, all 19 pairs with a year-over-year fi
 
 ## Recommendation and KPI breakdown
 
-Every report (analysis, comparison, cluster, portfolio) starts with two sections:
+Every report (analysis, comparison, cluster, portfolio) has the same four sections:
 
 1. **Recommendation:** evidence-based next steps from written rules. Each option (a topic in one
    edition) gets one tier, the first rule that matches:
@@ -385,14 +385,20 @@ Every report (analysis, comparison, cluster, portfolio) starts with two sections
    - **Editions without an article:** the recommendation says interest can't be measured there
      and lists what a search in that edition finds. These are candidates for the user to confirm,
      never automatic substitutes.
-2. **KPI breakdown:** one entry per KPI, namely demand, growth (YoY against the edition, and the
+2. **Graph:** the trend chart (analyze), opportunity / penetration charts (compare), related-topic
+   chart (`cluster`), or portfolio matrix chart.
+3. **Key observations:** the 3–5 factual sentences already computed from the KPIs. They are not
+   repeated later.
+4. **KPI breakdown:** one entry per KPI, namely demand, growth (YoY against the edition, and the
    3-year CAGR), momentum, seasonality and stability, localization, anomalies and data quality.
    For one topic it's a table whose "Reading" column carries the decision signal and its
-   evidence. For several options it's one line per KPI across all of them.
+   evidence. For several options it's one line per KPI across all of them, plus a compact table.
 
-The detailed sections follow, renumbered from 3.
+Topic definition, demand/growth/seasonality tables, data-quality dumps and the "business
+implications" block are omitted: they repeated the same numbers and the recommendation already
+states the limits.
 
-The CLI prints the same two blocks first (`RECOMMENDATION`, `KPI BREAKDOWN`), and ends with a
+The CLI prints the same blocks (`RECOMMENDATION`, `OBSERVATIONS`, `KPI BREAKDOWN`), and ends with a
 `PDF_OFFER` line. The skill tells the agent to answer in that order and to end every reply by
 offering a PDF of the report.
 
@@ -537,33 +543,89 @@ trust. Each layer has its own check:
 
 ## Developing it further
 
-The skill answers the basic questions (one topic in one language, several languages, related
-topics, a portfolio) from monthly per-article pageviews. The next iterations, in the order they
-unlock the most:
+The skill already handles the basic questions: one topic in one language (`analyze`), the same
+topic across editions (`compare`), related concepts (`cluster`), and many topics × many languages
+(`portfolio`). This section is how to grow it from there so it can run **harder research** and
+**larger volumes of data**, without breaking what makes it usable as an agent skill.
 
-1. **Topics as sets of articles, not one article.** Real interest in "intermittent fasting" is
-   spread over redirects, sub-articles and neighbouring concepts. The next step is aggregating a
-   topic over a Wikidata subtree or category plus its redirects, with the set stored and shown.
-   `cluster` already finds the relations.
-2. **Bulk data instead of per-article calls.** For thousands of articles, read the monthly
-   pageview dumps (dumps.wikimedia.org) instead of the REST API. Store normalized series in
-   Parquet or DuckDB, and update them incrementally each month. The `clients/` layer isolates this
-   switch, and analytics and reporting stay unchanged.
-3. **Daily data and forecasts with uncertainty.** Use daily granularity for event-driven topics,
-   and seasonal decomposition with prediction intervals, labelled as forecasts. This keeps the
-   rule that the tool never explains causes.
-4. **More sources behind the same interface.** Search volume (Google Trends), app-store ranks and
-   edition-level unique devices and countries (published per project, not per article) can plug
-   in as further providers (see "Adding another data provider"). The recommendation can then
-   require agreement between sources.
-5. **Research projects, not single questions.** Saved projects (topics, languages, criteria),
-   diffs between runs ("what changed since last month"), scheduled refreshes and alerts when a
-   topic crosses a user's criteria.
-6. **Evaluation in CI.** Run the `evals/` scenarios on every change with a cheap model (Haiku, or a
-   free OpenRouter model). Score the replies with `evals/check_reply.py`: order, PDF offer, no
-   verdicts, every number found in the report.
-7. **Leaner agent interface.** A compact `--json` summary for agents with small context windows,
-   and an MCP server wrapping the same commands.
+Do the work in the order below. Each step should pay off before the next starts. Two rules stay
+fixed the whole way: **one command still answers one question**, and **stdout stays short while
+detail goes to files**. Chaining extra scripts is the main way an agent skill gets worse.
+`clients/` stays the only HTTP layer; analytics and reporting should not need to change when the
+source of pageviews changes.
+
+### How to iterate
+
+1. Add one capability that answers a question the current commands cannot.
+2. Give it a test built from a case where the naive answer is wrong (the existing suite is
+   written that way).
+3. Keep the agent interface: the same launcher, `--question`, recommendation first, no verdicts.
+4. Re-run `evals/` on a cheap model (Haiku, or a free OpenRouter model) and score replies with
+   `evals/check_reply.py`. Usability for a weak model regresses silently if you only test the
+   Python.
+
+### Iteration 1 — more complex research, same monthly API
+
+These stay on per-article pageviews. They make a single study deeper or invert the question from
+"is X growing?" to "what is growing?".
+
+1. **Topics as sets of articles, not one article.** Interest in "intermittent fasting" is spread
+   over redirects, sub-articles and neighbours. Aggregate a Wikidata subtree or Wikipedia
+   category plus redirects, store the set, and show each article's contribution so the basket
+   stays auditable. `cluster` already finds the relations; the next step is to *sum* them as one
+   topic.
+2. **Screening.** Pull an edition's `top` articles across months, rank by share momentum above a
+   traffic floor, and return the fastest risers. Founders often lack hypotheses more than they
+   lack a test of one topic.
+3. **Daily grain for events, forecasts as ranges.** For a flagged month, refetch `--granularity
+   daily` and date the peak. Do not guess the cause (the tool still says "unknown"). Once
+   seasonality is known, a seasonal-naive or STL forecast 6–12 months ahead is useful only as an
+   interval, labelled as a forecast.
+4. **A control basket.** Compare the topic to a few evergreen articles in the same edition so
+   share drift is not confused with the edition's mix changing.
+5. **Other Wikimedia projects.** Wiktionary pageviews are a better proxy for language-learning
+   attention than Wikipedia's *English language* article. The project parameter can already name
+   `xx.wiktionary`; defaults and validation are the missing work.
+6. **Geography, only as far as the data goes.** `top-by-country` is per edition, not per article,
+   and privacy-rounded. Report it as indicative edition-level reading, never as the topic's
+   country mix.
+
+### Iteration 2 — larger volumes of data
+
+The current shape (file cache, a few concurrent REST calls, a digest the model reads whole)
+holds for tens of series. It breaks at hundreds, in this order:
+
+1. **Reusable storage.** Move the cache to SQLite or DuckDB with a
+   `(project, article, month)` key. Fetch only months not already stored. This changes cost more
+   than any other single step.
+2. **Dumps instead of per-article calls.** Past roughly a thousand articles, read the published
+   [pageview dumps](https://dumps.wikimedia.org/other/pageviews/): one pass over a monthly file
+   yields every article. Keep the REST API for small interactive queries. The `clients/` layer
+   isolates the switch; store normalized series in Parquet or DuckDB and update them each month.
+3. **Batch topics.** Accept `--topics-file topics.csv` (50–500 rows) and write a ranked table
+   plus a multi-page report. That is the point at which dumps and a database become mandatory.
+4. **Context budget.** A 300-row result cannot go through a model's window. Print only the top
+   and bottom N plus aggregates, and keep the full table on disk with a `query` command the
+   agent can filter. The digest should describe the *shape* of the result, not list it.
+5. **Statistics that only pay at this scale.** STL instead of the current seasonality heuristic;
+   change-point detection for *when* a trend turned; multiple-comparison correction (500 tests
+   at p<0.05 invent about 25 trends).
+
+### Iteration 3 — research programmes, not one-off questions
+
+1. **Saved projects.** Persist topics, languages and criteria; diff runs ("what changed since
+   last month"); optional scheduled refresh and an alert when a series crosses the user's
+   thresholds.
+2. **More sources behind the same interface.** Search volume, app-store ranks, and edition-level
+   unique devices or countries can plug in as further providers (see "Adding another data
+   provider"). The recommendation can then require agreement between sources. Wikipedia stays
+   the cheap first filter; it still does not confirm demand.
+3. **Evaluation in CI.** Run the `evals/` scenarios on every change.
+4. **Leaner agent interface.** A compact `--json` summary for small context windows, and an MCP
+   server wrapping the same commands.
+
+What not to add while scaling: a second analysis path, a score that collapses the five signals,
+or wording that turns pageviews into go/no-go. Those would undo the skill, not extend it.
 
 ## Roadmap (done)
 

@@ -14,8 +14,7 @@ python3 -m venv .venv
 ```
 
 Charts and PDFs need `matplotlib` and `reportlab`. Fetching and analysis use only the
-standard library, so `--no-pdf` runs on a bare Python 3.9+ install with nothing to
-install at all.
+standard library, so a default `analyze` (no `--pdf`) runs on a bare Python 3.9+ install.
 
 ## Try it
 
@@ -31,8 +30,9 @@ install at all.
 .venv/bin/python scripts/wikitrends.py resolve --topic "intermittent fasting" --langs pl,cs,uk
 ```
 
-Results land in `wikitrends-out/`: a one-page PDF, two PNG charts, the full statistics
-as JSON, and every monthly observation as CSV.
+Results land in `wikitrends-out/`: a Markdown memo for the chat reply, the full
+statistics as JSON, and every monthly observation as CSV. A one-page PDF is written
+only if you pass `--pdf`.
 
 ## Running where there is no network
 
@@ -136,25 +136,6 @@ returns *Charlie Kirk*. A missing sitelink is reported as a genuine gap.
 
 **Whole months only.** Requesting `monthly/20240101/20240401` yields an "April" of one
 day, which reads as a 98% crash. Windows always end on the last complete month.
-
-## Development notes
-
-AI assistance was used throughout; everything was verified rather than trusted:
-
-- Live API responses were inspected before any code was written against them. This is
-  how the partial-month trap and the missing Polish article were found.
-- Statistical claims were checked against hand-constructed series with known answers
-  (`theil_sen_slope([10,13,16,19,22]) == 3.0`), and the platform-wide decline was
-  confirmed by querying the `aggregate` endpoint directly for six editions.
-- The "no Polish article" result was cross-checked by probing four plausible Polish
-  titles individually before letting the skill report it.
-- PDFs were rendered to images and read back to confirm Cyrillic and Czech characters
-  appear rather than falling back to empty boxes.
-- The skill was driven by Claude Haiku 4.5 cold, with only `SKILL.md` for guidance. It
-  answered all three example questions in one command each, and its critique produced
-  four fixes: a self-contained `verdict:` line (it had transposed a percentage between
-  two runs), plain-language `LOSING GROUND`/`HOLDING GROUND` labels, explicit
-  thresholds in confidence reasons, and a language-code list in `SKILL.md`.
 
 ## License
 

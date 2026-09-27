@@ -91,16 +91,16 @@ def test_comparison_fills_localization_from_affinity(services):
         assert "signals.localization" not in {m.metric for m in a.quality.missing_metrics}
         assert "Affinity" in a.signals.evidence["localization"]
     text = comparison_report.render(c, None, None, "en")
-    assert "### Decision signals" in text and "| de.wikipedia |" in text
+    assert "| de.wikipedia |" in text and "## 4. KPI Breakdown" in text
 
 
-@pytest.mark.parametrize("lang, heading, na", [("en", "## 2. KPI Breakdown", "not computed"),
-                                               ("uk", "## 2. Розбивка за показниками", "не обчислено")])
+@pytest.mark.parametrize("lang, heading, na", [("en", "## 4. KPI Breakdown", "not computed"),
+                                               ("uk", "## 4. Розбивка за показниками", "не обчислено")])
 def test_kpi_breakdown_reads_each_kpi_with_its_signal(services, lang, heading, na):
     from wiki_market_intel.i18n import Translator
     tr = Translator(lang)
     r = analyze("meditation", "de", "3y", services=services)
-    section = markdown.render(r, None, lang).split(heading)[1].split("###")[0]
+    section = markdown.render(r, None, lang).split(heading)[1]
     assert section.count("\n| ") == 9                                # header + eight KPIs
     for name in ("market_size", "growth", "momentum", "stability"):
         assert f"**{tr(f'sig.{name}.' + getattr(r.signals, name))}**" in section
@@ -112,7 +112,7 @@ def test_kpi_breakdown_reads_each_kpi_with_its_signal(services, lang, heading, n
 
 def test_cli_kpi_breakdown_carries_each_signal_with_evidence(run_cli, capsys):  # noqa: F811
     run_cli("analyze", "--topic", "meditation", "--language", "de")
-    out = capsys.readouterr().out.split("KPI BREAKDOWN")[1].split("OBSERVATIONS")[0]
+    out = capsys.readouterr().out.split("KPI BREAKDOWN")[1].split("ANOMALY")[0]
     assert "Demand (views, last 12 months): 56,910" in out and "views in the last 12 months; low is" in out
     assert "Localization:" in out and "not computed (Only defined across several editions" in out
 

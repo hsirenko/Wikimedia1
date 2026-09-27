@@ -27,116 +27,40 @@ _{{ t("cmp_meta", editions=editions, start=c.metadata.period_start, end=c.metada
 
 _{{ rec_rule }}_
 
+## {{ t("graph_title") }}
+
+{% if matrix %}![{{ t("matrix_alt") }}]({{ matrix }})
+{% endif %}
+{% if penetration %}![{{ t("pen_alt") }}]({{ penetration }})
+{% endif %}
+{{ t("matrix_intro") }} {{ t("matrix_split", threshold=num(c.demand_threshold)) }}
+{{ t("matrix_labels") }}
+
+## {{ t("observations") }}
+
+{% for o in observations -%}
+- {{ o }}
+{% endfor %}
+{% for n in notes -%}
+- {{ n }}
+{% endfor %}
 ## {{ t("kpi_title") }}
 
 {% for line in kpi_lines -%}
 - {{ line }}
 {% endfor %}
-## {{ t("c1") }}
-
-{% for o in observations -%}
-- {{ o }}
-{% endfor %}
-## {{ t("c2") }}
-
-| | |
-|---|---|
-| {{ t("canonical") }} | {{ c.resolution.canonical_topic or t("na") }} |
-| {{ t("wikidata") }} | {{ c.resolution.wikidata_id or t("no_wikidata") }} |
-| {{ t("method") }} | {{ t("method." ~ c.resolution.method) }} |
-| {{ t("confidence") }} | {{ dec(c.resolution.confidence) }} |
-
-| {{ t("col_edition") }} | {{ t("col_article") }} | {{ t("col_page") }} |
-|---|---|---:|
-{% for lang in c.metadata.languages -%}
-{% set a = c.resolution.articles.get(lang) -%}
-| {{ lang }}.wikipedia | {{ a.title if a else t("row.no_article") }} | {{ a.page_id if a and a.page_id else "" }} |
-{% endfor %}
-## {{ t("c3") }}
-
-| {{ t("col_edition") }} | {{ t("col_views") }} | {{ t("col_yoy") }} | {{ t("col_cagr") }} | {{ t("col_3m") }} | {{ t("col_unique") }} | {{ t("col_share") }} | {{ t("col_pen") }} | {{ t("col_aff") }} | {{ t("col_quadrant") }} |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| {{ t("col_edition") }} | {{ t("col_article") }} | {{ t("col_views") }} | {{ t("col_yoy") }} | {{ t("col_cagr") }} | {{ t("col_share") }} | {{ t("col_pen") }} | {{ t("col_aff") }} | {{ t("col_quadrant") }} | {{ t("col_anomalies") }} |
+|---|---|---:|---:|---:|---:|---:|---:|---|---|
 {% for r in c.rows -%}
+{% set a = c.analyses.get(r.language) -%}
 {% if r.status != "ok" -%}
 | {{ r.project }} | {{ t("row." ~ r.status) }} | | | | | | | | |
 {% else -%}
-| {{ r.project }} | {{ num(r.annual_views) }} | {{ rate(r.yoy_growth) }} | {{ rate(r.three_year_cagr) }} | {{ rate(r.three_month_growth) }} | {{ t("na") }} | {{ rate(r.topic_share, False) }} | {{ per_m(r.topic_penetration) }} | {{ dec(r.topic_affinity) }} | {{ t("quadrant." ~ r.quadrant) if r.quadrant else t("na") }} |
+| {{ r.project }} | {{ c.resolution.articles[r.language].title if c.resolution.articles.get(r.language) else t("na") }} | {{ num(r.annual_views) }} | {{ rate(r.yoy_growth) }} | {{ rate(r.three_year_cagr) }} | {{ rate(r.topic_share, False) }} | {{ per_m(r.topic_penetration) }} | {{ dec(r.topic_affinity) }} | {{ t("quadrant." ~ r.quadrant) if r.quadrant else t("na") }} | {% if a and a.anomalies %}{% for x in a.anomalies %}{{ x.date }} {{ rate(x.change_vs_baseline) }}{% if not loop.last %}; {% endif %}{% endfor %}{% elif a %}0{% else %}{{ t("na") }}{% endif %} |
 {% endif -%}
 {% endfor %}
-### {{ t("sig_title") }}
-
+{{ t("def_aff") }}
 {{ t("sig_intro") }}
-
-| {{ t("col_edition") }} |{% for n in sig_names %} {{ t("sig_name." ~ n) }} |{% endfor %}
-|---|---|---|---|---|---|
-{% for lang, a in c.analyses.items() -%}
-| {{ a.metadata.project }} |{% for n in sig_names %}{% set v = a.signals[n] %} {{ t("sig." ~ n ~ "." ~ v) if v else t("na") }} |{% endfor %}
-{% endfor %}
-{{ t("sig_rules") }}
-
-## {{ t("c4") }}
-
-{% if matrix %}![{{ t("matrix_alt") }}]({{ matrix }})
-{% endif %}
-{{ t("matrix_intro") }} {{ t("matrix_split", threshold=num(c.demand_threshold)) }}
-
-{% for q in ("investigate", "explore", "established", "watch") -%}
-- **{{ t("quadrant." ~ q) }}**: {{ t("qdesc." ~ q) }}
-{% endfor %}
-{{ t("matrix_labels") }}
-
-## {{ t("c5") }}
-
-{% if penetration %}![{{ t("pen_alt") }}]({{ penetration }})
-
-{% endif %}{{ t("pen_intro") }}
-
-- {{ t("def_country") }}
-{% for r in c.rows if r.status == "ok" -%}
-- {{ t("cmp_ne_country", project=r.project) }}
-{% endfor %}
-## {{ t("c6") }}
-
-- {{ t("def_share") }}
-- {{ t("def_pen") }}
-- {{ t("def_aff") }}
-- {{ t("def_unique") }}
-
-## {{ t("c7") }}
-
-| {{ t("col_edition") }} | {{ t("col_status") }} | {{ t("col_coverage") }} | {{ t("col_quality") }} | {{ t("col_anomalies") }} |
-|---|---|---:|---|---|
-{% for r in c.rows -%}
-{% set a = c.analyses.get(r.language) -%}
-| {{ r.project }} | {{ t("row." ~ r.status) if r.status != "ok" else "OK" }} | {{ rate(a.quality.coverage, False) if a else t("na") }} | {{ t("level." ~ r.quality_level) if r.quality_level else t("na") }} | {% if a and a.anomalies %}{% for x in a.anomalies %}{{ x.date }} {{ rate(x.change_vs_baseline) }}{% if not loop.last %}; {% endif %}{% endfor %}{% elif a %}0{% else %}{{ t("na") }}{% endif %} |
-{% endfor %}
-{% if c.notes %}
-### {{ t("notes") }}
-
-{% for n in notes -%}
-- {{ n }}
-{% endfor %}{% endif %}
-## {{ t("c8") }}
-
-### {{ t("supports") }}
-
-{% for o in observations -%}
-- {{ o }}
-{% endfor %}
-### {{ t("not_establish") }}
-
-- {{ t("ne1") }}
-- {{ t("cmp_ne_rank") }}
-- {{ t("ne3") }}
-- {{ t("ne5") }}
-
-### {{ t("validate") }}
-
-- {{ t("q1") }}
-- {{ t("q2") }}
-- {{ t("q3") }}
-- {{ t("q4") }}
-- {{ t("q5") }}
 """
 
 

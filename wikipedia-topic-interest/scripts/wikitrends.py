@@ -122,8 +122,9 @@ def run_analysis(
     agent: str = "user",
     normalise_chart: bool = False,
     weights: Optional[Dict[str, float]] = None,
+    save_fetch: bool = False,
 ) -> Dict[str, Any]:
-    """Resolve, fetch and analyse. Pure data; no files written here."""
+    """Resolve, fetch and analyse. Writes a Wikipedia snapshot when save_fetch is set."""
     client = WikimediaClient(agent=agent)
     start, end, start_month, end_month = window or month_window(months)
 
@@ -152,7 +153,7 @@ def run_analysis(
                 )
 
     if not targets:
-        return {
+        empty = {
             "status": "no_data",
             "period": {"from": start_month, "to": end_month},
             "notes": notes or ["Nothing to analyse."],
@@ -160,6 +161,12 @@ def run_analysis(
             "series": [],
             "comparison": {},
         }
+        if save_fetch:
+            empty["wikipedia_fetch"] = save_wikipedia_fetch(
+                topics or [title for _, title in (articles or [])],
+                langs, empty["period"], resolutions, [], {},
+            )
+        return empty
 
     # 2. Fetch. Baselines are per edition and shared between topics.
     projects = sorted({f"{t['lang']}.wikipedia" for t in targets})
@@ -189,6 +196,19 @@ def run_analysis(
                     f"are raw views only and cannot be compared across editions."
                 )
         fetched = list(pool.map(fetch_article, targets))
+
+    raw_articles = [
+        {
+            "topic": target["topic"],
+            "lang": target["lang"],
+            "project": f"{target['lang']}.wikipedia",
+            "title": target["title"],
+            "found": bool(payload.get("found")),
+            "reason": payload.get("reason"),
+            "points": payload.get("points") or [],
+        }
+        for target, payload in fetched
+    ]
 
     # 3. Analyse each series.
     # With explicit --articles the "topic" is just the title, so "lang: title" reads better.
@@ -226,7 +246,60 @@ def run_analysis(
     # The recommendation is a fixed rule over the numbers above (decide.py), so the
     # digest, the JSON and the PDF always carry the same, reproducible call.
     analysis["decision"] = decide.decide(analysis)
+    if save_fetch:
+        analysis["wikipedia_fetch"] = save_wikipedia_fetch(
+            topics or [title for _, title in (articles or [])],
+            langs, analysis["period"], resolutions, raw_articles, baselines,
+        )
     return analysis
+
+
+def assets_dir() -> str:
+    override = os.environ.get("WIKITRENDS_ASSETS_DIR")
+    return override if override else os.path.join(SKILL_ROOT, "assets")
+
+
+def _safe_filename_part(text: str) -> str:
+    cleaned = "".join(c if c.isalnum() or c in "-_" else "-" for c in (text or "").strip())
+    return cleaned.strip("-")[:60] or "topic"
+
+
+def save_wikipedia_fetch(
+    topics: List[str],
+    langs: List[str],
+    period: Dict[str, Any],
+    resolutions: List[Dict[str, Any]],
+    articles: List[Dict[str, Any]],
+    baselines: Dict[str, Dict[str, int]],
+) -> Optional[str]:
+    """Write the Wikipedia payload for this request to assets/{topic}_{date}_{time}.json.
+
+    This is the raw fetch (titles, monthly views, edition totals), not the analysis.
+    Disabled with WIKITRENDS_NO_ASSETS so tests do not fill the skill folder.
+    """
+    if os.environ.get("WIKITRENDS_NO_ASSETS"):
+        return None
+    now = datetime.now()
+    topic_part = "-".join(_safe_filename_part(t) for t in topics[:3]) if topics else "articles"
+    name = f"{topic_part}_{now.strftime('%Y-%m-%d_%H%M%S')}.json"
+    folder = assets_dir()
+    os.makedirs(folder, exist_ok=True)
+    path = os.path.join(folder, name)
+    # Same second can produce two files on a fast rerun; keep both.
+    if os.path.exists(path):
+        path = os.path.join(folder, f"{topic_part}_{now.strftime('%Y-%m-%d_%H%M%S')}_{os.getpid()}.json")
+    payload = {
+        "saved_at": now.isoformat(timespec="seconds"),
+        "topics": topics,
+        "languages": langs,
+        "period": period,
+        "resolutions": resolutions,
+        "articles": articles,
+        "edition_totals": baselines,
+    }
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh, ensure_ascii=False, indent=2)
+    return path
 
 
 # ---------------------------------------------------------------------------
@@ -553,6 +626,62 @@ def scorecard_rows(analysis: Dict[str, Any], memo: Optional[Dict[str, Any]] = No
     return rows
 
 
+def format_reply_report(
+    analysis: Dict[str, Any],
+    title: str,
+    question: str,
+    summary: str,
+    findings: List[str],
+    tr: "i18n.Translator",
+) -> str:
+    """The decision memo as Markdown: this is what the agent pastes into the reply."""
+    memo = analysis.get("decision")
+    if analysis.get("status") != "ok" or not memo:
+        return ""
+    period = analysis["period"]
+    local = decide.decide(analysis, tr.lang) or memo
+    lines = [
+        f"# {title}",
+        "",
+        tr("memo.subtitle", start=period["from"], end=period["to"], today=date.today().isoformat()),
+        "",
+    ]
+    if question:
+        lines += [f"**{tr('memo.question')}** {question}", ""]
+    lines += [
+        f"## {tr('memo.recommendation', action=local.get('overall_action_label') or local['overall_action'])}",
+        "",
+        local["overall"],
+        "",
+    ]
+    for note in ([summary] if summary else []) + list(findings):
+        if note:
+            lines += [f"**{tr('memo.analyst_note')}** {note}", ""]
+    rows = scorecard_rows(analysis, local, tr)
+    if len(rows) > 1:
+        lines.append("| " + " | ".join(rows[0]) + " |")
+        lines.append("| " + " | ".join("---" for _ in rows[0]) + " |")
+        for row in rows[1:]:
+            lines.append("| " + " | ".join(row) + " |")
+        lines.append("")
+    lead = local["calls"][0]
+    lines += [f"## {tr('memo.why', label=lead['label'])}", ""]
+    for i, step in enumerate(lead["evidence"], 1):
+        lines.append(f"{i}. {step}")
+    lines += ["", f"## {tr('memo.next')}", ""]
+    for step in lead["next_steps"]:
+        lines.append(f"- {step}")
+    lines += ["", f"## {tr('memo.change')}", "", lead["would_change"], ""]
+    lines += [f"## {tr('memo.trust')}", ""]
+    for note in lead["trust"][:6]:
+        lines.append(f"- **{tr('risk.' + note['risk'])}** {note['text']}")
+    lines += ["", f"## {tr('memo.assumptions')}", ""]
+    for item in assumptions(analysis, tr):
+        lines.append(f"- {item}")
+    lines += ["", f"*{tr('memo.footer')}*", ""]
+    return "\n".join(lines)
+
+
 def write_outputs(
     analysis: Dict[str, Any],
     out_dir: str,
@@ -560,7 +689,7 @@ def write_outputs(
     title: str,
     question: str,
     findings: Optional[List[str]] = None,
-    make_pdf: bool = True,
+    make_pdf: bool = False,
     summary: str = "",
     reproduce: str = "",
     report_lang: str = "en",
@@ -586,12 +715,19 @@ def write_outputs(
                                  point["month"], point["views"], per_million if per_million is not None else ""])
     files["csv"] = csv_path
 
+    tr = i18n.Translator(report_lang)
+    memo_md = format_reply_report(analysis, title, question, summary, findings or [], tr)
+    if memo_md:
+        md_path = os.path.join(out_dir, f"{slug}.md")
+        with open(md_path, "w", encoding="utf-8") as fh:
+            fh.write(memo_md)
+        files["report"] = md_path
+
     if not make_pdf or not analysis.get("decision"):
         return files
 
-    import report  # imported late so --no-pdf works without matplotlib/reportlab
+    import report  # imported late so --pdf is not required for the in-chat report
 
-    tr = i18n.Translator(report_lang)
     # Same rules, same actions; only the words follow the reader's language.
     memo = decide.decide(analysis, tr.lang) if analysis.get("decision") else None
     share_chart = report.make_share_chart(analysis["series"], os.path.join(out_dir, f"{slug}_share.png"), tr)
@@ -752,6 +888,19 @@ def digest(analysis: Dict[str, Any], files: Dict[str, str], brief: bool = False,
     for key, value in files.items():
         lines.append(f"FILE {key}: {value}")
     lines.append("CAVEAT Reading interest is not demand; treat tiers as research ordering only.")
+    report_path = files.get("report")
+    if report_path and os.path.exists(report_path) and not brief:
+        with open(report_path, encoding="utf-8") as fh:
+            body = fh.read().strip()
+        if body:
+            lines += ["", "BEGIN_REPLY_REPORT", body, "END_REPLY_REPORT"]
+            lines.append("DELIVER the block above as the user's report (in the reply, or a Cursor canvas). "
+                         "Copy it; do not rewrite the numbers.")
+    if analysis.get("status") == "ok" and not files.get("pdf"):
+        ask = i18n.Translator(report_lang)("ask.pdf")
+        lines.append(f"ASK_PDF {ask}")
+        lines.append("Ask that question separately after the report. Do not generate a PDF until they say yes. "
+                     "If they say yes, rerun the same analyze command with --pdf.")
     return "\n".join(lines)
 
 
@@ -818,6 +967,7 @@ def cmd_analyze(args) -> int:
             topics=topics, langs=langs, articles=articles, months=args.months,
             window=_window(args), pivot=args.pivot, granularity=args.granularity,
             agent=args.agent, normalise_chart=args.normalise, weights=weights,
+            save_fetch=True,
         )
     except ApiError as exc:
         if _looks_blocked(str(exc), exc.status) and not getattr(args, "offline", False):
@@ -853,9 +1003,11 @@ def cmd_analyze(args) -> int:
     analysis["assumptions"] = assumptions(analysis)
     files = write_outputs(
         analysis, args.out_dir, slug, title, args.question or "",
-        findings=args.finding or None, make_pdf=not args.no_pdf and not blocked_pdf,
+        findings=args.finding or None, make_pdf=bool(getattr(args, "pdf", False)) and not blocked_pdf,
         summary=args.summary or "", reproduce=_same_args(args, "analyze"), report_lang=report_lang,
     )
+    if analysis.get("wikipedia_fetch"):
+        files["wikipedia_fetch"] = analysis["wikipedia_fetch"]
     previous = record_run(analysis, args.out_dir, slug, files)
 
     if args.json:
@@ -1080,7 +1232,9 @@ def build_parser() -> argparse.ArgumentParser:
                      help="plot views per million edition views (fair across edition sizes)")
     run.add_argument("--offline", action="store_true",
                      help="use only cached data, never the network (see the plan command)")
-    run.add_argument("--no-pdf", action="store_true", help="skip charts and PDF (faster)")
+    run.add_argument("--pdf", action="store_true",
+                     help="also write the one-page PDF (off by default; offer it after the in-chat report)")
+    run.add_argument("--no-pdf", action="store_true", help="deprecated: PDF is already off unless --pdf is set")
     run.add_argument("--brief", action="store_true", help="shortest possible stdout")
     run.add_argument("--json", action="store_true", help="print full JSON instead of the digest")
     run.set_defaults(func=cmd_analyze)

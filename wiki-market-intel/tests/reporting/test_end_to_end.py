@@ -15,9 +15,7 @@ from wiki_market_intel.service import build_services
 from wiki_market_intel.validate import validate_file
 from tests.conftest import TODAY, FakeWikimedia, load
 
-SECTIONS = ["1. Recommendation", "2. KPI Breakdown", "3. Topic Definition", "4. Demand", "5. Growth",
-            "6. Seasonality", "7. Language Opportunity", "8. Localization", "9. Topic Ecosystem", "10. Anomalies",
-            "11. Data Quality", "12. Business Implications"]
+SECTIONS = ["1. Recommendation", "2. Graph", "3. Key Observations", "4. KPI Breakdown"]
 
 
 def expected_from_fixture():
@@ -79,14 +77,15 @@ def test_markdown_has_every_section_in_order(result):
     positions = [text.index(f"## {s}") for s in SECTIONS]
     assert positions == sorted(positions)
     assert text.startswith("# Wikipedia Market Intelligence Report")
-    assert "### What the data does NOT establish" in text
+    assert "### What the data does NOT establish" not in text
+    assert "12. Business Implications" not in text
 
 
 def test_missing_metrics_render_with_their_reason_never_as_zero(result):
     text = markdown.render(result, None)
-    unique = re.search(r"\| Unique devices \| (.+) \|", text).group(1)
-    assert unique.startswith("n/a (unsupported:") and "per project" in unique
     assert "Trend chart unavailable" in text
+    assert "| Unique devices | 0" not in text
+    assert "not computed" in text
     for word in ("BUY", "SELL", "WINNER", "exploded"):
         assert word not in text
 
@@ -101,7 +100,9 @@ def test_incomplete_data_is_shown_as_such(settings):
     # 35 of 36 months = 97.2%: under the 98% needed for HIGH, above the 90% needed for MEDIUM.
     assert r.quality.coverage == pytest.approx(35 / 36) and r.quality.quality_level == "MEDIUM"
     assert r.quality.missing_data == ["2026-01: no pageviews returned (zero views or no data)"]
-    assert "n/a (insufficient data" in markdown.render(r, None)
+    text = markdown.render(r, None)
+    assert "n/a" in text or "not computed" in text
+    assert "**MEDIUM**" in text
 
 
 # --- CLI -------------------------------------------------------------------
@@ -119,7 +120,7 @@ def run_cli(settings, fake, monkeypatch):
 def test_cli_analyze_writes_json_markdown_and_chart(run_cli, settings, capsys):
     assert run_cli("analyze", "--topic", "meditation", "--language", "de", "--period", "3y") == 0
     out = capsys.readouterr().out
-    assert out.index("RECOMMENDATION") < out.index("KPI BREAKDOWN") < out.index("OBSERVATIONS")
+    assert out.index("RECOMMENDATION") < out.index("OBSERVATIONS") < out.index("KPI BREAKDOWN")
     assert "Growth (year over year): -17.2%" in out and "Data quality: HIGH" in out
     assert "PDF_OFFER folder:" in out and out.index("PDF_OFFER") > out.index("Wrote")
     assert "Would you like a one-page PDF summary of this report?" in out.strip().splitlines()[-1]   # the reply's last line

@@ -27,18 +27,24 @@ _{{ t("pf_meta", topics=topics, editions=editions, start=p.metadata.period_start
 
 _{{ rec_rule }}_
 
+## {{ t("graph_title") }}
+
+{% if chart %}![{{ t("pf_alt") }}]({{ chart }})
+{% endif %}
+{% if p.demand_threshold is not none %}{{ t("pf_split", threshold=num(p.demand_threshold)) }}
+{% endif %}
+{{ t("matrix_labels") }}
+
+## {{ t("observations") }}
+
+{% for o in observations -%}
+- {{ o }}
+{% endfor %}
 ## {{ t("kpi_title") }}
 
 {% for line in kpi_lines -%}
 - {{ line }}
 {% endfor %}
-## {{ t("p1") }}
-
-{% for o in observations -%}
-- {{ o }}
-{% endfor %}
-## {{ t("p2") }}
-
 {{ t("pf_matrix_intro") }}
 
 | {{ t("pf_col_topic") }} |{% if has_categories %} {{ t("pf_col_category") }} |{% endif %} {{ t("col_edition") }} | {{ t("col_views") }} | {{ t("col_yoy") }} | {{ t("col_cagr") }} | {{ t("col_3m") }} | {{ t("momentum") }} | {{ t("col_aff") }} | {{ t("col_quadrant") }} |
@@ -46,29 +52,6 @@ _{{ rec_rule }}_
 {% for r in shown -%}
 | {{ r.canonical_topic or r.topic }} |{% if has_categories %} {{ r.category or "" }} |{% endif %} {{ r.project }} | {{ num(r.annual_views) }} | {{ rate(r.yoy_growth) }} | {{ rate(r.three_year_cagr) }} | {{ rate(r.three_month_growth) }} | {{ t("momentum." ~ r.momentum) if r.momentum else t("na") }} | {{ dec(r.topic_affinity) }} | {{ t("quadrant." ~ r.quadrant) if r.quadrant else t("na") }} |
 {% endfor %}
-{% if chart %}![{{ t("pf_alt") }}]({{ chart }})
-
-{% endif -%}
-{% if p.demand_threshold is not none %}{{ t("pf_split", threshold=num(p.demand_threshold)) }}
-{% endif %}
-{% for q in ("investigate", "explore", "established", "watch") -%}
-- **{{ t("quadrant." ~ q) }}**: {{ t("qdesc." ~ q) }}
-{% endfor %}
-{{ t("matrix_labels") }}
-
-## {{ t("p3") }}
-
-{{ t("sig_intro") }}
-
-| {{ t("pf_col_topic") }} | {{ t("col_edition") }} |{% for n in sig_names %} {{ t("sig_name." ~ n) }} |{% endfor %}
-|---|---|---|---|---|---|---|
-{% for r in shown -%}
-| {{ r.canonical_topic or r.topic }} | {{ r.project }} |{% for n in sig_names %}{% set v = r.signals[n] if r.signals else none %} {{ t("sig." ~ n ~ "." ~ v) if v else t("na") }} |{% endfor %}
-{% endfor %}
-{{ t("sig_rules") }}
-
-## {{ t("p4") }}
-
 {{ filters_text }}
 
 {% if hidden -%}
@@ -82,51 +65,6 @@ _{{ rec_rule }}_
 {% else -%}
 {{ t("pf_no_excluded") }}
 {% endif %}
-{{ t("pf_country") }}
-
-## {{ t("p5") }}
-
-| {{ t("pf_col_topic") }} | {{ t("canonical") }} | {{ t("wikidata") }} | {{ t("pf_col_articles") }} |
-|---|---|---|---|
-{% for item in p.metadata.topics -%}
-{% set c = p.comparisons.get(item.topic) -%}
-{% set a = p.analyses.get(item.topic) -%}
-{% if c -%}
-| {{ item.topic }} | {{ c.resolution.canonical_topic or t("na") }} | {{ c.resolution.wikidata_id or t("no_wikidata") }} | {% for lang, art in c.resolution.articles.items() %}{{ lang }}: {{ art.title }}{% if not loop.last %}, {% endif %}{% endfor %} |
-{% elif a -%}
-| {{ item.topic }} | {{ a.topic.canonical_name or t("na") }} | {{ a.topic.wikidata_id or t("no_wikidata") }} | {{ a.metadata.language }}: {{ a.topic.article_title }} |
-{% else -%}
-| {{ item.topic }} | {{ t("na") }} | {{ t("na") }} | {{ t("na") }} |
-{% endif -%}
-{% endfor %}
-## {{ t("p6") }}
-
-| {{ t("pf_col_topic") }} | {{ t("col_edition") }} | {{ t("col_status") }} | {{ t("col_quality") }} | {{ t("col_anomalies") }} |
-|---|---|---|---|---:|
-{% for r in p.rows -%}
-| {{ r.canonical_topic or r.topic }} | {{ r.project }} | {{ "OK" if r.status == "ok" else t("pf_ex.status." ~ r.status) }} | {{ t("level." ~ r.quality_level) if r.quality_level else t("na") }} | {{ r.anomaly_count if r.anomaly_count is not none else t("na") }} |
-{% endfor %}
-## {{ t("p7") }}
-
-### {{ t("supports") }}
-
-{% for o in observations -%}
-- {{ o }}
-{% endfor %}
-### {{ t("not_establish") }}
-
-- {{ t("ne1") }}
-- {{ t("pf_ne_rank") }}
-- {{ t("ne3") }}
-- {{ t("pf_country") }}
-
-### {{ t("validate") }}
-
-- {{ t("q1") }}
-- {{ t("q2") }}
-- {{ t("q3") }}
-- {{ t("q4") }}
-- {{ t("q5") }}
 """
 
 

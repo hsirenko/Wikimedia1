@@ -1,6 +1,6 @@
 ---
 name: wikipedia-topic-interest
-description: Measures how public interest in a topic changes across Wikipedia language editions, using Wikimedia pageview statistics. Answers which topics to build next and which languages to localise into. Compares topics and language editions, separates real topic trends from Wikipedia's platform-wide traffic decline, scores how much each signal can be trusted, and writes a one-page PDF with charts. Use when asked whether interest in a subject is growing or declining, to compare demand for a topic between countries or languages, to prioritise courses, content, markets or translations, to size an audience for a B2C app idea, or for any question about Wikipedia pageviews or article popularity over time.
+description: Measures how public interest in a topic changes across Wikipedia language editions, using Wikimedia pageview statistics. Answers which topics to build next and which languages to localise into. Compares topics and language editions, separates real topic trends from Wikipedia's platform-wide traffic decline, scores how much each signal can be trusted, and writes a decision memo in the chat (and a Cursor canvas when available). Offer a one-page PDF only after the report, if the user wants one. Use when asked whether interest in a subject is growing or declining, to compare demand for a topic between countries or languages, to prioritise courses, content, markets or translations, to size an audience for a B2C app idea, or for any question about Wikipedia pageviews or article popularity over time.
 license: MIT
 compatibility: Requires Python 3.9+ and internet access to wikimedia.org and wikipedia.org. Fetching and analysis use only the Python standard library; charts and PDF output additionally need matplotlib and reportlab (see requirements.txt).
 metadata:
@@ -23,8 +23,8 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ```
 
 Use `.venv/bin/python` in the commands below if you created the venv. If installing
-is not possible, add `--no-pdf` and you still get the full analysis as text, JSON
-and CSV using only the standard library.
+is not possible, skip `--pdf`: the Markdown report, JSON and CSV still run on the
+standard library.
 
 ## The one command you need
 
@@ -33,9 +33,9 @@ python3 scripts/wikitrends.py analyze --topic "<topic>" --langs uk,pl,cs --month
 ```
 
 This resolves the topic to the right article title in each language, fetches monthly
-pageviews, runs the statistics, writes `wikitrends-out/*.{json,csv,png,pdf}` and
-prints a short digest. One call is enough for a complete answer — do not chain
-separate fetch and analyse steps.
+pageviews, runs the statistics, writes `wikitrends-out/*.{json,csv,md}` and prints a
+digest plus a ready-to-paste report. **Do not pass `--pdf` on the first run.** One
+call is enough for a complete answer — do not chain separate fetch and analyse steps.
 
 Useful flags:
 
@@ -50,8 +50,8 @@ Useful flags:
 | `--normalise` | charts in views per million edition views — required for fair cross-language charts |
 | `--question "..."` | prints the user's question on the PDF |
 | `--summary "..."` | your one- or two-sentence bottom line, shown as "Analyst note" in the PDF's decision box. Claim-checked like `--finding` |
-| `--finding "..."` | one bullet for the PDF. Pass the flag again for each extra bullet: `--finding "A" --finding "B"`. Supplying any replaces the auto findings |
-| `--no-pdf` | skip charts/PDF (no third-party libraries, faster) |
+| `--finding "..."` | extra bullet for the memo. Pass the flag again for each extra bullet |
+| `--pdf` | write the one-page PDF. Use only after the user says they want a PDF |
 | `--brief` | shortest stdout |
 | `--json` | full JSON to stdout instead of the digest |
 
@@ -165,29 +165,35 @@ Also printed when relevant:
   user states criteria, re-run with `--weights` and say which weights you used; don't
   re-weight in your head.
 
-## The PDF is a decision memo
+## Deliver the report in the reply (not as a PDF first)
 
-Every `analyze` run without `--no-pdf` writes a one-page memo for founders and CEOs:
-- **the recommendation** (colour plus label) with its one-sentence reason;
-- **a scorecard** per edition: action, readers, share change with range, months up, confidence;
-- **two charts**: share of edition over time, plus either the topic against the whole edition
-  (one language) or share change with 90% ranges (several languages);
-- **the evidence chain, next steps, and what would change the call**;
-- **risk-rated trust notes** and the run's assumptions;
-- **a command** to reproduce it.
+The first `analyze` run writes a Markdown memo (`FILE report`) and prints it between
+`BEGIN_REPLY_REPORT` and `END_REPLY_REPORT`. **That block is the report.** Put it in
+the user's reply. Do not rewrite the numbers. Do not generate a PDF until they ask.
 
-Your part is `--question` (the user's words) and usually `--summary` (one or two sentences in
-plain language for the reader). Everything else comes from the data.
+**In Cursor:** the report belongs in a canvas beside the chat
+(`~/.cursor/projects/<workspace>/canvases/<topic>-interest.canvas.tsx`). Use only
+`cursor/canvas` imports, embed the digest figures inline (no fetch), and link the
+canvas in the reply. Also paste the same memo in the chat so the answer stands
+alone if the canvas is not opened.
 
-**Writing a report takes two runs. Never write the summary before you have seen the results.**
-1. Run `analyze` with the topic, languages and `--question`. Read the `RECOMMENDATION` line.
-2. Write a `--summary` that says the same thing as the recommendation, in the user's language,
-   using numbers from the digest. Then run the **same command** again with `--summary`. This
-   takes about a second because the data is cached.
+**Everywhere else:** paste the `BEGIN_REPLY_REPORT` … `END_REPLY_REPORT` block as the
+body of your answer (headings, scorecard table, evidence, trust, assumptions).
+
+**After the report, as a separate last line — not inside the canvas or the memo —**
+ask the question printed as `ASK_PDF` (already in the user's language). Example:
+"Would you also like a one-page PDF of this report?" Do not mention the PDF before
+that. If they say yes, rerun the **same** `analyze` command with `--pdf` (data is
+cached, ~1s) and give them `FILE pdf`.
+
+The memo contains:
+- the recommendation and one-sentence reason;
+- a scorecard per edition (action, readers, share change with range, months up, confidence);
+- the evidence chain, next steps, and what would change the call;
+- risk-rated trust notes and the run's assumptions.
 
 `--summary` or `--finding` on a run you haven't seen yet is refused (`SUMMARY_BEFORE_DATA`,
-exit 7). A summary that contradicts the recommendation is refused (`CHECK_FAILED`, exit 6). For
-example, calling a DEPRIORITISE topic "stable" or "growing" is refused.
+exit 7). A summary that contradicts the recommendation is refused (`CHECK_FAILED`, exit 6).
 
 ## Answering the three common question shapes
 
@@ -321,6 +327,7 @@ months or topics re-uses what was already fetched and returns in about a second.
 ## Files
 
 - `scripts/wikitrends.py` — the CLI; run this
+- `assets/` — every `analyze` run writes the Wikipedia payload here as `{topic}_{YYYY-MM-DD}_{HHMMSS}.json`
 - `scripts/wm_api.py` — Wikimedia pageviews, title resolution, disk cache
 - `scripts/analyze.py` — the statistics (importable, no network)
 - `scripts/report.py` — charts and the one-page PDF

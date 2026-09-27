@@ -68,15 +68,14 @@ def test_ready_answer_groups_by_quadrant_without_ranking(pf):
         assert word not in text
 
 
-@pytest.mark.parametrize("lang, heading", [("en", "## 4. Portfolio Matrix"), ("uk", "## 4. Матриця портфеля")])
+@pytest.mark.parametrize("lang, heading", [("en", "## 2. Graph"), ("uk", "## 2. Графік")])
 def test_report_in_both_languages(pf, lang, heading):
     text = portfolio_report.render(pf, "charts/portfolio.png", lang)
     assert heading in text and "![" in text
-    filters = text.split("## 6.")[1].split("## 7.")[0]
-    assert "Mercury" in filters
+    assert "Mercury" in text.split("## 4.")[1]
     if lang == "uk":
         for english in ("Topic", "Reason", "ambiguous topic", "Filters applied", "No filters"):
-            assert english not in text.split("## 8.")[0]
+            assert english not in text
 
 
 def test_writer_produces_json_markdown_chart_and_self_contained_html(pf, settings):

@@ -80,13 +80,13 @@ def test_analyze_does_not_compute_the_ecosystem(services):
 
 
 def test_report_section_9_en_and_uk(cluster):
-    en = markdown.render(cluster, None, "en", "charts/ecosystem.png").split("## 9. Topic Ecosystem")[1].split("## 10.")[0]
+    en = markdown.render(cluster, None, "en", "charts/ecosystem.png").split("## 4. KPI Breakdown")[1]
     assert "| **Meditation** |" in en and "| Buddhismus | facet of |" in en and "larger category" in en
     assert "### Interest concentration" in en and "n/a (fewer than 10 articles)" in en
     assert "adjacent interest signal" in en and "no article in this edition" in en
     for word in ("BUY", "best", "winner", "product-market"):
         assert word not in en
-    uk = markdown.render(cluster, None, "uk", "charts/ecosystem.png").split("## 9. Екосистема теми")[1].split("## 10.")[0]
+    uk = markdown.render(cluster, None, "uk", "charts/ecosystem.png").split("## 4. Розбивка за показниками")[1]
     assert "ширша категорія" in uk and "Концентрація інтересу" in uk
     for english in ("larger category", "facet of", "similar text", "Interest concentration", "Topic", "skipped"):
         assert english not in uk, english

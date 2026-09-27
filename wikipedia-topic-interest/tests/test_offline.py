@@ -33,6 +33,7 @@ def isolated_cache(monkeypatch, tmp_path):
     monkeypatch.setenv("WIKITRENDS_CACHE_DIR", str(tmp_path / "cache"))
     monkeypatch.delenv("WIKITRENDS_NO_CACHE", raising=False)
     monkeypatch.delenv("WIKITRENDS_OFFLINE", raising=False)
+    monkeypatch.setenv("WIKITRENDS_NO_ASSETS", "1")
     wm_api.MISSES.clear()
     monkeypatch.chdir(tmp_path)
     yield

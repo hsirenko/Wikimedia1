@@ -76,7 +76,8 @@ def test_sentences_never_give_a_verdict(services, lang):
 def test_report_opens_with_the_recommendation_then_the_kpi_breakdown(services):
     r = analyze("meditation", "de", "3y", services=services)
     text = markdown.render(r, None, "en")
-    assert text.index("## 1. Recommendation") < text.index("## 2. KPI Breakdown") < text.index("## 3. Topic Definition")
+    assert (text.index("## 1. Recommendation") < text.index("## 2. Graph")
+            < text.index("## 3. Key Observations") < text.index("## 4. KPI Breakdown"))
     assert "_Rule: validate first" in text
 
 

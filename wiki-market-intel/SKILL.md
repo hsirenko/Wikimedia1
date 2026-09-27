@@ -17,8 +17,8 @@ metadata:
    cached and fast.
 2. **If the script fails, stop.** Tell the user the error and the fix from the exit-code table
    below. Don't fall back to other sources.
-3. **Reply in the user's language**, in this order: the recommendation, the KPI breakdown, the
-   details asked for (with limits and report paths), and **last, always**: "Would you like a
+3. **Reply in the user's language**, in this order: the recommendation, the graph (or a link to
+   it), the key observations, the KPI breakdown, and **last, always**: "Would you like a
    one-page PDF summary of this report? I can create it for you." This also applies when you show
    the report in a canvas or artifact: the message that goes with it still ends with that question.
 4. **No verdicts, no rankings of your own, no causes.** Never say go/no-go, buy, invest or "best".
@@ -81,16 +81,20 @@ compare with an earlier answer, read that report's `analysis.json` / `comparison
 
 ## Reading the output
 
-The output starts with `RECOMMENDATION` and `KPI BREAKDOWN` (in the user's language when a
-`REPORT_LANGUAGE` block is printed; use that one). It ends with `PDF_OFFER` (the folder for
-`pdf`) and a `REPLY CHECKLIST`.
+The output starts with `RECOMMENDATION`, `OBSERVATIONS` and `KPI BREAKDOWN` (in the user's
+language when a `REPORT_LANGUAGE` block is printed; use that one). The saved report is the same
+four sections: Recommendation, Graph, Key Observations, KPI breakdown. It ends with `PDF_OFFER`
+(the folder for `pdf`) and a `REPLY CHECKLIST`.
 
 1. **Recommendation.** Give it first, as written: headline, points, "Basis". It says what to
    validate first, monitor or deprioritise. It is not a go/no-go. Put nothing of your own before
    it. If the user wants a short version, the headline *is* the short version. When a
    `DECISION REQUEST` line is printed ("should we launch", "top 3", "best"), start with the
    sentence it gives.
-2. **KPI breakdown.** One item per KPI, as written: demand, growth (YoY against the whole edition,
+2. **Graph.** The chart in the report (`charts/`, or `report.html`). Do not describe it in words
+   if you can show it.
+3. **Key observations.** The `OBSERVATIONS` lines, as written.
+4. **KPI breakdown.** One item per KPI, as written: demand, growth (YoY against the whole edition,
    3-year CAGR), momentum, seasonality, localization, anomalies, data quality.
    - **Growth** means YoY first (last 12 months vs the 12 before), then the 3-year CAGR. The
      3-month figure is short-term momentum and can be swung by seasonality, so never present it
@@ -103,10 +107,7 @@ The output starts with `RECOMMENDATION` and `KPI BREAKDOWN` (in the user's langu
      (market size, growth, momentum, localization, stability) are separate readings. Never combine
      them into a score.
    - A KPI shown as `n/a` comes with a reason. Give the reason, never an estimate.
-3. **Details** the user asked for, then the limits: pageviews measure attention, not revenue,
-   willingness to pay or product-market fit. Then the report files: `report.html` (easiest to
-   share), `report.md`, `analysis.json`, `charts/`.
-4. **Last line:** the one-page PDF question, every time, including after a report shown in a
+5. **Last line:** the one-page PDF question, every time, including after a report shown in a
    canvas or artifact. If the user says yes, run `pdf <folder from PDF_OFFER>` and give them
    `brief.pdf` (on Claude.ai it is also copied to the downloads folder).
 
@@ -119,7 +120,7 @@ The output starts with `RECOMMENDATION` and `KPI BREAKDOWN` (in the user's langu
 
 ### cluster (related topics)
 
-- `RELATED TOPICS BY SIGNAL` comes third in your reply. Give its sentences as written.
+- `RELATED TOPICS BY SIGNAL` comes after the KPI breakdown. Give its sentences as written.
 - Topics marked `*` were found by text similarity only: say so every time.
 - "better / worse than its edition by X%" compares the topic with its whole edition. The edition's
   own YoY is in the `RELATED:` header.

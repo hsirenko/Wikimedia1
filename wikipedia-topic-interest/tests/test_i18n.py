@@ -56,6 +56,7 @@ from test_pipeline import MONTHS, fake_get_json  # noqa: E402
 def offline(monkeypatch, tmp_path):
     monkeypatch.setattr(wm_api, "_get_json", fake_get_json)
     monkeypatch.setenv("WIKITRENDS_NO_CACHE", "1")
+    monkeypatch.setenv("WIKITRENDS_NO_ASSETS", "1")
     monkeypatch.chdir(tmp_path)
 
 

@@ -53,9 +53,9 @@ def test_ukrainian_question_gives_a_ukrainian_report(uk_result):
     text = markdown.render(uk_result, "charts/trend.png", "uk")
     assert text.startswith("# Звіт ринкової аналітики на основі Вікіпедії")
     numbers = [int(n) for n in re.findall(r"^## (\d+)\.", text, re.M)]
-    assert numbers == list(range(1, 13))                      # same 12 sections, same order
+    assert numbers == list(range(1, 5))                       # Recommendation, Graph, Observations, KPI
     assert "−17,2%" in text and "пік — січень (1,29×), спад — липень" in text
-    for english in ("Annual views", "Key observations", "What the data", "Topic Definition", "increased",
+    for english in ("Annual views", "Key Observations", "What the data", "Topic Definition", "increased",
                     "decreased", "unsupported", "not implemented", "Quality level", "n/a"):
         assert english not in text, english
 

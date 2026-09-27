@@ -1,0 +1,8 @@
+---
+description: Use the wiki-market-intel skill for Wikipedia interest questions
+alwaysApply: true
+---
+
+For any question about Wikipedia pageviews, topic interest, language editions, or which market to research next, use the **wiki-market-intel** skill (`wiki-market-intel/SKILL.md` and `wiki-market-intel/scripts/wiki_market.py`).
+
+Do not use `wikipedia-topic-interest` or `wikitrends.py`. That folder is an older skill.

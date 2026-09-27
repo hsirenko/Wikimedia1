@@ -88,7 +88,7 @@ def test_comparison_files_and_validation(cmp, tmp_path):
 def test_english_comparison_report(cmp):
     text = comparison_report.render(cmp, "charts/opportunity.png", "charts/penetration.png", "en")
     assert text.startswith("# Language Comparison Report: Meditation")
-    assert [int(n) for n in re.findall(r"^## (\d+)\.", text, re.M)] == list(range(1, 11))
+    assert [int(n) for n in re.findall(r"^## (\d+)\.", text, re.M)] == list(range(1, 5))
     assert "| uk.wikipedia | no article |" in text and "| es.wikipedia | no data |" in text
     assert "not an official Wikimedia metric" in text and "descriptive labels, not investment" in text
     for word in ("BUY", "SELL", "BEST", "WINNER"):
@@ -98,7 +98,7 @@ def test_english_comparison_report(cmp):
 def test_ukrainian_comparison_report_has_no_english_leftovers(cmp):
     text = comparison_report.render(cmp, "charts/opportunity.png", "charts/penetration.png", "uk")
     assert text.startswith("# Звіт порівняння мов: Meditation")
-    for english in ("Summary", "Language Opportunity", "Opportunity Matrix", "no article", "no data",
+    for english in ("Summary", "Language Opportunity", "Key Observations", "no article", "no data",
                     "investigate", "established", "Topic share", "What the data", "left out", "Notes"):
         assert english not in text, english
 
