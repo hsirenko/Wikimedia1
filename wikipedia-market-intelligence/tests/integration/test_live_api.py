@@ -27,3 +27,11 @@ def test_live_analysis_end_to_end(live):
     assert result.demand.annual_views and result.demand.annual_views > 0
     assert result.growth.yoy is not None
     assert result.quality.coverage and result.quality.coverage > 0.9
+
+
+def test_live_language_comparison(live):
+    from wiki_market_intel import compare_languages
+    result = compare_languages("meditation", ["en", "de", "fr"], "3y", services=live)
+    ok = [r for r in result.rows if r.status == "ok"]
+    assert len(ok) == 3 and abs(sum(r.topic_share for r in ok) - 1) < 1e-9
+    assert all(r.topic_penetration and r.topic_affinity for r in ok)

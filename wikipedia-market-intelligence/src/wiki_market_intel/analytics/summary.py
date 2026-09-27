@@ -32,6 +32,39 @@ def observations(demand: Demand, growth: Growth, seasonality: Seasonality, perio
     return observations_from_spans(demand, growth, seasonality, spans, tr)
 
 
+def per_million(fraction: float) -> float:
+    """Penetration is a tiny fraction; people read it as views per million edition views."""
+    return fraction * 1_000_000
+
+
+def comparison_observations(rows, tr: Translator = ENGLISH) -> list[str]:
+    """Factual statements about a language comparison: largest, most concentrated, fastest, missing."""
+    out: list[str] = []
+    ok = [r for r in rows if r.status == "ok" and r.annual_views is not None]
+    if ok:
+        top = max(ok, key=lambda r: r.annual_views)
+        share = tr.percent(top.topic_share, signed=False) if top.topic_share is not None else tr("na")
+        out.append(tr("cmp_obs_views", lang=top.project, views=tr.compact(top.annual_views), share=share))
+    pen = [r for r in ok if r.topic_penetration is not None]
+    if pen:
+        top = max(pen, key=lambda r: r.topic_penetration)
+        out.append(tr("cmp_obs_penetration", lang=top.project,
+                      value=tr.decimal(per_million(top.topic_penetration), 1)))
+    aff = [r for r in ok if r.topic_affinity is not None]
+    if len(aff) >= 2:
+        top = max(aff, key=lambda r: r.topic_affinity)
+        out.append(tr("cmp_obs_affinity", lang=top.project, value=tr.decimal(top.topic_affinity)))
+    growth = [r for r in ok if r.yoy_growth is not None]
+    if len(growth) >= 2:
+        low, high = min(growth, key=lambda r: r.yoy_growth), max(growth, key=lambda r: r.yoy_growth)
+        out.append(tr("cmp_obs_growth", low=tr.percent(low.yoy_growth), low_lang=low.project,
+                      high=tr.percent(high.yoy_growth), high_lang=high.project))
+    missing = [r.project for r in rows if r.status == "no_article"]
+    if missing:
+        out.append(tr("cmp_obs_missing", langs=", ".join(missing)))
+    return out[:5]
+
+
 def observations_from_spans(demand: Demand, growth: Growth, seasonality: Seasonality, spans: dict[str, str],
                             tr: Translator = ENGLISH) -> list[str]:
     """`spans` maps period names (last_12m, previous_12m, twelve_months_3y_earlier) to 'YYYY-MM..YYYY-MM'."""

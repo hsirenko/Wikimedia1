@@ -27,19 +27,31 @@ PAGES = {
     ("en", "meditation"): (20062, "Q108458", False, None),
     ("en", "Meditation"): (20062, "Q108458", False, None),
     ("de", "Meditation"): (28837, "Q108458", False, None),
+    ("fr", "Méditation"): (4444, "Q108458", False, None),
+    ("es", "Meditación"): (5555, "Q108458", False, None),
     ("en", "Mindfulness meditation"): (111, "Q1935", False, "Mindfulness"),
     ("en", "Mindfulness"): (111, "Q1935", False, None),
     ("en", "Mercury"): (222, "Q1", True, None),
     ("en", "Obscurium"): (333, None, False, None),
 }
 ENTITIES = {
-    "Q108458": {"label": "meditation", "sitelinks": {"enwiki": "Meditation", "dewiki": "Meditation"}},
+    "Q108458": {"label": "meditation", "sitelinks": {"enwiki": "Meditation", "dewiki": "Meditation",
+                                                     "frwiki": "Méditation", "eswiki": "Meditación"}},
     "Q1935": {"label": "mindfulness", "sitelinks": {"enwiki": "Mindfulness"}},
 }
 SEARCH = {
     "Mercury": [("Mercury (planet)", "Q308", "Smallest planet"), ("Mercury (element)", "Q925", "Chemical element")],
     "Meditaton": [("Meditation", "Q108458", "Techniques to train attention")],
 }
+
+
+# Whole-edition monthly totals (the penetration denominator): flat, so penetration trends
+# follow the article's own trend and are easy to reason about in tests.
+EDITION_TOTALS = {"de": 700_000_000, "en": 7_000_000_000, "fr": 600_000_000, "es": 800_000_000}
+
+
+def _scaled(items: list[dict], factor: float, growth_per_month: float = 1.0) -> list[dict]:
+    return [{**item, "views": int(item["views"] * factor * growth_per_month ** i)} for i, item in enumerate(items)]
 
 
 class FakeWikimedia:
@@ -61,6 +73,8 @@ class FakeWikimedia:
                 return outcome
         if "/metrics/pageviews/per-article/" in url:
             return self._pageviews(url)
+        if "/metrics/pageviews/aggregate/" in url:
+            return self._aggregate(url)
         query = {k: v[0] for k, v in parse_qs(urlparse(url).query).items()}
         if "wikidata.org" in url:
             return self._entity(query)
@@ -70,10 +84,29 @@ class FakeWikimedia:
         return self._page(lang, query["titles"])
 
     def _pageviews(self, url: str) -> httpx.Response:
-        article = unquote(url.split("/per-article/")[1].split("/")[3]).replace("_", " ")
-        if article != "Meditation":
+        parts = url.split("/per-article/")[1].split("/")
+        lang, article = parts[0].split(".")[0], unquote(parts[3]).replace("_", " ")
+        base = self.pageviews["items"]
+        series = {
+            ("de", "Meditation"): base,
+            ("en", "Meditation"): _scaled(base, 12),                 # same shape, bigger edition
+            ("fr", "Méditation"): _scaled(base, 0.8, 1.03),          # grows ~3% a month
+        }.get((lang, article))
+        if series is None:     # e.g. es: the article exists but the API holds no views
             return httpx.Response(404, json={"type": "not_found", "title": "Not found."})
-        return httpx.Response(200, json=self.pageviews)
+        project = f"{lang}.wikipedia"
+        return httpx.Response(200, json={"items": [{**i, "project": project, "article": article.replace(" ", "_")}
+                                                   for i in series]})
+
+    def _aggregate(self, url: str) -> httpx.Response:
+        parts = url.split("/aggregate/")[1].split("/")
+        lang, start, end = parts[0].split(".")[0], parts[4][:6], parts[5][:6]
+        if lang not in EDITION_TOTALS:
+            return httpx.Response(404, json={"type": "not_found"})
+        months = [i["timestamp"][:6] for i in self.pageviews["items"] if start <= i["timestamp"][:6] <= end]
+        return httpx.Response(200, json={"items": [
+            {"project": f"{lang}.wikipedia", "access": "all-access", "agent": "user", "granularity": "monthly",
+             "timestamp": f"{m}0100", "views": EDITION_TOTALS[lang]} for m in months]})
 
     def _page(self, lang: str, title: str) -> httpx.Response:
         hit = PAGES.get((lang, title))

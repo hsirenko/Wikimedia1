@@ -1,0 +1,105 @@
+# Language Comparison Report: Meditation
+
+_Editions: en.wikipedia, de.wikipedia, fr.wikipedia, es.wikipedia, it.wikipedia · period 2023-09 to 2026-08 · generated 2026-09-27T10:24:06+00:00 · source: Wikimedia Analytics API_
+
+## 1. Summary
+
+- en.wikipedia had the most pageviews: 311.9K in the last 12 months (70.5% of the topic's views across the compared editions).
+- The topic took the largest share of its edition's traffic in de.wikipedia: 6.7 views per million.
+- The highest topic affinity was in de.wikipedia: 1.64× the compared average.
+- Year-over-year change ranged from -57.1% (es.wikipedia) to -17.2% (de.wikipedia).
+
+## 2. Topic Definition
+
+| | |
+|---|---|
+| Canonical topic | Meditation |
+| Wikidata ID | Q108458 |
+| Resolution method | exact title |
+| Resolution confidence | 0.98 |
+
+| Edition | Article | Page ID |
+|---|---|---:|
+| en.wikipedia | Meditation | 20062 |
+| de.wikipedia | Meditation | 28837 |
+| fr.wikipedia | Méditation | 1533268 |
+| es.wikipedia | Meditación | 72116 |
+| it.wikipedia | Meditazione | 16979 |
+
+## 3. Language Opportunity
+
+| Edition | Views (12M) | YoY | 3Y CAGR | 3M | Unique devices | Topic share | Penetration (per M) | Affinity | Quadrant |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| en.wikipedia | 311,869 | -20.8% | -17.9% | +58.4% | n/a | 70.5% | 3.8 | 0.94 | established |
+| de.wikipedia | 56,910 | -17.2% | -15.1% | +3.1% | n/a | 12.9% | 6.7 | 1.64 | established |
+| fr.wikipedia | 31,017 | -44.4% | -19.8% | +9.5% | n/a | 7.0% | 4.3 | 1.06 | established |
+| es.wikipedia | 25,633 | -57.1% | -39.6% | -15.2% | n/a | 5.8% | 3.9 | 0.96 | watch |
+| it.wikipedia | 17,203 | -20.5% | -31.4% | +7.9% | n/a | 3.9% | 3.7 | 0.91 | watch |
+
+## 4. Opportunity Matrix
+
+![Opportunity matrix](charts/opportunity.png)
+
+Each edition is a point: historical growth (YoY) across, absolute demand (views in the last 12 months, log scale) up. Splits: growth above 0% YoY; demand at or above the median of the compared editions (31,017 views). The split is relative to this set of editions.
+
+- **investigate**: growing and above-median demand
+- **explore**: growing, below-median demand
+- **established**: not growing, above-median demand
+- **watch**: not growing, below-median demand
+
+Quadrant names are descriptive labels, not investment recommendations.
+
+## 5. Localization
+
+![Topic penetration over time](charts/penetration.png)
+
+Topic penetration: the topic's views per million views of its edition, month by month.
+
+- Country distribution: Wikimedia publishes country data per edition, not per article, so it cannot be measured for a topic.
+- A language edition is not a country: readers of en.wikipedia live in many countries.
+- A language edition is not a country: readers of de.wikipedia live in many countries.
+- A language edition is not a country: readers of fr.wikipedia live in many countries.
+- A language edition is not a country: readers of es.wikipedia live in many countries.
+- A language edition is not a country: readers of it.wikipedia live in many countries.
+
+## 6. Definitions
+
+- Topic share: an edition's topic views / topic views across the compared editions (last 12 months).
+- Wikipedia topic penetration: topic views / all views of that edition (last 12 months), shown per million views. Not market penetration.
+- Topic affinity: (topic views / edition views) / (topic views / edition views across the compared editions). 1.0 means the same share of attention as the compared set; it is this system's own measure, relative to the editions compared, not an official Wikimedia metric.
+- Unique devices: Wikimedia publishes them per edition only, never per article, so the column is always n/a.
+
+## 7. Data Quality
+
+| Edition | Status | Coverage | Quality |
+|---|---|---:|---|
+| en.wikipedia | OK | 100.0% | HIGH |
+| de.wikipedia | OK | 100.0% | HIGH |
+| fr.wikipedia | OK | 100.0% | HIGH |
+| es.wikipedia | OK | 100.0% | HIGH |
+| it.wikipedia | OK | 100.0% | HIGH |
+
+
+## 8. Business Implications
+
+### What the data supports
+
+- en.wikipedia had the most pageviews: 311.9K in the last 12 months (70.5% of the topic's views across the compared editions).
+- The topic took the largest share of its edition's traffic in de.wikipedia: 6.7 views per million.
+- The highest topic affinity was in de.wikipedia: 1.64× the compared average.
+- Year-over-year change ranged from -57.1% (es.wikipedia) to -17.2% (de.wikipedia).
+
+### What the data does NOT establish
+
+- Revenue, market size (TAM) or willingness to pay: pageviews measure attention, not purchasing.
+- That the order of editions reflects market attractiveness: it reflects Wikipedia reading only.
+- Causes of any change: the data shows that traffic moved, not why.
+- That readers of related articles, or of other language editions, share this trend.
+
+### Questions requiring further validation
+
+- Does search volume (e.g. Google Trends) show the same direction in this language?
+- Is there App Store / Google Play demand for products on this topic in this language?
+- What do competitors in this category earn, and how large is the addressable market?
+- Will people pay? What do customer interviews and landing-page conversion rates show?
+- What would customer acquisition cost, retention and monetization look like?

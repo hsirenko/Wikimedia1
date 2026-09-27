@@ -14,7 +14,7 @@
 | 3Y CAGR | -15.1% |
 | Momentum | accelerating |
 | Seasonality | peak January, trough July |
-| Localization metrics | n/a (not implemented: Needs the edition-wide pageview total (planned).) |
+| Localization metrics | Wikipedia topic penetration: 6.7 per million edition views |
 | Data quality | **HIGH** (full coverage, confident topic match, at least two years of data) |
 
 ### Key observations
@@ -77,14 +77,14 @@ Basis: calendar-month means over 2023-09..2026-08 (3 observation(s) per month).
 
 ## 6. Language Opportunity
 
-n/a (not implemented: Needs a multi-language comparison (planned: compare command).)
+n/a (unavailable: Only defined across several editions: run `compare` with the languages to compare.)
 
 ## 7. Localization
 
 | Metric | Value |
 |---|---|
-| Wikipedia topic penetration | n/a (not implemented: Needs the edition-wide pageview total (planned).) |
-| Topic affinity | n/a (not implemented: Needs project-level denominators for every compared edition (planned).) |
+| Wikipedia topic penetration | 6.7 per million edition views |
+| Topic affinity | n/a (unavailable: Only defined across several editions: run `compare` with the languages to compare.) |
 | Country distribution | n/a (unsupported: Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured.) |
 
 A language edition is not a country: de.wikipedia is read wherever that language is read.
@@ -103,13 +103,13 @@ n/a (not implemented: Anomaly detection is planned for a later milestone.)
 |---|---|
 | Source | Wikimedia Analytics API (https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article), access=all-access, agent=user |
 | Data retrieved | 2026-09-27T09:35:05+00:00 |
-| Report generated | 2026-09-27T10:05:55+00:00 (software 0.1.0) |
+| Report generated | 2026-09-27T10:24:17+00:00 (software 0.1.0) |
 | Coverage | 100.0% |
 | Missing data | none |
 | Topic resolution confidence | 0.98 |
 | Unique devices available | no |
 | Country data available | no |
-| Project-level denominator available | no |
+| Project-level denominator available | yes |
 | API errors | none |
 | Quality level | **HIGH**: full coverage, confident topic match, at least two years of data |
 
@@ -120,14 +120,13 @@ Metrics not computed:
 | demand.unique_devices | unsupported | Wikimedia publishes unique devices per project (whole language edition) only, never per article. |
 | demand.views_per_unique_device | unsupported | Wikimedia publishes unique devices per project (whole language edition) only, never per article. |
 | localization.country_distribution | unsupported | Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured. |
+| localization.topic_share | unavailable | Only defined across several editions: run `compare` with the languages to compare. |
+| localization.topic_affinity | unavailable | Only defined across several editions: run `compare` with the languages to compare. |
 | anomalies | not implemented | Anomaly detection is planned for a later milestone. |
-| localization.topic_share | not implemented | Needs a multi-language comparison (planned: compare command). |
-| localization.topic_affinity | not implemented | Needs project-level denominators for every compared edition (planned). |
-| localization.topic_penetration | not implemented | Needs the edition-wide pageview total (planned). |
 | ecosystem.related_topics | not implemented | Topic ecosystem analysis is planned for a later milestone. |
 | signals | not implemented | Decision signals are planned for a later milestone. |
 
-Raw responses: `/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T093505_2b682df09582.json`
+Raw responses: `/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T093505_2b682df09582.json`, `/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-aggregate/20260927T102206_c49dec8c1d36.json`
 
 ## 11. Business Implications
 

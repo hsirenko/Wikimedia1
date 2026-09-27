@@ -8,12 +8,13 @@ decision.
 > Wikipedia pageviews measure attention. They are not revenue, market size, willingness to pay,
 > or proof of product demand. This system never turns them into a "buy" or "invest" call.
 
-**Status: Milestone 1** (spec §41). This covers one topic in one language: explicit topic
-resolution, three years of monthly pageviews, normalized and validated records, the core KPIs,
-and a JSON result, a Markdown report and a trend chart. It is fully tested. The language
-comparison, localization, anomalies, topic ecosystem, decision signals and portfolio mode come in
-later milestones (see [Roadmap](#roadmap)). Reports already contain their sections and say why
-they're empty.
+**Status:** built and fully tested.
+- **Milestone 1:** one topic in one language, meaning explicit topic resolution, monthly
+  pageviews, core KPIs, and a JSON result, a Markdown report and a trend chart.
+- **Language comparison:** one topic across editions, with topic share, Wikipedia topic
+  penetration, topic affinity and the demand × growth opportunity matrix.
+- **Later milestones:** anomalies, topic ecosystem, decision signals and portfolio mode (see
+  [Roadmap](#roadmap)). Reports already contain those sections and say why they're empty.
 
 ## 1. What it does
 
@@ -66,6 +67,7 @@ Settings come from `WMI_*` environment variables (see `.env.example`):
 wiki-market analyze --topic "meditation" --language de --period 3y
 wiki-market analyze --topic meditation --language de --start 2023-09 --end 2026-08
 wiki-market analyze --input examples/meditation-de.yaml
+wiki-market compare --topic meditation --languages en,de,fr,es,it
 wiki-market topic --topic meditation --languages en,de,fr      # resolution only
 wiki-market validate                                             # check every saved report
 wiki-market cache clear
@@ -98,7 +100,16 @@ result.quality.missing_metrics      # every null KPI, with its reason
 result.model_dump_json()            # the machine-readable result
 ```
 
-If the topic is ambiguous, `analyze` raises `AmbiguousTopicError`, and its `.resolution.candidates`
+```python
+from wiki_market_intel import compare_languages
+
+comparison = compare_languages(topic="meditation", languages=["en", "de", "fr", "es", "it"])
+for row in comparison.rows:          # LanguageOpportunityMetrics, one per edition
+    row.language, row.annual_views, row.yoy_growth, row.topic_share, row.topic_penetration, row.topic_affinity
+comparison.analyses["de"]            # the full single-language result for each edition
+```
+
+If the topic is ambiguous, `analyze` and `compare_languages` raise `AmbiguousTopicError`, and its `.resolution.candidates`
 lists the plausible concepts. The system never picks one silently.
 
 ## Report language
@@ -139,6 +150,10 @@ wiki-market analyze --topic meditation --language de \
 | Peak/average, trough/average | ratio of calendar-month means | |
 | Volatility | coefficient of variation of monthly views | |
 | Coverage | months with data / months in the requested period | |
+| Wikipedia topic penetration | topic views / all views of the edition, last 12 months | same traffic class for both; shown per million; not market penetration |
+| Topic share | an edition's topic views / topic views across the compared editions | relative to the compared set; editions without data are left out and named |
+| Topic affinity | (topic views / edition views) / (compared topic views / compared edition views) | a location quotient; 1.0 is average for the compared set; this system's own measure, not an official Wikimedia metric |
+| Quadrant | growth: YoY > 0%; demand: views ≥ median of the compared editions | labels are investigate, explore, established and watch; descriptive, never recommendations |
 
 ## 8. Formulas
 
@@ -203,8 +218,8 @@ KPI functions would not change.
 ## 13. Tests
 
 ```bash
-pytest                    # 77 offline tests; the network is replaced by a fake Wikimedia
-pytest -m integration     # 2 tests against the live API
+pytest                    # 101 offline tests; the network is replaced by a fake Wikimedia
+pytest -m integration     # 3 tests against the live API
 ```
 
 The fixture `tests/fixtures/pageviews_meditation_de_2020-09_2026-08.json` is a real captured API
@@ -223,14 +238,13 @@ response. The tests cover:
 
 In the order the spec (§40) sets:
 
-1. **Language comparison** (`compare`): the same Wikidata entity across languages, with topic
-   share.
-2. **Localization:** topic penetration from the project `aggregate` endpoint. Affinity only
-   where a real denominator exists; otherwise `null` with a reason.
-3. **Anomalies:** a rolling median / MAD baseline. Causes stay "unknown".
-4. **Topic ecosystem and concentration** (`cluster`).
-5. **Decision signals:** market size, growth, momentum, localization, stability. Kept separate,
+1. ~~**Language comparison and localization**~~ (done): `compare`, topic share, penetration from
+   the project `aggregate` endpoint, affinity, and the opportunity matrix. Country distribution
+   stays unsupported, because Wikimedia doesn't publish it per article.
+2. **Anomalies:** a rolling median / MAD baseline. Causes stay "unknown".
+3. **Topic ecosystem and concentration** (`cluster`).
+4. **Decision signals:** market size, growth, momentum, localization, stability. Kept separate,
    with no single score.
-6. **HTML report, portfolio mode and the opportunity matrix.**
+5. **HTML report and portfolio mode:** a matrix of many topics × languages (the opportunity matrix already exists per topic).
 
 [aqs]: https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/reference/page-views.html

@@ -7,7 +7,8 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from wiki_market_intel.models.metrics import (
-    Demand, Formula, Growth, Localization, MissingMetric, MonthlyPoint, PeriodRef, Seasonality, Signals,
+    Demand, Formula, Growth, LanguageOpportunityMetrics, Localization, MissingMetric, MonthlyPoint, PeriodRef,
+    Seasonality, Signals,
 )
 from wiki_market_intel.models.topic import TopicResolution
 
@@ -80,10 +81,42 @@ class AnalysisResult(BaseModel):
     signals: Signals = Field(default_factory=Signals)
     observations: list[str] = Field(default_factory=list)
     monthly: list[MonthlyPoint] = Field(default_factory=list)
+    edition_monthly: list[MonthlyPoint] = Field(default_factory=list)   # whole-edition totals (denominator)
     formulas: list[Formula] = Field(default_factory=list)
     sources: list[SourceRecord] = Field(default_factory=list)
 
     @property
     def summary(self) -> list[str]:
         """3-5 factual observations (spec §24.1, §38)."""
+        return self.observations
+
+
+class ComparisonMetadata(BaseModel):
+    topic: str
+    languages: list[str]
+    period_start: str
+    period_end: str
+    generated_at: str
+    data_retrieved_at: str | None
+    source: str = "Wikimedia"
+    software_version: str
+    question: str | None = None
+    report_language: str = "en"
+
+
+class ComparisonResult(BaseModel):
+    """The same Wikidata concept across language editions (spec §14-§18, §23)."""
+
+    metadata: ComparisonMetadata
+    resolution: TopicResolution
+    rows: list[LanguageOpportunityMetrics]
+    analyses: dict[str, AnalysisResult] = Field(default_factory=dict)   # full per-language results
+    demand_threshold: float | None = None       # median annual views of compared editions (quadrant split)
+    growth_threshold: float = 0.0
+    observations: list[str] = Field(default_factory=list)
+    notes: list[str] = Field(default_factory=list)
+    formulas: list[Formula] = Field(default_factory=list)
+
+    @property
+    def summary(self) -> list[str]:
         return self.observations

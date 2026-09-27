@@ -12,11 +12,8 @@ from wiki_market_intel.models.analysis import Quality
 from wiki_market_intel.models.metrics import MissingMetric, MonthlyPoint
 from wiki_market_intel.models.topic import TopicResolution
 
-NOT_IN_MILESTONE_1 = [
+NOT_YET = [
     ("anomalies", "Anomaly detection is planned for a later milestone."),
-    ("localization.topic_share", "Needs a multi-language comparison (planned: compare command)."),
-    ("localization.topic_affinity", "Needs project-level denominators for every compared edition (planned)."),
-    ("localization.topic_penetration", "Needs the edition-wide pageview total (planned)."),
     ("ecosystem.related_topics", "Topic ecosystem analysis is planned for a later milestone."),
     ("signals", "Decision signals are planned for a later milestone."),
 ]
@@ -24,8 +21,12 @@ COUNTRY_REASON = ("Wikimedia publishes country-level pageviews per project (top-
                   "not per article, so a topic's country distribution cannot be measured.")
 
 
+ONLY_IN_COMPARISON = ("Only defined across several editions: run `compare` with the languages to compare "
+                      "(the per-language results inside a comparison carry this value).")
+
+
 def assess(series: list[MonthlyPoint], requested: Period, resolution: TopicResolution,
-           metric_gaps: list[MissingMetric], api_errors: list[str]) -> Quality:
+           metric_gaps: list[MissingMetric], api_errors: list[str], denominator_available: bool = False) -> Quality:
     values = requested.values(series)
     covered = sum(v is not None for v in values)
     coverage = covered / len(values) if values else None
@@ -34,7 +35,9 @@ def assess(series: list[MonthlyPoint], requested: Period, resolution: TopicResol
                       and p.views is None]
     gaps = list(metric_gaps)
     gaps.append(MissingMetric(metric="localization.country_distribution", status="unsupported", reason=COUNTRY_REASON))
-    gaps += [MissingMetric(metric=m, status="not_implemented", reason=r) for m, r in NOT_IN_MILESTONE_1]
+    gaps += [MissingMetric(metric=m, status="unavailable", reason=ONLY_IN_COMPARISON)
+             for m in ("localization.topic_share", "localization.topic_affinity")]
+    gaps += [MissingMetric(metric=m, status="not_implemented", reason=r) for m, r in NOT_YET]
 
     confidence = resolution.confidence
     reasons: list[str] = []
@@ -60,4 +63,4 @@ def assess(series: list[MonthlyPoint], requested: Period, resolution: TopicResol
         topic_resolution_confidence=confidence,
         language_mapping_confidence=1.0 if resolution.method != "no_wikidata" else None,
         anomaly_count=None, country_data_available=False, unique_devices_available=False,
-        project_denominator_available=False, quality_level=level, quality_reasons=reasons)
+        project_denominator_available=denominator_available, quality_level=level, quality_reasons=reasons)

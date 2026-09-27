@@ -31,7 +31,7 @@ TEMPLATE = """\
 | {{ t("cagr") }} | {{ rate(r.growth.three_year_cagr, "growth.three_year_cagr") }} |
 | {{ t("momentum") }} | {{ t("momentum." ~ r.growth.momentum) if r.growth.momentum else missing("growth.last_three_month_growth") }} |
 | {{ t("seasonality") }} | {% if r.seasonality.peak_month %}{{ t("season_value", peak=month_mid(r.seasonality.peak_month), trough=month_mid(r.seasonality.trough_month)) }}{% else %}{{ missing("seasonality.peak_month") }}{% endif %} |
-| {{ t("localization") }} | {{ missing("localization.topic_penetration") }} |
+| {{ t("localization") }} | {{ t("penetration") }}: {{ pen(r.localization.topic_penetration) }} |
 | {{ t("quality") }} | **{{ t("level." ~ r.quality.quality_level) }}** ({{ quality_reasons | join("; ") }}) |
 
 ### {{ t("observations") }}
@@ -96,14 +96,14 @@ TEMPLATE = """\
 
 ## {{ t("s6") }}
 
-{{ missing("localization.topic_share") }}
+{% if r.localization.topic_share is not none %}{{ t("col_share") }}: {{ rate(r.localization.topic_share, None, signed=False) }}{% else %}{{ missing("localization.topic_share") }}{% endif %}
 
 ## {{ t("s7") }}
 
 | {{ t("metric") }} | {{ t("value") }} |
 |---|---|
-| {{ t("penetration") }} | {{ missing("localization.topic_penetration") }} |
-| {{ t("affinity") }} | {{ missing("localization.topic_affinity") }} |
+| {{ t("penetration") }} | {{ pen(r.localization.topic_penetration) }} |
+| {{ t("affinity") }} | {{ dec(r.localization.topic_affinity) if r.localization.topic_affinity is not none else missing("localization.topic_affinity") }} |
 | {{ t("countries") }} | {{ missing("localization.country_distribution") }} |
 
 {{ t("not_country", project=r.metadata.project) }}
@@ -207,6 +207,8 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
     reasons = {m.metric: m for m in result.quality.missing_metrics}
 
     def reason(m) -> str:
+        if m.metric == "localization.topic_penetration" and m.status == "unavailable":
+            return tr("reason.penetration_unavailable")
         key = REASON_KEYS.get(m.metric)
         if key:
             return tr(key)
@@ -231,6 +233,11 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
     def dec(value) -> str:
         return tr.decimal(value) if value is not None else tr("na")
 
+    def pen(value) -> str:
+        if value is None:
+            return missing("localization.topic_penetration")
+        return tr("per_million_value", value=tr.decimal(value * 1_000_000, 1))
+
     def points(value: float) -> str:
         text = f"{value * 100:+.1f}"
         return text.replace(".", ",").replace("-", "−") if tr.lang == "uk" else text
@@ -248,7 +255,7 @@ def render(result: AnalysisResult, chart_path: str | None = None, lang: str = "e
         text = tr.month(name)
         return text.lower() if text and tr.lang == "uk" else text
 
-    env.globals.update(t=tr, missing=missing, num=num, rate=rate, dec=dec, points=points, reason=reason,
+    env.globals.update(t=tr, missing=missing, num=num, rate=rate, dec=dec, points=points, reason=reason, pen=pen,
                        month=tr.month, month_mid=month_mid)
     return env.from_string(TEMPLATE).render(
         r=result, chart=chart_path, basis=basis,

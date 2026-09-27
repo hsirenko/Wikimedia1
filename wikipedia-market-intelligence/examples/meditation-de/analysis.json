@@ -5,7 +5,7 @@
     "project": "de.wikipedia",
     "period_start": "2023-09",
     "period_end": "2026-08",
-    "generated_at": "2026-09-27T10:05:55+00:00",
+    "generated_at": "2026-09-27T10:24:17+00:00",
     "data_retrieved_at": "2026-09-27T09:35:05+00:00",
     "source": "Wikimedia",
     "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
@@ -141,7 +141,7 @@
   "localization": {
     "topic_share": null,
     "topic_affinity": null,
-    "topic_penetration": null,
+    "topic_penetration": 6.727669276052559e-6,
     "country_distribution": []
   },
   "anomalies": [],
@@ -168,24 +168,19 @@
         "reason": "Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured."
       },
       {
-        "metric": "anomalies",
-        "status": "not_implemented",
-        "reason": "Anomaly detection is planned for a later milestone."
-      },
-      {
         "metric": "localization.topic_share",
-        "status": "not_implemented",
-        "reason": "Needs a multi-language comparison (planned: compare command)."
+        "status": "unavailable",
+        "reason": "Only defined across several editions: run `compare` with the languages to compare (the per-language results inside a comparison carry this value)."
       },
       {
         "metric": "localization.topic_affinity",
-        "status": "not_implemented",
-        "reason": "Needs project-level denominators for every compared edition (planned)."
+        "status": "unavailable",
+        "reason": "Only defined across several editions: run `compare` with the languages to compare (the per-language results inside a comparison carry this value)."
       },
       {
-        "metric": "localization.topic_penetration",
+        "metric": "anomalies",
         "status": "not_implemented",
-        "reason": "Needs the edition-wide pageview total (planned)."
+        "reason": "Anomaly detection is planned for a later milestone."
       },
       {
         "metric": "ecosystem.related_topics",
@@ -204,7 +199,7 @@
     "anomaly_count": null,
     "country_data_available": false,
     "unique_devices_available": false,
-    "project_denominator_available": false,
+    "project_denominator_available": true,
     "quality_level": "HIGH",
     "quality_reasons": [
       "full coverage, confident topic match, at least two years of data"
@@ -514,6 +509,296 @@
       "views": 5328
     }
   ],
+  "edition_monthly": [
+    {
+      "month": "2020-09",
+      "views": 837893871
+    },
+    {
+      "month": "2020-10",
+      "views": 908224487
+    },
+    {
+      "month": "2020-11",
+      "views": 956135021
+    },
+    {
+      "month": "2020-12",
+      "views": 962283050
+    },
+    {
+      "month": "2021-01",
+      "views": 1108166367
+    },
+    {
+      "month": "2021-02",
+      "views": 946107999
+    },
+    {
+      "month": "2021-03",
+      "views": 1028729696
+    },
+    {
+      "month": "2021-04",
+      "views": 1009543932
+    },
+    {
+      "month": "2021-05",
+      "views": 1004058309
+    },
+    {
+      "month": "2021-06",
+      "views": 863878022
+    },
+    {
+      "month": "2021-07",
+      "views": 846718546
+    },
+    {
+      "month": "2021-08",
+      "views": 860766517
+    },
+    {
+      "month": "2021-09",
+      "views": 814413288
+    },
+    {
+      "month": "2021-10",
+      "views": 869710025
+    },
+    {
+      "month": "2021-11",
+      "views": 847691759
+    },
+    {
+      "month": "2021-12",
+      "views": 895186277
+    },
+    {
+      "month": "2022-01",
+      "views": 1003416090
+    },
+    {
+      "month": "2022-02",
+      "views": 864492103
+    },
+    {
+      "month": "2022-03",
+      "views": 878829219
+    },
+    {
+      "month": "2022-04",
+      "views": 810988095
+    },
+    {
+      "month": "2022-05",
+      "views": 777782787
+    },
+    {
+      "month": "2022-06",
+      "views": 752754379
+    },
+    {
+      "month": "2022-07",
+      "views": 763770412
+    },
+    {
+      "month": "2022-08",
+      "views": 778746964
+    },
+    {
+      "month": "2022-09",
+      "views": 778256506
+    },
+    {
+      "month": "2022-10",
+      "views": 827953737
+    },
+    {
+      "month": "2022-11",
+      "views": 812738811
+    },
+    {
+      "month": "2022-12",
+      "views": 823268144
+    },
+    {
+      "month": "2023-01",
+      "views": 923663231
+    },
+    {
+      "month": "2023-02",
+      "views": 777900814
+    },
+    {
+      "month": "2023-03",
+      "views": 846237348
+    },
+    {
+      "month": "2023-04",
+      "views": 792546084
+    },
+    {
+      "month": "2023-05",
+      "views": 809693225
+    },
+    {
+      "month": "2023-06",
+      "views": 772740569
+    },
+    {
+      "month": "2023-07",
+      "views": 808003413
+    },
+    {
+      "month": "2023-08",
+      "views": 816971229
+    },
+    {
+      "month": "2023-09",
+      "views": 745403358
+    },
+    {
+      "month": "2023-10",
+      "views": 820695698
+    },
+    {
+      "month": "2023-11",
+      "views": 801670137
+    },
+    {
+      "month": "2023-12",
+      "views": 830026955
+    },
+    {
+      "month": "2024-01",
+      "views": 945395026
+    },
+    {
+      "month": "2024-02",
+      "views": 813034453
+    },
+    {
+      "month": "2024-03",
+      "views": 845578385
+    },
+    {
+      "month": "2024-04",
+      "views": 798592186
+    },
+    {
+      "month": "2024-05",
+      "views": 804945994
+    },
+    {
+      "month": "2024-06",
+      "views": 773303565
+    },
+    {
+      "month": "2024-07",
+      "views": 782995014
+    },
+    {
+      "month": "2024-08",
+      "views": 779537811
+    },
+    {
+      "month": "2024-09",
+      "views": 746521495
+    },
+    {
+      "month": "2024-10",
+      "views": 804199250
+    },
+    {
+      "month": "2024-11",
+      "views": 764932003
+    },
+    {
+      "month": "2024-12",
+      "views": 812305022
+    },
+    {
+      "month": "2025-01",
+      "views": 902194788
+    },
+    {
+      "month": "2025-02",
+      "views": 768465579
+    },
+    {
+      "month": "2025-03",
+      "views": 806741813
+    },
+    {
+      "month": "2025-04",
+      "views": 736284306
+    },
+    {
+      "month": "2025-05",
+      "views": 712160095
+    },
+    {
+      "month": "2025-06",
+      "views": 643354804
+    },
+    {
+      "month": "2025-07",
+      "views": 695348128
+    },
+    {
+      "month": "2025-08",
+      "views": 736793813
+    },
+    {
+      "month": "2025-09",
+      "views": 696111150
+    },
+    {
+      "month": "2025-10",
+      "views": 748632593
+    },
+    {
+      "month": "2025-11",
+      "views": 733914764
+    },
+    {
+      "month": "2025-12",
+      "views": 705194251
+    },
+    {
+      "month": "2026-01",
+      "views": 780199458
+    },
+    {
+      "month": "2026-02",
+      "views": 672194020
+    },
+    {
+      "month": "2026-03",
+      "views": 693410501
+    },
+    {
+      "month": "2026-04",
+      "views": 662879466
+    },
+    {
+      "month": "2026-05",
+      "views": 702429083
+    },
+    {
+      "month": "2026-06",
+      "views": 682993791
+    },
+    {
+      "month": "2026-07",
+      "views": 693723660
+    },
+    {
+      "month": "2026-08",
+      "views": 687413224
+    }
+  ],
   "formulas": [
     {
       "name": "annual_views",
@@ -589,6 +874,26 @@
       "name": "coverage",
       "definition": "months with data / months in the requested period",
       "edge_cases": ""
+    },
+    {
+      "name": "topic_penetration",
+      "definition": "topic views / all views of that language edition, both over the last 12 months",
+      "edge_cases": "same traffic class (access, agent) for both; 'Wikipedia topic penetration', not market penetration"
+    },
+    {
+      "name": "topic_share",
+      "definition": "topic views in one edition / topic views across all compared editions (last 12 months)",
+      "edge_cases": "relative to the compared set; editions without data are excluded and listed"
+    },
+    {
+      "name": "topic_affinity",
+      "definition": "(topic views / edition views) / (compared topic views / compared edition views)",
+      "edge_cases": "location quotient relative to the compared editions; not an official Wikimedia metric"
+    },
+    {
+      "name": "quadrant",
+      "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
+      "edge_cases": ""
     }
   ],
   "sources": [
@@ -597,6 +902,12 @@
       "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/user/Meditation/monthly/2020090100/2026083100",
       "retrieved_at": "2026-09-27T09:35:05+00:00",
       "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T093505_2b682df09582.json"
+    },
+    {
+      "endpoint": "pageviews/aggregate",
+      "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/de.wikipedia/all-access/user/monthly/2020090100/2026083100",
+      "retrieved_at": "2026-09-27T10:22:06+00:00",
+      "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-aggregate/20260927T102206_c49dec8c1d36.json"
     }
   ]
 }

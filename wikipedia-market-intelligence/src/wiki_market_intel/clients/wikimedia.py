@@ -21,6 +21,7 @@ from wiki_market_intel.data.cache import CacheKey
 from wiki_market_intel.errors import ApiError
 
 PER_ARTICLE = "pageviews/per-article"
+AGGREGATE = "pageviews/aggregate"
 ACCESS = ("all-access", "desktop", "mobile-app", "mobile-web")
 AGENTS = ("all-agents", "user", "spider", "automated")
 
@@ -41,6 +42,30 @@ class PerArticleResponse(BaseModel):
     """entities.PerArticleResponse in the official spec."""
 
     items: list[PerArticleItem]
+
+
+class AggregateItem(BaseModel):
+    """entities.Aggregate in the official spec: all pageviews of one project in one period."""
+
+    project: str
+    granularity: str
+    timestamp: str
+    access: str
+    agent: str
+    views: NonNegativeInt
+
+
+class AggregateResponse(BaseModel):
+    """entities.AggregateResponse in the official spec."""
+
+    items: list[AggregateItem]
+
+
+@dataclass
+class AggregateFetch:
+    status: Literal["ok", "no_data"]
+    items: list[AggregateItem]
+    fetched: Fetched
 
 
 @dataclass
@@ -84,6 +109,25 @@ class WikimediaClient:
         except ValidationError as exc:
             raise ApiError(f"Malformed pageviews response: {exc.errors()[:2]}", fetched.url, fetched.status) from None
         return PageviewFetch(status="ok", items=parsed.items, fetched=fetched)
+
+    def aggregate(self, project: str, start: date, end: date) -> AggregateFetch:
+        """All pageviews of a language edition per month: the denominator for topic penetration.
+        Same traffic class (access, agent) as the per-article numbers, so the ratio is like for like."""
+        access, agent = self.settings.access, self.settings.agent
+        last_day = calendar.monthrange(end.year, end.month)[1]
+        first, final = f"{start:%Y%m}0100", f"{end:%Y%m}{last_day:02d}00"
+        url = f"{self.settings.pageviews_base}/aggregate/{project}/{access}/{agent}/monthly/{first}/{final}"
+        key = CacheKey(source="wikimedia", endpoint=AGGREGATE, language=project.split(".")[0], article="*",
+                       start=first, end=final, metric="pageviews:monthly", extra=f"{access}|{agent}")
+        fetched = self.http.get(source="wikimedia", endpoint=AGGREGATE, url=url, params=None,
+                                key=key, immutable=self._is_final(end))
+        if fetched.status == 404:
+            return AggregateFetch(status="no_data", items=[], fetched=fetched)
+        try:
+            parsed = AggregateResponse.model_validate(fetched.body)
+        except ValidationError as exc:
+            raise ApiError(f"Malformed aggregate response: {exc.errors()[:2]}", fetched.url, fetched.status) from None
+        return AggregateFetch(status="ok", items=parsed.items, fetched=fetched)
 
     def _is_final(self, end: date) -> bool:
         # Monthly data lands a day or two after the month closes; after the 5th it no longer changes.

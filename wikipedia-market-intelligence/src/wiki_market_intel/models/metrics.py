@@ -82,6 +82,28 @@ class Formula(BaseModel):
     edge_cases: str = ""
 
 
+class LanguageOpportunityMetrics(BaseModel):
+    """One row of a language comparison (spec §14). Every value is nullable; `status` says why."""
+
+    language: str
+    project: str
+    article_title: str | None = None
+    status: Literal["ok", "no_article", "no_data"] = "ok"
+    annual_views: int | None = None
+    monthly_average: float | None = None
+    unique_devices: int | None = None           # not published per article (see demand.unique_devices)
+    yoy_growth: float | None = None
+    three_year_cagr: float | None = None
+    three_month_growth: float | None = None
+    momentum: Literal["accelerating", "stable", "decelerating"] | None = None
+    peak_month: str | None = None
+    topic_share: float | None = None
+    topic_penetration: float | None = None
+    topic_affinity: float | None = None
+    quadrant: Literal["investigate", "explore", "established", "watch"] | None = None
+    quality_level: Literal["HIGH", "MEDIUM", "LOW"] | None = None
+
+
 class Localization(BaseModel):
     topic_share: float | None = None
     topic_affinity: float | None = None

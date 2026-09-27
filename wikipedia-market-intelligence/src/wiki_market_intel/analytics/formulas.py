@@ -102,6 +102,41 @@ def topic_penetration(topic_views: float | None, language_total_views: float | N
     return topic_share(topic_views, language_total_views)
 
 
+def topic_affinity(topic_views: float | None, edition_views: float | None,
+                   compared_topic_views: float | None, compared_edition_views: float | None) -> float | None:
+    """Location quotient: how over- or under-represented the topic is in one edition,
+    relative to the editions being compared.
+
+        (topic views in L / all views of edition L)
+        / (topic views in all compared editions / all views of those editions)
+
+    1.0 = the topic takes the same share of attention as across the compared set; 2.0 = twice.
+    This is this system's own formulation, relative to the compared set only - not an
+    official Wikimedia metric, and it changes if you compare a different set of languages.
+    None if any input is missing or a denominator is zero.
+    """
+    penetration = topic_penetration(topic_views, edition_views)
+    pooled = topic_penetration(compared_topic_views, compared_edition_views)
+    if penetration is None or pooled is None or pooled <= 0:
+        return None
+    return penetration / pooled
+
+
+QUADRANTS = {   # (high growth, high demand) -> descriptive label, never a recommendation (spec §23)
+    (True, True): "investigate", (True, False): "explore",
+    (False, True): "established", (False, False): "watch",
+}
+
+
+def quadrant(growth: float | None, demand: float | None, demand_threshold: float | None,
+             growth_threshold: float = 0.0) -> str | None:
+    """Opportunity-matrix quadrant. High growth: YoY > growth_threshold (0 = any growth).
+    High demand: annual views >= demand_threshold (the median of the compared editions)."""
+    if growth is None or demand is None or demand_threshold is None:
+        return None
+    return QUADRANTS[(growth > growth_threshold, demand >= demand_threshold)]
+
+
 MOMENTUM_THRESHOLD = 0.05   # 5 percentage points
 
 
@@ -139,4 +174,16 @@ REGISTRY: list[Formula] = [
     Formula(name="views_per_unique_device", definition="pageviews / unique devices",
             edge_cases="unique devices are published per project only, so this is null for articles"),
     Formula(name="coverage", definition="months with data / months in the requested period"),
+    Formula(name="topic_penetration",
+            definition="topic views / all views of that language edition, both over the last 12 months",
+            edge_cases="same traffic class (access, agent) for both; 'Wikipedia topic penetration', not market penetration"),
+    Formula(name="topic_share",
+            definition="topic views in one edition / topic views across all compared editions (last 12 months)",
+            edge_cases="relative to the compared set; editions without data are excluded and listed"),
+    Formula(name="topic_affinity",
+            definition="(topic views / edition views) / (compared topic views / compared edition views)",
+            edge_cases="location quotient relative to the compared editions; not an official Wikimedia metric"),
+    Formula(name="quadrant",
+            definition="growth: YoY > 0; demand: annual views >= median of compared editions; "
+                       "labels investigate / explore / established / watch are descriptive, not recommendations"),
 ]

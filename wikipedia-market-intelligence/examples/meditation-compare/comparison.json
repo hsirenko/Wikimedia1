@@ -1,0 +1,4878 @@
+{
+  "metadata": {
+    "topic": "meditation",
+    "languages": [
+      "en",
+      "de",
+      "fr",
+      "es",
+      "it"
+    ],
+    "period_start": "2023-09",
+    "period_end": "2026-08",
+    "generated_at": "2026-09-27T10:24:06+00:00",
+    "data_retrieved_at": "2026-09-27T09:35:05+00:00",
+    "source": "Wikimedia",
+    "software_version": "0.1.0",
+    "question": null,
+    "report_language": "en"
+  },
+  "resolution": {
+    "query": "meditation",
+    "status": "resolved",
+    "canonical_topic": "Meditation",
+    "wikidata_id": "Q108458",
+    "articles": {
+      "en": {
+        "language": "en",
+        "title": "Meditation",
+        "page_id": 20062
+      },
+      "de": {
+        "language": "de",
+        "title": "Meditation",
+        "page_id": 28837
+      },
+      "fr": {
+        "language": "fr",
+        "title": "Méditation",
+        "page_id": 1533268
+      },
+      "es": {
+        "language": "es",
+        "title": "Meditación",
+        "page_id": 72116
+      },
+      "it": {
+        "language": "it",
+        "title": "Meditazione",
+        "page_id": 16979
+      }
+    },
+    "missing_languages": [],
+    "confidence": 0.98,
+    "method": "exact_title",
+    "candidates": [],
+    "notes": []
+  },
+  "rows": [
+    {
+      "language": "en",
+      "project": "en.wikipedia",
+      "article_title": "Meditation",
+      "status": "ok",
+      "annual_views": 311869,
+      "monthly_average": 25989.083333333332,
+      "unique_devices": null,
+      "yoy_growth": -0.20832571788310794,
+      "three_year_cagr": -0.17903042420097637,
+      "three_month_growth": 0.5839927377260004,
+      "momentum": "accelerating",
+      "peak_month": "January",
+      "topic_share": 0.7045785212094923,
+      "topic_penetration": 3.846339951587201e-6,
+      "topic_affinity": 0.9367304973126193,
+      "quadrant": "established",
+      "quality_level": "HIGH"
+    },
+    {
+      "language": "de",
+      "project": "de.wikipedia",
+      "article_title": "Meditation",
+      "status": "ok",
+      "annual_views": 56910,
+      "monthly_average": 4742.5,
+      "unique_devices": null,
+      "yoy_growth": -0.1718568102444703,
+      "three_year_cagr": -0.15124857929528934,
+      "three_month_growth": 0.030592285423675758,
+      "momentum": "accelerating",
+      "peak_month": "January",
+      "topic_share": 0.12857181586509786,
+      "topic_penetration": 6.727669276052559e-6,
+      "topic_affinity": 1.6384440964743647,
+      "quadrant": "established",
+      "quality_level": "HIGH"
+    },
+    {
+      "language": "fr",
+      "project": "fr.wikipedia",
+      "article_title": "Méditation",
+      "status": "ok",
+      "annual_views": 31017,
+      "monthly_average": 2584.75,
+      "unique_devices": null,
+      "yoy_growth": -0.44416966829740334,
+      "three_year_cagr": -0.1982355484277687,
+      "three_month_growth": 0.09523145566090352,
+      "momentum": "accelerating",
+      "peak_month": "January",
+      "topic_share": 0.07007401182020279,
+      "topic_penetration": 4.349199966201625e-6,
+      "topic_affinity": 1.0591960925271096,
+      "quadrant": "established",
+      "quality_level": "HIGH"
+    },
+    {
+      "language": "es",
+      "project": "es.wikipedia",
+      "article_title": "Meditación",
+      "status": "ok",
+      "annual_views": 25633,
+      "monthly_average": 2136.0833333333335,
+      "unique_devices": null,
+      "yoy_growth": -0.570715613538544,
+      "three_year_cagr": -0.39594604739892725,
+      "three_month_growth": -0.1519633738334214,
+      "momentum": "decelerating",
+      "peak_month": "September",
+      "topic_share": 0.057910408646460264,
+      "topic_penetration": 3.923635069912035e-6,
+      "topic_affinity": 0.9555548070563229,
+      "quadrant": "watch",
+      "quality_level": "HIGH"
+    },
+    {
+      "language": "it",
+      "project": "it.wikipedia",
+      "article_title": "Meditazione",
+      "status": "ok",
+      "annual_views": 17203,
+      "monthly_average": 1433.5833333333333,
+      "unique_devices": null,
+      "yoy_growth": -0.20547755403657864,
+      "three_year_cagr": -0.3135991825722223,
+      "three_month_growth": 0.07943578322197475,
+      "momentum": "accelerating",
+      "peak_month": "January",
+      "topic_share": 0.03886524245874677,
+      "topic_penetration": 3.7462696084292864e-6,
+      "topic_affinity": 0.9123595515583637,
+      "quadrant": "watch",
+      "quality_level": "HIGH"
+    }
+  ],
+  "analyses": {
+    "en": {
+      "metadata": {
+        "topic": "meditation",
+        "language": "en",
+        "project": "en.wikipedia",
+        "period_start": "2023-09",
+        "period_end": "2026-08",
+        "generated_at": "2026-09-27T10:24:06+00:00",
+        "data_retrieved_at": "2026-09-27T10:22:06+00:00",
+        "source": "Wikimedia",
+        "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
+        "access": "all-access",
+        "agent": "user",
+        "software_version": "0.1.0",
+        "question": null,
+        "report_language": "en"
+      },
+      "topic": {
+        "canonical_name": "Meditation",
+        "wikidata_id": "Q108458",
+        "article_title": "Meditation",
+        "article_id": "20062",
+        "resolution_confidence": 0.98,
+        "resolution": {
+          "query": "meditation",
+          "status": "resolved",
+          "canonical_topic": "Meditation",
+          "wikidata_id": "Q108458",
+          "articles": {
+            "en": {
+              "language": "en",
+              "title": "Meditation",
+              "page_id": 20062
+            },
+            "de": {
+              "language": "de",
+              "title": "Meditation",
+              "page_id": 28837
+            },
+            "fr": {
+              "language": "fr",
+              "title": "Méditation",
+              "page_id": 1533268
+            },
+            "es": {
+              "language": "es",
+              "title": "Meditación",
+              "page_id": 72116
+            },
+            "it": {
+              "language": "it",
+              "title": "Meditazione",
+              "page_id": 16979
+            }
+          },
+          "missing_languages": [],
+          "confidence": 0.98,
+          "method": "exact_title",
+          "candidates": [],
+          "notes": []
+        }
+      },
+      "periods": [
+        {
+          "label": "requested period",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous equivalent period",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 12 months",
+          "start": "2025-09",
+          "end": "2026-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "previous 12 months",
+          "start": "2024-09",
+          "end": "2025-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "12 months ending 3 years earlier",
+          "start": "2022-09",
+          "end": "2023-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "last 36 months",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous 36 months",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 3 months",
+          "start": "2026-06",
+          "end": "2026-08",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "previous 3 months",
+          "start": "2026-03",
+          "end": "2026-05",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "3 months before that",
+          "start": "2025-12",
+          "end": "2026-02",
+          "months": 3,
+          "complete": true
+        }
+      ],
+      "demand": {
+        "annual_views": 311869,
+        "monthly_average": 25989.083333333332,
+        "daily_average": 854.4356164383562,
+        "requested_period_views": 1276155,
+        "unique_devices": null,
+        "views_per_unique_device": null
+      },
+      "growth": {
+        "yoy": -0.20832571788310794,
+        "three_year_cagr": -0.17903042420097637,
+        "last_three_month_growth": 0.5839927377260004,
+        "previous_three_month_growth": 0.03564713256032581,
+        "acceleration": 0.5483456051656745,
+        "momentum": "accelerating",
+        "period_over_period": -0.23795308964727369
+      },
+      "seasonality": {
+        "peak_month": "January",
+        "trough_month": "July",
+        "peak_to_average": 1.192134184327139,
+        "trough_to_average": 0.8382430033969228,
+        "volatility": 0.3240692499424117,
+        "basis": "calendar-month means over 2023-09..2026-08 (3 observations per month)",
+        "observations_per_month": 3
+      },
+      "localization": {
+        "topic_share": 0.7045785212094923,
+        "topic_affinity": 0.9367304973126193,
+        "topic_penetration": 3.846339951587201e-6,
+        "country_distribution": []
+      },
+      "anomalies": [],
+      "ecosystem": {
+        "related_topics": []
+      },
+      "quality": {
+        "coverage": 1.0,
+        "missing_data": [],
+        "missing_metrics": [
+          {
+            "metric": "demand.unique_devices",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "demand.views_per_unique_device",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "localization.country_distribution",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured."
+          },
+          {
+            "metric": "anomalies",
+            "status": "not_implemented",
+            "reason": "Anomaly detection is planned for a later milestone."
+          },
+          {
+            "metric": "ecosystem.related_topics",
+            "status": "not_implemented",
+            "reason": "Topic ecosystem analysis is planned for a later milestone."
+          },
+          {
+            "metric": "signals",
+            "status": "not_implemented",
+            "reason": "Decision signals are planned for a later milestone."
+          }
+        ],
+        "api_errors": [],
+        "topic_resolution_confidence": 0.98,
+        "language_mapping_confidence": 1.0,
+        "anomaly_count": null,
+        "country_data_available": false,
+        "unique_devices_available": false,
+        "project_denominator_available": true,
+        "quality_level": "HIGH",
+        "quality_reasons": [
+          "full coverage, confident topic match, at least two years of data"
+        ]
+      },
+      "signals": {
+        "market_size": null,
+        "growth": null,
+        "momentum": null,
+        "localization": null,
+        "stability": null
+      },
+      "observations": [
+        "Annual pageviews (2025-09..2026-08) were 311.9K (about 26.0K a month).",
+        "Pageviews decreased 20.8% year over year (2025-09..2026-08 vs 2024-09..2025-08).",
+        "Three-year CAGR was -17.9% (vs 2022-09..2023-08).",
+        "The last 3 months were +58.4% against the previous 3 months; momentum accelerating.",
+        "January had the highest average monthly traffic (1.19x the average) and July the lowest (0.84x)."
+      ],
+      "monthly": [
+        {
+          "month": "2020-09",
+          "views": 51309
+        },
+        {
+          "month": "2020-10",
+          "views": 51109
+        },
+        {
+          "month": "2020-11",
+          "views": 45343
+        },
+        {
+          "month": "2020-12",
+          "views": 49580
+        },
+        {
+          "month": "2021-01",
+          "views": 54148
+        },
+        {
+          "month": "2021-02",
+          "views": 49719
+        },
+        {
+          "month": "2021-03",
+          "views": 53231
+        },
+        {
+          "month": "2021-04",
+          "views": 45727
+        },
+        {
+          "month": "2021-05",
+          "views": 47008
+        },
+        {
+          "month": "2021-06",
+          "views": 45769
+        },
+        {
+          "month": "2021-07",
+          "views": 45696
+        },
+        {
+          "month": "2021-08",
+          "views": 41844
+        },
+        {
+          "month": "2021-09",
+          "views": 40805
+        },
+        {
+          "month": "2021-10",
+          "views": 42646
+        },
+        {
+          "month": "2021-11",
+          "views": 42337
+        },
+        {
+          "month": "2021-12",
+          "views": 42702
+        },
+        {
+          "month": "2022-01",
+          "views": 52953
+        },
+        {
+          "month": "2022-02",
+          "views": 47233
+        },
+        {
+          "month": "2022-03",
+          "views": 46335
+        },
+        {
+          "month": "2022-04",
+          "views": 42834
+        },
+        {
+          "month": "2022-05",
+          "views": 44747
+        },
+        {
+          "month": "2022-06",
+          "views": 43184
+        },
+        {
+          "month": "2022-07",
+          "views": 42242
+        },
+        {
+          "month": "2022-08",
+          "views": 42514
+        },
+        {
+          "month": "2022-09",
+          "views": 43715
+        },
+        {
+          "month": "2022-10",
+          "views": 48114
+        },
+        {
+          "month": "2022-11",
+          "views": 47262
+        },
+        {
+          "month": "2022-12",
+          "views": 45476
+        },
+        {
+          "month": "2023-01",
+          "views": 51058
+        },
+        {
+          "month": "2023-02",
+          "views": 44448
+        },
+        {
+          "month": "2023-03",
+          "views": 49762
+        },
+        {
+          "month": "2023-04",
+          "views": 45799
+        },
+        {
+          "month": "2023-05",
+          "views": 49595
+        },
+        {
+          "month": "2023-06",
+          "views": 47749
+        },
+        {
+          "month": "2023-07",
+          "views": 45031
+        },
+        {
+          "month": "2023-08",
+          "views": 45617
+        },
+        {
+          "month": "2023-09",
+          "views": 45312
+        },
+        {
+          "month": "2023-10",
+          "views": 50238
+        },
+        {
+          "month": "2023-11",
+          "views": 48065
+        },
+        {
+          "month": "2023-12",
+          "views": 47396
+        },
+        {
+          "month": "2024-01",
+          "views": 59616
+        },
+        {
+          "month": "2024-02",
+          "views": 50192
+        },
+        {
+          "month": "2024-03",
+          "views": 54304
+        },
+        {
+          "month": "2024-04",
+          "views": 51683
+        },
+        {
+          "month": "2024-05",
+          "views": 48527
+        },
+        {
+          "month": "2024-06",
+          "views": 39767
+        },
+        {
+          "month": "2024-07",
+          "views": 37976
+        },
+        {
+          "month": "2024-08",
+          "views": 37274
+        },
+        {
+          "month": "2024-09",
+          "views": 38324
+        },
+        {
+          "month": "2024-10",
+          "views": 42306
+        },
+        {
+          "month": "2024-11",
+          "views": 42316
+        },
+        {
+          "month": "2024-12",
+          "views": 41729
+        },
+        {
+          "month": "2025-01",
+          "views": 45123
+        },
+        {
+          "month": "2025-02",
+          "views": 29892
+        },
+        {
+          "month": "2025-03",
+          "views": 30205
+        },
+        {
+          "month": "2025-04",
+          "views": 26975
+        },
+        {
+          "month": "2025-05",
+          "views": 26858
+        },
+        {
+          "month": "2025-06",
+          "views": 23301
+        },
+        {
+          "month": "2025-07",
+          "views": 23398
+        },
+        {
+          "month": "2025-08",
+          "views": 23509
+        },
+        {
+          "month": "2025-09",
+          "views": 25729
+        },
+        {
+          "month": "2025-10",
+          "views": 23182
+        },
+        {
+          "month": "2025-11",
+          "views": 28349
+        },
+        {
+          "month": "2025-12",
+          "views": 22693
+        },
+        {
+          "month": "2026-01",
+          "views": 22040
+        },
+        {
+          "month": "2026-02",
+          "views": 19087
+        },
+        {
+          "month": "2026-03",
+          "views": 20699
+        },
+        {
+          "month": "2026-04",
+          "views": 21001
+        },
+        {
+          "month": "2026-05",
+          "views": 24395
+        },
+        {
+          "month": "2026-06",
+          "views": 45782
+        },
+        {
+          "month": "2026-07",
+          "views": 27770
+        },
+        {
+          "month": "2026-08",
+          "views": 31142
+        }
+      ],
+      "edition_monthly": [
+        {
+          "month": "2020-09",
+          "views": 7154034280
+        },
+        {
+          "month": "2020-10",
+          "views": 7778298858
+        },
+        {
+          "month": "2020-11",
+          "views": 7967683334
+        },
+        {
+          "month": "2020-12",
+          "views": 7672099918
+        },
+        {
+          "month": "2021-01",
+          "views": 8201654938
+        },
+        {
+          "month": "2021-02",
+          "views": 7298754690
+        },
+        {
+          "month": "2021-03",
+          "views": 8075703368
+        },
+        {
+          "month": "2021-04",
+          "views": 7641809575
+        },
+        {
+          "month": "2021-05",
+          "views": 7800995735
+        },
+        {
+          "month": "2021-06",
+          "views": 7090481783
+        },
+        {
+          "month": "2021-07",
+          "views": 7544493789
+        },
+        {
+          "month": "2021-08",
+          "views": 7495607934
+        },
+        {
+          "month": "2021-09",
+          "views": 7060156893
+        },
+        {
+          "month": "2021-10",
+          "views": 7166612629
+        },
+        {
+          "month": "2021-11",
+          "views": 6753928550
+        },
+        {
+          "month": "2021-12",
+          "views": 6830759352
+        },
+        {
+          "month": "2022-01",
+          "views": 7566964069
+        },
+        {
+          "month": "2022-02",
+          "views": 6958096301
+        },
+        {
+          "month": "2022-03",
+          "views": 7375436545
+        },
+        {
+          "month": "2022-04",
+          "views": 6999072343
+        },
+        {
+          "month": "2022-05",
+          "views": 7066842129
+        },
+        {
+          "month": "2022-06",
+          "views": 6732995979
+        },
+        {
+          "month": "2022-07",
+          "views": 7002382082
+        },
+        {
+          "month": "2022-08",
+          "views": 7220648638
+        },
+        {
+          "month": "2022-09",
+          "views": 7406114051
+        },
+        {
+          "month": "2022-10",
+          "views": 7490275580
+        },
+        {
+          "month": "2022-11",
+          "views": 7474238422
+        },
+        {
+          "month": "2022-12",
+          "views": 7300790051
+        },
+        {
+          "month": "2023-01",
+          "views": 7906077158
+        },
+        {
+          "month": "2023-02",
+          "views": 6966908969
+        },
+        {
+          "month": "2023-03",
+          "views": 7783695172
+        },
+        {
+          "month": "2023-04",
+          "views": 7243057251
+        },
+        {
+          "month": "2023-05",
+          "views": 7753424313
+        },
+        {
+          "month": "2023-06",
+          "views": 7483095454
+        },
+        {
+          "month": "2023-07",
+          "views": 7877965197
+        },
+        {
+          "month": "2023-08",
+          "views": 7799815475
+        },
+        {
+          "month": "2023-09",
+          "views": 7418228879
+        },
+        {
+          "month": "2023-10",
+          "views": 7898588194
+        },
+        {
+          "month": "2023-11",
+          "views": 7588543578
+        },
+        {
+          "month": "2023-12",
+          "views": 7781530443
+        },
+        {
+          "month": "2024-01",
+          "views": 8684755474
+        },
+        {
+          "month": "2024-02",
+          "views": 7621496970
+        },
+        {
+          "month": "2024-03",
+          "views": 8082436565
+        },
+        {
+          "month": "2024-04",
+          "views": 7674735478
+        },
+        {
+          "month": "2024-05",
+          "views": 7630589329
+        },
+        {
+          "month": "2024-06",
+          "views": 7196213283
+        },
+        {
+          "month": "2024-07",
+          "views": 7626362036
+        },
+        {
+          "month": "2024-08",
+          "views": 7565367414
+        },
+        {
+          "month": "2024-09",
+          "views": 7167746176
+        },
+        {
+          "month": "2024-10",
+          "views": 7442946001
+        },
+        {
+          "month": "2024-11",
+          "views": 7358270481
+        },
+        {
+          "month": "2024-12",
+          "views": 7475149173
+        },
+        {
+          "month": "2025-01",
+          "views": 8075023328
+        },
+        {
+          "month": "2025-02",
+          "views": 7086641734
+        },
+        {
+          "month": "2025-03",
+          "views": 7740123015
+        },
+        {
+          "month": "2025-04",
+          "views": 6971174625
+        },
+        {
+          "month": "2025-05",
+          "views": 7133413827
+        },
+        {
+          "month": "2025-06",
+          "views": 6637486973
+        },
+        {
+          "month": "2025-07",
+          "views": 6968421594
+        },
+        {
+          "month": "2025-08",
+          "views": 7112406774
+        },
+        {
+          "month": "2025-09",
+          "views": 6916125844
+        },
+        {
+          "month": "2025-10",
+          "views": 7153203240
+        },
+        {
+          "month": "2025-11",
+          "views": 6924863090
+        },
+        {
+          "month": "2025-12",
+          "views": 6822630492
+        },
+        {
+          "month": "2026-01",
+          "views": 7230285460
+        },
+        {
+          "month": "2026-02",
+          "views": 6352436517
+        },
+        {
+          "month": "2026-03",
+          "views": 6794115655
+        },
+        {
+          "month": "2026-04",
+          "views": 6475256736
+        },
+        {
+          "month": "2026-05",
+          "views": 6702741530
+        },
+        {
+          "month": "2026-06",
+          "views": 6463421139
+        },
+        {
+          "month": "2026-07",
+          "views": 6749320082
+        },
+        {
+          "month": "2026-08",
+          "views": 6497616866
+        }
+      ],
+      "formulas": [
+        {
+          "name": "annual_views",
+          "definition": "sum(monthly pageviews) over the last 12 complete months",
+          "edge_cases": "null if any of the 12 months is missing"
+        },
+        {
+          "name": "monthly_average",
+          "definition": "annual_views / 12",
+          "edge_cases": ""
+        },
+        {
+          "name": "daily_average",
+          "definition": "annual_views / number of days in those 12 months",
+          "edge_cases": ""
+        },
+        {
+          "name": "yoy",
+          "definition": "(last 12M / previous 12M) - 1",
+          "edge_cases": "null if previous 12M <= 0 or incomplete"
+        },
+        {
+          "name": "three_year_cagr",
+          "definition": "(last 12M / the 12M ending 36 months earlier) ** (1/3) - 1",
+          "edge_cases": "null if the earlier 12M is incomplete or zero"
+        },
+        {
+          "name": "last_three_month_growth",
+          "definition": "(last 3M / previous 3M) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "previous_three_month_growth",
+          "definition": "(previous 3M / the 3M before that) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "acceleration",
+          "definition": "last_three_month_growth - previous_three_month_growth",
+          "edge_cases": "momentum: accelerating > +5 pp, decelerating < -5 pp, otherwise stable"
+        },
+        {
+          "name": "period_over_period",
+          "definition": "(requested period total / previous equivalent period total) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_month / trough_month",
+          "definition": "calendar month with the highest / lowest mean views across the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_to_average",
+          "definition": "max(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "trough_to_average",
+          "definition": "min(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "volatility",
+          "definition": "pstdev(monthly views) / mean(monthly views) over the requested period",
+          "edge_cases": "null with fewer than 3 months"
+        },
+        {
+          "name": "views_per_unique_device",
+          "definition": "pageviews / unique devices",
+          "edge_cases": "unique devices are published per project only, so this is null for articles"
+        },
+        {
+          "name": "coverage",
+          "definition": "months with data / months in the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "topic_penetration",
+          "definition": "topic views / all views of that language edition, both over the last 12 months",
+          "edge_cases": "same traffic class (access, agent) for both; 'Wikipedia topic penetration', not market penetration"
+        },
+        {
+          "name": "topic_share",
+          "definition": "topic views in one edition / topic views across all compared editions (last 12 months)",
+          "edge_cases": "relative to the compared set; editions without data are excluded and listed"
+        },
+        {
+          "name": "topic_affinity",
+          "definition": "(topic views / edition views) / (compared topic views / compared edition views)",
+          "edge_cases": "location quotient relative to the compared editions; not an official Wikimedia metric"
+        },
+        {
+          "name": "quadrant",
+          "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
+          "edge_cases": ""
+        }
+      ],
+      "sources": [
+        {
+          "endpoint": "pageviews/per-article",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/Meditation/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T10:22:06+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T102206_bde0ce522f31.json"
+        },
+        {
+          "endpoint": "pageviews/aggregate",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/en.wikipedia/all-access/user/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T10:22:06+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-aggregate/20260927T102206_c361e5c5945d.json"
+        }
+      ]
+    },
+    "de": {
+      "metadata": {
+        "topic": "meditation",
+        "language": "de",
+        "project": "de.wikipedia",
+        "period_start": "2023-09",
+        "period_end": "2026-08",
+        "generated_at": "2026-09-27T10:24:06+00:00",
+        "data_retrieved_at": "2026-09-27T09:35:05+00:00",
+        "source": "Wikimedia",
+        "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
+        "access": "all-access",
+        "agent": "user",
+        "software_version": "0.1.0",
+        "question": null,
+        "report_language": "en"
+      },
+      "topic": {
+        "canonical_name": "Meditation",
+        "wikidata_id": "Q108458",
+        "article_title": "Meditation",
+        "article_id": "28837",
+        "resolution_confidence": 0.98,
+        "resolution": {
+          "query": "meditation",
+          "status": "resolved",
+          "canonical_topic": "Meditation",
+          "wikidata_id": "Q108458",
+          "articles": {
+            "en": {
+              "language": "en",
+              "title": "Meditation",
+              "page_id": 20062
+            },
+            "de": {
+              "language": "de",
+              "title": "Meditation",
+              "page_id": 28837
+            },
+            "fr": {
+              "language": "fr",
+              "title": "Méditation",
+              "page_id": 1533268
+            },
+            "es": {
+              "language": "es",
+              "title": "Meditación",
+              "page_id": 72116
+            },
+            "it": {
+              "language": "it",
+              "title": "Meditazione",
+              "page_id": 16979
+            }
+          },
+          "missing_languages": [],
+          "confidence": 0.98,
+          "method": "exact_title",
+          "candidates": [],
+          "notes": []
+        }
+      },
+      "periods": [
+        {
+          "label": "requested period",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous equivalent period",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 12 months",
+          "start": "2025-09",
+          "end": "2026-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "previous 12 months",
+          "start": "2024-09",
+          "end": "2025-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "12 months ending 3 years earlier",
+          "start": "2022-09",
+          "end": "2023-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "last 36 months",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous 36 months",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 3 months",
+          "start": "2026-06",
+          "end": "2026-08",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "previous 3 months",
+          "start": "2026-03",
+          "end": "2026-05",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "3 months before that",
+          "start": "2025-12",
+          "end": "2026-02",
+          "months": 3,
+          "complete": true
+        }
+      ],
+      "demand": {
+        "annual_views": 56910,
+        "monthly_average": 4742.5,
+        "daily_average": 155.91780821917808,
+        "requested_period_views": 212328,
+        "unique_devices": null,
+        "views_per_unique_device": null
+      },
+      "growth": {
+        "yoy": -0.1718568102444703,
+        "three_year_cagr": -0.15124857929528934,
+        "last_three_month_growth": 0.030592285423675758,
+        "previous_three_month_growth": -0.1009425998874508,
+        "acceleration": 0.13153488531112656,
+        "momentum": "accelerating",
+        "period_over_period": -0.3707718659799314
+      },
+      "seasonality": {
+        "peak_month": "January",
+        "trough_month": "July",
+        "peak_to_average": 1.2912851814174295,
+        "trough_to_average": 0.7677178704645643,
+        "volatility": 0.2510990728471396,
+        "basis": "calendar-month means over 2023-09..2026-08 (3 observations per month)",
+        "observations_per_month": 3
+      },
+      "localization": {
+        "topic_share": 0.12857181586509786,
+        "topic_affinity": 1.6384440964743647,
+        "topic_penetration": 6.727669276052559e-6,
+        "country_distribution": []
+      },
+      "anomalies": [],
+      "ecosystem": {
+        "related_topics": []
+      },
+      "quality": {
+        "coverage": 1.0,
+        "missing_data": [],
+        "missing_metrics": [
+          {
+            "metric": "demand.unique_devices",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "demand.views_per_unique_device",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "localization.country_distribution",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured."
+          },
+          {
+            "metric": "anomalies",
+            "status": "not_implemented",
+            "reason": "Anomaly detection is planned for a later milestone."
+          },
+          {
+            "metric": "ecosystem.related_topics",
+            "status": "not_implemented",
+            "reason": "Topic ecosystem analysis is planned for a later milestone."
+          },
+          {
+            "metric": "signals",
+            "status": "not_implemented",
+            "reason": "Decision signals are planned for a later milestone."
+          }
+        ],
+        "api_errors": [],
+        "topic_resolution_confidence": 0.98,
+        "language_mapping_confidence": 1.0,
+        "anomaly_count": null,
+        "country_data_available": false,
+        "unique_devices_available": false,
+        "project_denominator_available": true,
+        "quality_level": "HIGH",
+        "quality_reasons": [
+          "full coverage, confident topic match, at least two years of data"
+        ]
+      },
+      "signals": {
+        "market_size": null,
+        "growth": null,
+        "momentum": null,
+        "localization": null,
+        "stability": null
+      },
+      "observations": [
+        "Annual pageviews (2025-09..2026-08) were 56.9K (about 4.7K a month).",
+        "Pageviews decreased 17.2% year over year (2025-09..2026-08 vs 2024-09..2025-08).",
+        "Three-year CAGR was -15.1% (vs 2022-09..2023-08).",
+        "The last 3 months were +3.1% against the previous 3 months; momentum accelerating.",
+        "January had the highest average monthly traffic (1.29x the average) and July the lowest (0.77x)."
+      ],
+      "monthly": [
+        {
+          "month": "2020-09",
+          "views": 10752
+        },
+        {
+          "month": "2020-10",
+          "views": 11959
+        },
+        {
+          "month": "2020-11",
+          "views": 13072
+        },
+        {
+          "month": "2020-12",
+          "views": 12950
+        },
+        {
+          "month": "2021-01",
+          "views": 17648
+        },
+        {
+          "month": "2021-02",
+          "views": 13471
+        },
+        {
+          "month": "2021-03",
+          "views": 13752
+        },
+        {
+          "month": "2021-04",
+          "views": 12664
+        },
+        {
+          "month": "2021-05",
+          "views": 11629
+        },
+        {
+          "month": "2021-06",
+          "views": 8619
+        },
+        {
+          "month": "2021-07",
+          "views": 8046
+        },
+        {
+          "month": "2021-08",
+          "views": 8181
+        },
+        {
+          "month": "2021-09",
+          "views": 7946
+        },
+        {
+          "month": "2021-10",
+          "views": 8902
+        },
+        {
+          "month": "2021-11",
+          "views": 9637
+        },
+        {
+          "month": "2021-12",
+          "views": 8836
+        },
+        {
+          "month": "2022-01",
+          "views": 11573
+        },
+        {
+          "month": "2022-02",
+          "views": 8678
+        },
+        {
+          "month": "2022-03",
+          "views": 9516
+        },
+        {
+          "month": "2022-04",
+          "views": 8232
+        },
+        {
+          "month": "2022-05",
+          "views": 7572
+        },
+        {
+          "month": "2022-06",
+          "views": 7199
+        },
+        {
+          "month": "2022-07",
+          "views": 6554
+        },
+        {
+          "month": "2022-08",
+          "views": 6976
+        },
+        {
+          "month": "2022-09",
+          "views": 7053
+        },
+        {
+          "month": "2022-10",
+          "views": 7581
+        },
+        {
+          "month": "2022-11",
+          "views": 8543
+        },
+        {
+          "month": "2022-12",
+          "views": 7145
+        },
+        {
+          "month": "2023-01",
+          "views": 10245
+        },
+        {
+          "month": "2023-02",
+          "views": 7567
+        },
+        {
+          "month": "2023-03",
+          "views": 8063
+        },
+        {
+          "month": "2023-04",
+          "views": 7560
+        },
+        {
+          "month": "2023-05",
+          "views": 7513
+        },
+        {
+          "month": "2023-06",
+          "views": 7731
+        },
+        {
+          "month": "2023-07",
+          "views": 7071
+        },
+        {
+          "month": "2023-08",
+          "views": 7006
+        },
+        {
+          "month": "2023-09",
+          "views": 6713
+        },
+        {
+          "month": "2023-10",
+          "views": 7482
+        },
+        {
+          "month": "2023-11",
+          "views": 7854
+        },
+        {
+          "month": "2023-12",
+          "views": 7310
+        },
+        {
+          "month": "2024-01",
+          "views": 10054
+        },
+        {
+          "month": "2024-02",
+          "views": 8312
+        },
+        {
+          "month": "2024-03",
+          "views": 8426
+        },
+        {
+          "month": "2024-04",
+          "views": 6678
+        },
+        {
+          "month": "2024-05",
+          "views": 6071
+        },
+        {
+          "month": "2024-06",
+          "views": 6243
+        },
+        {
+          "month": "2024-07",
+          "views": 5582
+        },
+        {
+          "month": "2024-08",
+          "views": 5973
+        },
+        {
+          "month": "2024-09",
+          "views": 6251
+        },
+        {
+          "month": "2024-10",
+          "views": 6912
+        },
+        {
+          "month": "2024-11",
+          "views": 6755
+        },
+        {
+          "month": "2024-12",
+          "views": 6134
+        },
+        {
+          "month": "2025-01",
+          "views": 7635
+        },
+        {
+          "month": "2025-02",
+          "views": 5972
+        },
+        {
+          "month": "2025-03",
+          "views": 6030
+        },
+        {
+          "month": "2025-04",
+          "views": 5022
+        },
+        {
+          "month": "2025-05",
+          "views": 4846
+        },
+        {
+          "month": "2025-06",
+          "views": 4391
+        },
+        {
+          "month": "2025-07",
+          "views": 4068
+        },
+        {
+          "month": "2025-08",
+          "views": 4704
+        },
+        {
+          "month": "2025-09",
+          "views": 4498
+        },
+        {
+          "month": "2025-10",
+          "views": 4895
+        },
+        {
+          "month": "2025-11",
+          "views": 7348
+        },
+        {
+          "month": "2025-12",
+          "views": 4574
+        },
+        {
+          "month": "2026-01",
+          "views": 5159
+        },
+        {
+          "month": "2026-02",
+          "views": 4483
+        },
+        {
+          "month": "2026-03",
+          "views": 4573
+        },
+        {
+          "month": "2026-04",
+          "views": 4022
+        },
+        {
+          "month": "2026-05",
+          "views": 4186
+        },
+        {
+          "month": "2026-06",
+          "views": 3910
+        },
+        {
+          "month": "2026-07",
+          "views": 3934
+        },
+        {
+          "month": "2026-08",
+          "views": 5328
+        }
+      ],
+      "edition_monthly": [
+        {
+          "month": "2020-09",
+          "views": 837893871
+        },
+        {
+          "month": "2020-10",
+          "views": 908224487
+        },
+        {
+          "month": "2020-11",
+          "views": 956135021
+        },
+        {
+          "month": "2020-12",
+          "views": 962283050
+        },
+        {
+          "month": "2021-01",
+          "views": 1108166367
+        },
+        {
+          "month": "2021-02",
+          "views": 946107999
+        },
+        {
+          "month": "2021-03",
+          "views": 1028729696
+        },
+        {
+          "month": "2021-04",
+          "views": 1009543932
+        },
+        {
+          "month": "2021-05",
+          "views": 1004058309
+        },
+        {
+          "month": "2021-06",
+          "views": 863878022
+        },
+        {
+          "month": "2021-07",
+          "views": 846718546
+        },
+        {
+          "month": "2021-08",
+          "views": 860766517
+        },
+        {
+          "month": "2021-09",
+          "views": 814413288
+        },
+        {
+          "month": "2021-10",
+          "views": 869710025
+        },
+        {
+          "month": "2021-11",
+          "views": 847691759
+        },
+        {
+          "month": "2021-12",
+          "views": 895186277
+        },
+        {
+          "month": "2022-01",
+          "views": 1003416090
+        },
+        {
+          "month": "2022-02",
+          "views": 864492103
+        },
+        {
+          "month": "2022-03",
+          "views": 878829219
+        },
+        {
+          "month": "2022-04",
+          "views": 810988095
+        },
+        {
+          "month": "2022-05",
+          "views": 777782787
+        },
+        {
+          "month": "2022-06",
+          "views": 752754379
+        },
+        {
+          "month": "2022-07",
+          "views": 763770412
+        },
+        {
+          "month": "2022-08",
+          "views": 778746964
+        },
+        {
+          "month": "2022-09",
+          "views": 778256506
+        },
+        {
+          "month": "2022-10",
+          "views": 827953737
+        },
+        {
+          "month": "2022-11",
+          "views": 812738811
+        },
+        {
+          "month": "2022-12",
+          "views": 823268144
+        },
+        {
+          "month": "2023-01",
+          "views": 923663231
+        },
+        {
+          "month": "2023-02",
+          "views": 777900814
+        },
+        {
+          "month": "2023-03",
+          "views": 846237348
+        },
+        {
+          "month": "2023-04",
+          "views": 792546084
+        },
+        {
+          "month": "2023-05",
+          "views": 809693225
+        },
+        {
+          "month": "2023-06",
+          "views": 772740569
+        },
+        {
+          "month": "2023-07",
+          "views": 808003413
+        },
+        {
+          "month": "2023-08",
+          "views": 816971229
+        },
+        {
+          "month": "2023-09",
+          "views": 745403358
+        },
+        {
+          "month": "2023-10",
+          "views": 820695698
+        },
+        {
+          "month": "2023-11",
+          "views": 801670137
+        },
+        {
+          "month": "2023-12",
+          "views": 830026955
+        },
+        {
+          "month": "2024-01",
+          "views": 945395026
+        },
+        {
+          "month": "2024-02",
+          "views": 813034453
+        },
+        {
+          "month": "2024-03",
+          "views": 845578385
+        },
+        {
+          "month": "2024-04",
+          "views": 798592186
+        },
+        {
+          "month": "2024-05",
+          "views": 804945994
+        },
+        {
+          "month": "2024-06",
+          "views": 773303565
+        },
+        {
+          "month": "2024-07",
+          "views": 782995014
+        },
+        {
+          "month": "2024-08",
+          "views": 779537811
+        },
+        {
+          "month": "2024-09",
+          "views": 746521495
+        },
+        {
+          "month": "2024-10",
+          "views": 804199250
+        },
+        {
+          "month": "2024-11",
+          "views": 764932003
+        },
+        {
+          "month": "2024-12",
+          "views": 812305022
+        },
+        {
+          "month": "2025-01",
+          "views": 902194788
+        },
+        {
+          "month": "2025-02",
+          "views": 768465579
+        },
+        {
+          "month": "2025-03",
+          "views": 806741813
+        },
+        {
+          "month": "2025-04",
+          "views": 736284306
+        },
+        {
+          "month": "2025-05",
+          "views": 712160095
+        },
+        {
+          "month": "2025-06",
+          "views": 643354804
+        },
+        {
+          "month": "2025-07",
+          "views": 695348128
+        },
+        {
+          "month": "2025-08",
+          "views": 736793813
+        },
+        {
+          "month": "2025-09",
+          "views": 696111150
+        },
+        {
+          "month": "2025-10",
+          "views": 748632593
+        },
+        {
+          "month": "2025-11",
+          "views": 733914764
+        },
+        {
+          "month": "2025-12",
+          "views": 705194251
+        },
+        {
+          "month": "2026-01",
+          "views": 780199458
+        },
+        {
+          "month": "2026-02",
+          "views": 672194020
+        },
+        {
+          "month": "2026-03",
+          "views": 693410501
+        },
+        {
+          "month": "2026-04",
+          "views": 662879466
+        },
+        {
+          "month": "2026-05",
+          "views": 702429083
+        },
+        {
+          "month": "2026-06",
+          "views": 682993791
+        },
+        {
+          "month": "2026-07",
+          "views": 693723660
+        },
+        {
+          "month": "2026-08",
+          "views": 687413224
+        }
+      ],
+      "formulas": [
+        {
+          "name": "annual_views",
+          "definition": "sum(monthly pageviews) over the last 12 complete months",
+          "edge_cases": "null if any of the 12 months is missing"
+        },
+        {
+          "name": "monthly_average",
+          "definition": "annual_views / 12",
+          "edge_cases": ""
+        },
+        {
+          "name": "daily_average",
+          "definition": "annual_views / number of days in those 12 months",
+          "edge_cases": ""
+        },
+        {
+          "name": "yoy",
+          "definition": "(last 12M / previous 12M) - 1",
+          "edge_cases": "null if previous 12M <= 0 or incomplete"
+        },
+        {
+          "name": "three_year_cagr",
+          "definition": "(last 12M / the 12M ending 36 months earlier) ** (1/3) - 1",
+          "edge_cases": "null if the earlier 12M is incomplete or zero"
+        },
+        {
+          "name": "last_three_month_growth",
+          "definition": "(last 3M / previous 3M) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "previous_three_month_growth",
+          "definition": "(previous 3M / the 3M before that) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "acceleration",
+          "definition": "last_three_month_growth - previous_three_month_growth",
+          "edge_cases": "momentum: accelerating > +5 pp, decelerating < -5 pp, otherwise stable"
+        },
+        {
+          "name": "period_over_period",
+          "definition": "(requested period total / previous equivalent period total) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_month / trough_month",
+          "definition": "calendar month with the highest / lowest mean views across the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_to_average",
+          "definition": "max(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "trough_to_average",
+          "definition": "min(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "volatility",
+          "definition": "pstdev(monthly views) / mean(monthly views) over the requested period",
+          "edge_cases": "null with fewer than 3 months"
+        },
+        {
+          "name": "views_per_unique_device",
+          "definition": "pageviews / unique devices",
+          "edge_cases": "unique devices are published per project only, so this is null for articles"
+        },
+        {
+          "name": "coverage",
+          "definition": "months with data / months in the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "topic_penetration",
+          "definition": "topic views / all views of that language edition, both over the last 12 months",
+          "edge_cases": "same traffic class (access, agent) for both; 'Wikipedia topic penetration', not market penetration"
+        },
+        {
+          "name": "topic_share",
+          "definition": "topic views in one edition / topic views across all compared editions (last 12 months)",
+          "edge_cases": "relative to the compared set; editions without data are excluded and listed"
+        },
+        {
+          "name": "topic_affinity",
+          "definition": "(topic views / edition views) / (compared topic views / compared edition views)",
+          "edge_cases": "location quotient relative to the compared editions; not an official Wikimedia metric"
+        },
+        {
+          "name": "quadrant",
+          "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
+          "edge_cases": ""
+        }
+      ],
+      "sources": [
+        {
+          "endpoint": "pageviews/per-article",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/de.wikipedia/all-access/user/Meditation/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T09:35:05+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T093505_2b682df09582.json"
+        },
+        {
+          "endpoint": "pageviews/aggregate",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/de.wikipedia/all-access/user/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T10:22:06+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-aggregate/20260927T102206_c49dec8c1d36.json"
+        }
+      ]
+    },
+    "fr": {
+      "metadata": {
+        "topic": "meditation",
+        "language": "fr",
+        "project": "fr.wikipedia",
+        "period_start": "2023-09",
+        "period_end": "2026-08",
+        "generated_at": "2026-09-27T10:24:06+00:00",
+        "data_retrieved_at": "2026-09-27T10:22:06+00:00",
+        "source": "Wikimedia",
+        "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
+        "access": "all-access",
+        "agent": "user",
+        "software_version": "0.1.0",
+        "question": null,
+        "report_language": "en"
+      },
+      "topic": {
+        "canonical_name": "Meditation",
+        "wikidata_id": "Q108458",
+        "article_title": "Méditation",
+        "article_id": "1533268",
+        "resolution_confidence": 0.98,
+        "resolution": {
+          "query": "meditation",
+          "status": "resolved",
+          "canonical_topic": "Meditation",
+          "wikidata_id": "Q108458",
+          "articles": {
+            "en": {
+              "language": "en",
+              "title": "Meditation",
+              "page_id": 20062
+            },
+            "de": {
+              "language": "de",
+              "title": "Meditation",
+              "page_id": 28837
+            },
+            "fr": {
+              "language": "fr",
+              "title": "Méditation",
+              "page_id": 1533268
+            },
+            "es": {
+              "language": "es",
+              "title": "Meditación",
+              "page_id": 72116
+            },
+            "it": {
+              "language": "it",
+              "title": "Meditazione",
+              "page_id": 16979
+            }
+          },
+          "missing_languages": [],
+          "confidence": 0.98,
+          "method": "exact_title",
+          "candidates": [],
+          "notes": []
+        }
+      },
+      "periods": [
+        {
+          "label": "requested period",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous equivalent period",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 12 months",
+          "start": "2025-09",
+          "end": "2026-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "previous 12 months",
+          "start": "2024-09",
+          "end": "2025-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "12 months ending 3 years earlier",
+          "start": "2022-09",
+          "end": "2023-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "last 36 months",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous 36 months",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 3 months",
+          "start": "2026-06",
+          "end": "2026-08",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "previous 3 months",
+          "start": "2026-03",
+          "end": "2026-05",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "3 months before that",
+          "start": "2025-12",
+          "end": "2026-02",
+          "months": 3,
+          "complete": true
+        }
+      ],
+      "demand": {
+        "annual_views": 31017,
+        "monthly_average": 2584.75,
+        "daily_average": 84.97808219178083,
+        "requested_period_views": 143139,
+        "unique_devices": null,
+        "views_per_unique_device": null
+      },
+      "growth": {
+        "yoy": -0.44416966829740334,
+        "three_year_cagr": -0.1982355484277687,
+        "last_three_month_growth": 0.09523145566090352,
+        "previous_three_month_growth": -0.06419624217119002,
+        "acceleration": 0.15942769783209354,
+        "momentum": "accelerating",
+        "period_over_period": -0.32116248298626093
+      },
+      "seasonality": {
+        "peak_month": "January",
+        "trough_month": "June",
+        "peak_to_average": 1.3230775679584181,
+        "trough_to_average": 0.7350617232200867,
+        "volatility": 0.31477447813315124,
+        "basis": "calendar-month means over 2023-09..2026-08 (3 observations per month)",
+        "observations_per_month": 3
+      },
+      "localization": {
+        "topic_share": 0.07007401182020279,
+        "topic_affinity": 1.0591960925271096,
+        "topic_penetration": 4.349199966201625e-6,
+        "country_distribution": []
+      },
+      "anomalies": [],
+      "ecosystem": {
+        "related_topics": []
+      },
+      "quality": {
+        "coverage": 1.0,
+        "missing_data": [],
+        "missing_metrics": [
+          {
+            "metric": "demand.unique_devices",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "demand.views_per_unique_device",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "localization.country_distribution",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured."
+          },
+          {
+            "metric": "anomalies",
+            "status": "not_implemented",
+            "reason": "Anomaly detection is planned for a later milestone."
+          },
+          {
+            "metric": "ecosystem.related_topics",
+            "status": "not_implemented",
+            "reason": "Topic ecosystem analysis is planned for a later milestone."
+          },
+          {
+            "metric": "signals",
+            "status": "not_implemented",
+            "reason": "Decision signals are planned for a later milestone."
+          }
+        ],
+        "api_errors": [],
+        "topic_resolution_confidence": 0.98,
+        "language_mapping_confidence": 1.0,
+        "anomaly_count": null,
+        "country_data_available": false,
+        "unique_devices_available": false,
+        "project_denominator_available": true,
+        "quality_level": "HIGH",
+        "quality_reasons": [
+          "full coverage, confident topic match, at least two years of data"
+        ]
+      },
+      "signals": {
+        "market_size": null,
+        "growth": null,
+        "momentum": null,
+        "localization": null,
+        "stability": null
+      },
+      "observations": [
+        "Annual pageviews (2025-09..2026-08) were 31.0K (about 2.6K a month).",
+        "Pageviews decreased 44.4% year over year (2025-09..2026-08 vs 2024-09..2025-08).",
+        "Three-year CAGR was -19.8% (vs 2022-09..2023-08).",
+        "The last 3 months were +9.5% against the previous 3 months; momentum accelerating.",
+        "January had the highest average monthly traffic (1.32x the average) and June the lowest (0.74x)."
+      ],
+      "monthly": [
+        {
+          "month": "2020-09",
+          "views": 7054
+        },
+        {
+          "month": "2020-10",
+          "views": 6898
+        },
+        {
+          "month": "2020-11",
+          "views": 8119
+        },
+        {
+          "month": "2020-12",
+          "views": 7029
+        },
+        {
+          "month": "2021-01",
+          "views": 9081
+        },
+        {
+          "month": "2021-02",
+          "views": 8400
+        },
+        {
+          "month": "2021-03",
+          "views": 10913
+        },
+        {
+          "month": "2021-04",
+          "views": 8521
+        },
+        {
+          "month": "2021-05",
+          "views": 6879
+        },
+        {
+          "month": "2021-06",
+          "views": 5442
+        },
+        {
+          "month": "2021-07",
+          "views": 5492
+        },
+        {
+          "month": "2021-08",
+          "views": 5602
+        },
+        {
+          "month": "2021-09",
+          "views": 5579
+        },
+        {
+          "month": "2021-10",
+          "views": 5535
+        },
+        {
+          "month": "2021-11",
+          "views": 5763
+        },
+        {
+          "month": "2021-12",
+          "views": 4741
+        },
+        {
+          "month": "2022-01",
+          "views": 5510
+        },
+        {
+          "month": "2022-02",
+          "views": 4716
+        },
+        {
+          "month": "2022-03",
+          "views": 5071
+        },
+        {
+          "month": "2022-04",
+          "views": 4468
+        },
+        {
+          "month": "2022-05",
+          "views": 5048
+        },
+        {
+          "month": "2022-06",
+          "views": 4184
+        },
+        {
+          "month": "2022-07",
+          "views": 5406
+        },
+        {
+          "month": "2022-08",
+          "views": 5227
+        },
+        {
+          "month": "2022-09",
+          "views": 4837
+        },
+        {
+          "month": "2022-10",
+          "views": 5708
+        },
+        {
+          "month": "2022-11",
+          "views": 5199
+        },
+        {
+          "month": "2022-12",
+          "views": 4378
+        },
+        {
+          "month": "2023-01",
+          "views": 5885
+        },
+        {
+          "month": "2023-02",
+          "views": 4950
+        },
+        {
+          "month": "2023-03",
+          "views": 5967
+        },
+        {
+          "month": "2023-04",
+          "views": 4841
+        },
+        {
+          "month": "2023-05",
+          "views": 5061
+        },
+        {
+          "month": "2023-06",
+          "views": 4752
+        },
+        {
+          "month": "2023-07",
+          "views": 4173
+        },
+        {
+          "month": "2023-08",
+          "views": 4430
+        },
+        {
+          "month": "2023-09",
+          "views": 4194
+        },
+        {
+          "month": "2023-10",
+          "views": 4889
+        },
+        {
+          "month": "2023-11",
+          "views": 4390
+        },
+        {
+          "month": "2023-12",
+          "views": 4161
+        },
+        {
+          "month": "2024-01",
+          "views": 5650
+        },
+        {
+          "month": "2024-02",
+          "views": 4585
+        },
+        {
+          "month": "2024-03",
+          "views": 5882
+        },
+        {
+          "month": "2024-04",
+          "views": 5178
+        },
+        {
+          "month": "2024-05",
+          "views": 4729
+        },
+        {
+          "month": "2024-06",
+          "views": 3789
+        },
+        {
+          "month": "2024-07",
+          "views": 4237
+        },
+        {
+          "month": "2024-08",
+          "views": 4635
+        },
+        {
+          "month": "2024-09",
+          "views": 5227
+        },
+        {
+          "month": "2024-10",
+          "views": 5347
+        },
+        {
+          "month": "2024-11",
+          "views": 5242
+        },
+        {
+          "month": "2024-12",
+          "views": 4993
+        },
+        {
+          "month": "2025-01",
+          "views": 7276
+        },
+        {
+          "month": "2025-02",
+          "views": 5143
+        },
+        {
+          "month": "2025-03",
+          "views": 5100
+        },
+        {
+          "month": "2025-04",
+          "views": 3738
+        },
+        {
+          "month": "2025-05",
+          "views": 3151
+        },
+        {
+          "month": "2025-06",
+          "views": 2819
+        },
+        {
+          "month": "2025-07",
+          "views": 3891
+        },
+        {
+          "month": "2025-08",
+          "views": 3876
+        },
+        {
+          "month": "2025-09",
+          "views": 2908
+        },
+        {
+          "month": "2025-10",
+          "views": 2724
+        },
+        {
+          "month": "2025-11",
+          "views": 2694
+        },
+        {
+          "month": "2025-12",
+          "views": 2499
+        },
+        {
+          "month": "2026-01",
+          "views": 2856
+        },
+        {
+          "month": "2026-02",
+          "views": 2309
+        },
+        {
+          "month": "2026-03",
+          "views": 2342
+        },
+        {
+          "month": "2026-04",
+          "views": 2316
+        },
+        {
+          "month": "2026-05",
+          "views": 2514
+        },
+        {
+          "month": "2026-06",
+          "views": 2160
+        },
+        {
+          "month": "2026-07",
+          "views": 2470
+        },
+        {
+          "month": "2026-08",
+          "views": 3225
+        }
+      ],
+      "edition_monthly": [
+        {
+          "month": "2020-09",
+          "views": 645932084
+        },
+        {
+          "month": "2020-10",
+          "views": 721107864
+        },
+        {
+          "month": "2020-11",
+          "views": 833851469
+        },
+        {
+          "month": "2020-12",
+          "views": 763730771
+        },
+        {
+          "month": "2021-01",
+          "views": 821748970
+        },
+        {
+          "month": "2021-02",
+          "views": 719090136
+        },
+        {
+          "month": "2021-03",
+          "views": 806020778
+        },
+        {
+          "month": "2021-04",
+          "views": 787525984
+        },
+        {
+          "month": "2021-05",
+          "views": 780869595
+        },
+        {
+          "month": "2021-06",
+          "views": 652053452
+        },
+        {
+          "month": "2021-07",
+          "views": 641278715
+        },
+        {
+          "month": "2021-08",
+          "views": 666531151
+        },
+        {
+          "month": "2021-09",
+          "views": 650414307
+        },
+        {
+          "month": "2021-10",
+          "views": 689027089
+        },
+        {
+          "month": "2021-11",
+          "views": 702311291
+        },
+        {
+          "month": "2021-12",
+          "views": 684879294
+        },
+        {
+          "month": "2022-01",
+          "views": 767734414
+        },
+        {
+          "month": "2022-02",
+          "views": 656865057
+        },
+        {
+          "month": "2022-03",
+          "views": 694803560
+        },
+        {
+          "month": "2022-04",
+          "views": 638252914
+        },
+        {
+          "month": "2022-05",
+          "views": 651035673
+        },
+        {
+          "month": "2022-06",
+          "views": 587818653
+        },
+        {
+          "month": "2022-07",
+          "views": 644006079
+        },
+        {
+          "month": "2022-08",
+          "views": 758853681
+        },
+        {
+          "month": "2022-09",
+          "views": 813486664
+        },
+        {
+          "month": "2022-10",
+          "views": 880169731
+        },
+        {
+          "month": "2022-11",
+          "views": 933590890
+        },
+        {
+          "month": "2022-12",
+          "views": 888562797
+        },
+        {
+          "month": "2023-01",
+          "views": 908043258
+        },
+        {
+          "month": "2023-02",
+          "views": 687563756
+        },
+        {
+          "month": "2023-03",
+          "views": 758361308
+        },
+        {
+          "month": "2023-04",
+          "views": 701030060
+        },
+        {
+          "month": "2023-05",
+          "views": 758225210
+        },
+        {
+          "month": "2023-06",
+          "views": 644762552
+        },
+        {
+          "month": "2023-07",
+          "views": 669225723
+        },
+        {
+          "month": "2023-08",
+          "views": 738345725
+        },
+        {
+          "month": "2023-09",
+          "views": 734060043
+        },
+        {
+          "month": "2023-10",
+          "views": 728744052
+        },
+        {
+          "month": "2023-11",
+          "views": 697125990
+        },
+        {
+          "month": "2023-12",
+          "views": 697825397
+        },
+        {
+          "month": "2024-01",
+          "views": 806236114
+        },
+        {
+          "month": "2024-02",
+          "views": 690177488
+        },
+        {
+          "month": "2024-03",
+          "views": 736343740
+        },
+        {
+          "month": "2024-04",
+          "views": 657332715
+        },
+        {
+          "month": "2024-05",
+          "views": 677865443
+        },
+        {
+          "month": "2024-06",
+          "views": 619293302
+        },
+        {
+          "month": "2024-07",
+          "views": 651161710
+        },
+        {
+          "month": "2024-08",
+          "views": 714449671
+        },
+        {
+          "month": "2024-09",
+          "views": 664831166
+        },
+        {
+          "month": "2024-10",
+          "views": 698519787
+        },
+        {
+          "month": "2024-11",
+          "views": 720742284
+        },
+        {
+          "month": "2024-12",
+          "views": 718193052
+        },
+        {
+          "month": "2025-01",
+          "views": 781284656
+        },
+        {
+          "month": "2025-02",
+          "views": 655483102
+        },
+        {
+          "month": "2025-03",
+          "views": 670462585
+        },
+        {
+          "month": "2025-04",
+          "views": 609113616
+        },
+        {
+          "month": "2025-05",
+          "views": 642833130
+        },
+        {
+          "month": "2025-06",
+          "views": 581878594
+        },
+        {
+          "month": "2025-07",
+          "views": 608565514
+        },
+        {
+          "month": "2025-08",
+          "views": 624518060
+        },
+        {
+          "month": "2025-09",
+          "views": 588427050
+        },
+        {
+          "month": "2025-10",
+          "views": 606032337
+        },
+        {
+          "month": "2025-11",
+          "views": 633930200
+        },
+        {
+          "month": "2025-12",
+          "views": 606121479
+        },
+        {
+          "month": "2026-01",
+          "views": 655022393
+        },
+        {
+          "month": "2026-02",
+          "views": 579846778
+        },
+        {
+          "month": "2026-03",
+          "views": 598873759
+        },
+        {
+          "month": "2026-04",
+          "views": 553793201
+        },
+        {
+          "month": "2026-05",
+          "views": 605859627
+        },
+        {
+          "month": "2026-06",
+          "views": 558565835
+        },
+        {
+          "month": "2026-07",
+          "views": 585807001
+        },
+        {
+          "month": "2026-08",
+          "views": 559376792
+        }
+      ],
+      "formulas": [
+        {
+          "name": "annual_views",
+          "definition": "sum(monthly pageviews) over the last 12 complete months",
+          "edge_cases": "null if any of the 12 months is missing"
+        },
+        {
+          "name": "monthly_average",
+          "definition": "annual_views / 12",
+          "edge_cases": ""
+        },
+        {
+          "name": "daily_average",
+          "definition": "annual_views / number of days in those 12 months",
+          "edge_cases": ""
+        },
+        {
+          "name": "yoy",
+          "definition": "(last 12M / previous 12M) - 1",
+          "edge_cases": "null if previous 12M <= 0 or incomplete"
+        },
+        {
+          "name": "three_year_cagr",
+          "definition": "(last 12M / the 12M ending 36 months earlier) ** (1/3) - 1",
+          "edge_cases": "null if the earlier 12M is incomplete or zero"
+        },
+        {
+          "name": "last_three_month_growth",
+          "definition": "(last 3M / previous 3M) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "previous_three_month_growth",
+          "definition": "(previous 3M / the 3M before that) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "acceleration",
+          "definition": "last_three_month_growth - previous_three_month_growth",
+          "edge_cases": "momentum: accelerating > +5 pp, decelerating < -5 pp, otherwise stable"
+        },
+        {
+          "name": "period_over_period",
+          "definition": "(requested period total / previous equivalent period total) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_month / trough_month",
+          "definition": "calendar month with the highest / lowest mean views across the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_to_average",
+          "definition": "max(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "trough_to_average",
+          "definition": "min(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "volatility",
+          "definition": "pstdev(monthly views) / mean(monthly views) over the requested period",
+          "edge_cases": "null with fewer than 3 months"
+        },
+        {
+          "name": "views_per_unique_device",
+          "definition": "pageviews / unique devices",
+          "edge_cases": "unique devices are published per project only, so this is null for articles"
+        },
+        {
+          "name": "coverage",
+          "definition": "months with data / months in the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "topic_penetration",
+          "definition": "topic views / all views of that language edition, both over the last 12 months",
+          "edge_cases": "same traffic class (access, agent) for both; 'Wikipedia topic penetration', not market penetration"
+        },
+        {
+          "name": "topic_share",
+          "definition": "topic views in one edition / topic views across all compared editions (last 12 months)",
+          "edge_cases": "relative to the compared set; editions without data are excluded and listed"
+        },
+        {
+          "name": "topic_affinity",
+          "definition": "(topic views / edition views) / (compared topic views / compared edition views)",
+          "edge_cases": "location quotient relative to the compared editions; not an official Wikimedia metric"
+        },
+        {
+          "name": "quadrant",
+          "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
+          "edge_cases": ""
+        }
+      ],
+      "sources": [
+        {
+          "endpoint": "pageviews/per-article",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/fr.wikipedia/all-access/user/M%C3%A9ditation/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T10:22:06+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T102206_db7ec53d2678.json"
+        },
+        {
+          "endpoint": "pageviews/aggregate",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/fr.wikipedia/all-access/user/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T10:22:06+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-aggregate/20260927T102206_d163f0e2aa54.json"
+        }
+      ]
+    },
+    "es": {
+      "metadata": {
+        "topic": "meditation",
+        "language": "es",
+        "project": "es.wikipedia",
+        "period_start": "2023-09",
+        "period_end": "2026-08",
+        "generated_at": "2026-09-27T10:24:06+00:00",
+        "data_retrieved_at": "2026-09-27T10:22:07+00:00",
+        "source": "Wikimedia",
+        "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
+        "access": "all-access",
+        "agent": "user",
+        "software_version": "0.1.0",
+        "question": null,
+        "report_language": "en"
+      },
+      "topic": {
+        "canonical_name": "Meditation",
+        "wikidata_id": "Q108458",
+        "article_title": "Meditación",
+        "article_id": "72116",
+        "resolution_confidence": 0.98,
+        "resolution": {
+          "query": "meditation",
+          "status": "resolved",
+          "canonical_topic": "Meditation",
+          "wikidata_id": "Q108458",
+          "articles": {
+            "en": {
+              "language": "en",
+              "title": "Meditation",
+              "page_id": 20062
+            },
+            "de": {
+              "language": "de",
+              "title": "Meditation",
+              "page_id": 28837
+            },
+            "fr": {
+              "language": "fr",
+              "title": "Méditation",
+              "page_id": 1533268
+            },
+            "es": {
+              "language": "es",
+              "title": "Meditación",
+              "page_id": 72116
+            },
+            "it": {
+              "language": "it",
+              "title": "Meditazione",
+              "page_id": 16979
+            }
+          },
+          "missing_languages": [],
+          "confidence": 0.98,
+          "method": "exact_title",
+          "candidates": [],
+          "notes": []
+        }
+      },
+      "periods": [
+        {
+          "label": "requested period",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous equivalent period",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 12 months",
+          "start": "2025-09",
+          "end": "2026-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "previous 12 months",
+          "start": "2024-09",
+          "end": "2025-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "12 months ending 3 years earlier",
+          "start": "2022-09",
+          "end": "2023-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "last 36 months",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous 36 months",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 3 months",
+          "start": "2026-06",
+          "end": "2026-08",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "previous 3 months",
+          "start": "2026-03",
+          "end": "2026-05",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "3 months before that",
+          "start": "2025-12",
+          "end": "2026-02",
+          "months": 3,
+          "complete": true
+        }
+      ],
+      "demand": {
+        "annual_views": 25633,
+        "monthly_average": 2136.0833333333335,
+        "daily_average": 70.22739726027397,
+        "requested_period_views": 187754,
+        "unique_devices": null,
+        "views_per_unique_device": null
+      },
+      "growth": {
+        "yoy": -0.570715613538544,
+        "three_year_cagr": -0.39594604739892725,
+        "last_three_month_growth": -0.1519633738334214,
+        "previous_three_month_growth": -0.04682779456193353,
+        "acceleration": -0.10513557927148787,
+        "momentum": "decelerating",
+        "period_over_period": -0.5386652906776745
+      },
+      "seasonality": {
+        "peak_month": "September",
+        "trough_month": "July",
+        "peak_to_average": 1.352216197790726,
+        "trough_to_average": 0.6849601073745434,
+        "volatility": 0.564914239219846,
+        "basis": "calendar-month means over 2023-09..2026-08 (3 observations per month)",
+        "observations_per_month": 3
+      },
+      "localization": {
+        "topic_share": 0.057910408646460264,
+        "topic_affinity": 0.9555548070563229,
+        "topic_penetration": 3.923635069912035e-6,
+        "country_distribution": []
+      },
+      "anomalies": [],
+      "ecosystem": {
+        "related_topics": []
+      },
+      "quality": {
+        "coverage": 1.0,
+        "missing_data": [],
+        "missing_metrics": [
+          {
+            "metric": "demand.unique_devices",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "demand.views_per_unique_device",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "localization.country_distribution",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured."
+          },
+          {
+            "metric": "anomalies",
+            "status": "not_implemented",
+            "reason": "Anomaly detection is planned for a later milestone."
+          },
+          {
+            "metric": "ecosystem.related_topics",
+            "status": "not_implemented",
+            "reason": "Topic ecosystem analysis is planned for a later milestone."
+          },
+          {
+            "metric": "signals",
+            "status": "not_implemented",
+            "reason": "Decision signals are planned for a later milestone."
+          }
+        ],
+        "api_errors": [],
+        "topic_resolution_confidence": 0.98,
+        "language_mapping_confidence": 1.0,
+        "anomaly_count": null,
+        "country_data_available": false,
+        "unique_devices_available": false,
+        "project_denominator_available": true,
+        "quality_level": "HIGH",
+        "quality_reasons": [
+          "full coverage, confident topic match, at least two years of data"
+        ]
+      },
+      "signals": {
+        "market_size": null,
+        "growth": null,
+        "momentum": null,
+        "localization": null,
+        "stability": null
+      },
+      "observations": [
+        "Annual pageviews (2025-09..2026-08) were 25.6K (about 2.1K a month).",
+        "Pageviews decreased 57.1% year over year (2025-09..2026-08 vs 2024-09..2025-08).",
+        "Three-year CAGR was -39.6% (vs 2022-09..2023-08).",
+        "The last 3 months were -15.2% against the previous 3 months; momentum decelerating.",
+        "September had the highest average monthly traffic (1.35x the average) and July the lowest (0.68x)."
+      ],
+      "monthly": [
+        {
+          "month": "2020-09",
+          "views": 17458
+        },
+        {
+          "month": "2020-10",
+          "views": 17438
+        },
+        {
+          "month": "2020-11",
+          "views": 15789
+        },
+        {
+          "month": "2020-12",
+          "views": 12169
+        },
+        {
+          "month": "2021-01",
+          "views": 17673
+        },
+        {
+          "month": "2021-02",
+          "views": 17751
+        },
+        {
+          "month": "2021-03",
+          "views": 19285
+        },
+        {
+          "month": "2021-04",
+          "views": 18674
+        },
+        {
+          "month": "2021-05",
+          "views": 16409
+        },
+        {
+          "month": "2021-06",
+          "views": 12114
+        },
+        {
+          "month": "2021-07",
+          "views": 9621
+        },
+        {
+          "month": "2021-08",
+          "views": 9825
+        },
+        {
+          "month": "2021-09",
+          "views": 9797
+        },
+        {
+          "month": "2021-10",
+          "views": 9581
+        },
+        {
+          "month": "2021-11",
+          "views": 9480
+        },
+        {
+          "month": "2021-12",
+          "views": 7651
+        },
+        {
+          "month": "2022-01",
+          "views": 9294
+        },
+        {
+          "month": "2022-02",
+          "views": 8855
+        },
+        {
+          "month": "2022-03",
+          "views": 9254
+        },
+        {
+          "month": "2022-04",
+          "views": 8851
+        },
+        {
+          "month": "2022-05",
+          "views": 9639
+        },
+        {
+          "month": "2022-06",
+          "views": 7955
+        },
+        {
+          "month": "2022-07",
+          "views": 7550
+        },
+        {
+          "month": "2022-08",
+          "views": 8569
+        },
+        {
+          "month": "2022-09",
+          "views": 9363
+        },
+        {
+          "month": "2022-10",
+          "views": 9966
+        },
+        {
+          "month": "2022-11",
+          "views": 10230
+        },
+        {
+          "month": "2022-12",
+          "views": 7097
+        },
+        {
+          "month": "2023-01",
+          "views": 9686
+        },
+        {
+          "month": "2023-02",
+          "views": 9435
+        },
+        {
+          "month": "2023-03",
+          "views": 10721
+        },
+        {
+          "month": "2023-04",
+          "views": 8965
+        },
+        {
+          "month": "2023-05",
+          "views": 10943
+        },
+        {
+          "month": "2023-06",
+          "views": 9902
+        },
+        {
+          "month": "2023-07",
+          "views": 9721
+        },
+        {
+          "month": "2023-08",
+          "views": 10269
+        },
+        {
+          "month": "2023-09",
+          "views": 9538
+        },
+        {
+          "month": "2023-10",
+          "views": 9125
+        },
+        {
+          "month": "2023-11",
+          "views": 8828
+        },
+        {
+          "month": "2023-12",
+          "views": 7818
+        },
+        {
+          "month": "2024-01",
+          "views": 10679
+        },
+        {
+          "month": "2024-02",
+          "views": 8670
+        },
+        {
+          "month": "2024-03",
+          "views": 10339
+        },
+        {
+          "month": "2024-04",
+          "views": 10050
+        },
+        {
+          "month": "2024-05",
+          "views": 7520
+        },
+        {
+          "month": "2024-06",
+          "views": 6238
+        },
+        {
+          "month": "2024-07",
+          "views": 6073
+        },
+        {
+          "month": "2024-08",
+          "views": 7532
+        },
+        {
+          "month": "2024-09",
+          "views": 8076
+        },
+        {
+          "month": "2024-10",
+          "views": 7812
+        },
+        {
+          "month": "2024-11",
+          "views": 5868
+        },
+        {
+          "month": "2024-12",
+          "views": 4742
+        },
+        {
+          "month": "2025-01",
+          "views": 6752
+        },
+        {
+          "month": "2025-02",
+          "views": 4357
+        },
+        {
+          "month": "2025-03",
+          "views": 5308
+        },
+        {
+          "month": "2025-04",
+          "views": 4050
+        },
+        {
+          "month": "2025-05",
+          "views": 3742
+        },
+        {
+          "month": "2025-06",
+          "views": 3014
+        },
+        {
+          "month": "2025-07",
+          "views": 3051
+        },
+        {
+          "month": "2025-08",
+          "views": 2939
+        },
+        {
+          "month": "2025-09",
+          "views": 3543
+        },
+        {
+          "month": "2025-10",
+          "views": 2971
+        },
+        {
+          "month": "2025-11",
+          "views": 2666
+        },
+        {
+          "month": "2025-12",
+          "views": 1887
+        },
+        {
+          "month": "2026-01",
+          "views": 2136
+        },
+        {
+          "month": "2026-02",
+          "views": 1935
+        },
+        {
+          "month": "2026-03",
+          "views": 1993
+        },
+        {
+          "month": "2026-04",
+          "views": 1748
+        },
+        {
+          "month": "2026-05",
+          "views": 1938
+        },
+        {
+          "month": "2026-06",
+          "views": 1562
+        },
+        {
+          "month": "2026-07",
+          "views": 1593
+        },
+        {
+          "month": "2026-08",
+          "views": 1661
+        }
+      ],
+      "edition_monthly": [
+        {
+          "month": "2020-09",
+          "views": 1086554434
+        },
+        {
+          "month": "2020-10",
+          "views": 1215109821
+        },
+        {
+          "month": "2020-11",
+          "views": 1193371024
+        },
+        {
+          "month": "2020-12",
+          "views": 931885167
+        },
+        {
+          "month": "2021-01",
+          "views": 990927935
+        },
+        {
+          "month": "2021-02",
+          "views": 1000857644
+        },
+        {
+          "month": "2021-03",
+          "views": 1154932498
+        },
+        {
+          "month": "2021-04",
+          "views": 1115978743
+        },
+        {
+          "month": "2021-05",
+          "views": 1113462399
+        },
+        {
+          "month": "2021-06",
+          "views": 937086440
+        },
+        {
+          "month": "2021-07",
+          "views": 880598911
+        },
+        {
+          "month": "2021-08",
+          "views": 876017207
+        },
+        {
+          "month": "2021-09",
+          "views": 883747762
+        },
+        {
+          "month": "2021-10",
+          "views": 894195324
+        },
+        {
+          "month": "2021-11",
+          "views": 860026538
+        },
+        {
+          "month": "2021-12",
+          "views": 739869002
+        },
+        {
+          "month": "2022-01",
+          "views": 817361858
+        },
+        {
+          "month": "2022-02",
+          "views": 821556313
+        },
+        {
+          "month": "2022-03",
+          "views": 899435130
+        },
+        {
+          "month": "2022-04",
+          "views": 811429266
+        },
+        {
+          "month": "2022-05",
+          "views": 839250631
+        },
+        {
+          "month": "2022-06",
+          "views": 777551232
+        },
+        {
+          "month": "2022-07",
+          "views": 754600492
+        },
+        {
+          "month": "2022-08",
+          "views": 824951892
+        },
+        {
+          "month": "2022-09",
+          "views": 919897379
+        },
+        {
+          "month": "2022-10",
+          "views": 952476248
+        },
+        {
+          "month": "2022-11",
+          "views": 955920409
+        },
+        {
+          "month": "2022-12",
+          "views": 734607147
+        },
+        {
+          "month": "2023-01",
+          "views": 818419651
+        },
+        {
+          "month": "2023-02",
+          "views": 808114584
+        },
+        {
+          "month": "2023-03",
+          "views": 941138449
+        },
+        {
+          "month": "2023-04",
+          "views": 843352206
+        },
+        {
+          "month": "2023-05",
+          "views": 977694052
+        },
+        {
+          "month": "2023-06",
+          "views": 884429564
+        },
+        {
+          "month": "2023-07",
+          "views": 840071606
+        },
+        {
+          "month": "2023-08",
+          "views": 882043808
+        },
+        {
+          "month": "2023-09",
+          "views": 849495825
+        },
+        {
+          "month": "2023-10",
+          "views": 933370335
+        },
+        {
+          "month": "2023-11",
+          "views": 878788467
+        },
+        {
+          "month": "2023-12",
+          "views": 779148570
+        },
+        {
+          "month": "2024-01",
+          "views": 928810810
+        },
+        {
+          "month": "2024-02",
+          "views": 862298141
+        },
+        {
+          "month": "2024-03",
+          "views": 899907492
+        },
+        {
+          "month": "2024-04",
+          "views": 890367768
+        },
+        {
+          "month": "2024-05",
+          "views": 847358735
+        },
+        {
+          "month": "2024-06",
+          "views": 753216271
+        },
+        {
+          "month": "2024-07",
+          "views": 737743929
+        },
+        {
+          "month": "2024-08",
+          "views": 745635742
+        },
+        {
+          "month": "2024-09",
+          "views": 744845702
+        },
+        {
+          "month": "2024-10",
+          "views": 808890367
+        },
+        {
+          "month": "2024-11",
+          "views": 727894684
+        },
+        {
+          "month": "2024-12",
+          "views": 663313007
+        },
+        {
+          "month": "2025-01",
+          "views": 764320442
+        },
+        {
+          "month": "2025-02",
+          "views": 690775995
+        },
+        {
+          "month": "2025-03",
+          "views": 741966927
+        },
+        {
+          "month": "2025-04",
+          "views": 652504347
+        },
+        {
+          "month": "2025-05",
+          "views": 662035828
+        },
+        {
+          "month": "2025-06",
+          "views": 593982866
+        },
+        {
+          "month": "2025-07",
+          "views": 606751904
+        },
+        {
+          "month": "2025-08",
+          "views": 598455589
+        },
+        {
+          "month": "2025-09",
+          "views": 577761290
+        },
+        {
+          "month": "2025-10",
+          "views": 606733989
+        },
+        {
+          "month": "2025-11",
+          "views": 588079817
+        },
+        {
+          "month": "2025-12",
+          "views": 508726089
+        },
+        {
+          "month": "2026-01",
+          "views": 596404635
+        },
+        {
+          "month": "2026-02",
+          "views": 544123493
+        },
+        {
+          "month": "2026-03",
+          "views": 521759780
+        },
+        {
+          "month": "2026-04",
+          "views": 513428595
+        },
+        {
+          "month": "2026-05",
+          "views": 519845891
+        },
+        {
+          "month": "2026-06",
+          "views": 518358752
+        },
+        {
+          "month": "2026-07",
+          "views": 528878589
+        },
+        {
+          "month": "2026-08",
+          "views": 508871577
+        }
+      ],
+      "formulas": [
+        {
+          "name": "annual_views",
+          "definition": "sum(monthly pageviews) over the last 12 complete months",
+          "edge_cases": "null if any of the 12 months is missing"
+        },
+        {
+          "name": "monthly_average",
+          "definition": "annual_views / 12",
+          "edge_cases": ""
+        },
+        {
+          "name": "daily_average",
+          "definition": "annual_views / number of days in those 12 months",
+          "edge_cases": ""
+        },
+        {
+          "name": "yoy",
+          "definition": "(last 12M / previous 12M) - 1",
+          "edge_cases": "null if previous 12M <= 0 or incomplete"
+        },
+        {
+          "name": "three_year_cagr",
+          "definition": "(last 12M / the 12M ending 36 months earlier) ** (1/3) - 1",
+          "edge_cases": "null if the earlier 12M is incomplete or zero"
+        },
+        {
+          "name": "last_three_month_growth",
+          "definition": "(last 3M / previous 3M) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "previous_three_month_growth",
+          "definition": "(previous 3M / the 3M before that) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "acceleration",
+          "definition": "last_three_month_growth - previous_three_month_growth",
+          "edge_cases": "momentum: accelerating > +5 pp, decelerating < -5 pp, otherwise stable"
+        },
+        {
+          "name": "period_over_period",
+          "definition": "(requested period total / previous equivalent period total) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_month / trough_month",
+          "definition": "calendar month with the highest / lowest mean views across the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_to_average",
+          "definition": "max(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "trough_to_average",
+          "definition": "min(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "volatility",
+          "definition": "pstdev(monthly views) / mean(monthly views) over the requested period",
+          "edge_cases": "null with fewer than 3 months"
+        },
+        {
+          "name": "views_per_unique_device",
+          "definition": "pageviews / unique devices",
+          "edge_cases": "unique devices are published per project only, so this is null for articles"
+        },
+        {
+          "name": "coverage",
+          "definition": "months with data / months in the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "topic_penetration",
+          "definition": "topic views / all views of that language edition, both over the last 12 months",
+          "edge_cases": "same traffic class (access, agent) for both; 'Wikipedia topic penetration', not market penetration"
+        },
+        {
+          "name": "topic_share",
+          "definition": "topic views in one edition / topic views across all compared editions (last 12 months)",
+          "edge_cases": "relative to the compared set; editions without data are excluded and listed"
+        },
+        {
+          "name": "topic_affinity",
+          "definition": "(topic views / edition views) / (compared topic views / compared edition views)",
+          "edge_cases": "location quotient relative to the compared editions; not an official Wikimedia metric"
+        },
+        {
+          "name": "quadrant",
+          "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
+          "edge_cases": ""
+        }
+      ],
+      "sources": [
+        {
+          "endpoint": "pageviews/per-article",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/es.wikipedia/all-access/user/Meditaci%C3%B3n/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T10:22:07+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T102207_1e60c1d3dbbb.json"
+        },
+        {
+          "endpoint": "pageviews/aggregate",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/es.wikipedia/all-access/user/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T10:22:07+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-aggregate/20260927T102207_e8ece5a18d58.json"
+        }
+      ]
+    },
+    "it": {
+      "metadata": {
+        "topic": "meditation",
+        "language": "it",
+        "project": "it.wikipedia",
+        "period_start": "2023-09",
+        "period_end": "2026-08",
+        "generated_at": "2026-09-27T10:24:06+00:00",
+        "data_retrieved_at": "2026-09-27T10:22:07+00:00",
+        "source": "Wikimedia",
+        "api": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article",
+        "access": "all-access",
+        "agent": "user",
+        "software_version": "0.1.0",
+        "question": null,
+        "report_language": "en"
+      },
+      "topic": {
+        "canonical_name": "Meditation",
+        "wikidata_id": "Q108458",
+        "article_title": "Meditazione",
+        "article_id": "16979",
+        "resolution_confidence": 0.98,
+        "resolution": {
+          "query": "meditation",
+          "status": "resolved",
+          "canonical_topic": "Meditation",
+          "wikidata_id": "Q108458",
+          "articles": {
+            "en": {
+              "language": "en",
+              "title": "Meditation",
+              "page_id": 20062
+            },
+            "de": {
+              "language": "de",
+              "title": "Meditation",
+              "page_id": 28837
+            },
+            "fr": {
+              "language": "fr",
+              "title": "Méditation",
+              "page_id": 1533268
+            },
+            "es": {
+              "language": "es",
+              "title": "Meditación",
+              "page_id": 72116
+            },
+            "it": {
+              "language": "it",
+              "title": "Meditazione",
+              "page_id": 16979
+            }
+          },
+          "missing_languages": [],
+          "confidence": 0.98,
+          "method": "exact_title",
+          "candidates": [],
+          "notes": []
+        }
+      },
+      "periods": [
+        {
+          "label": "requested period",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous equivalent period",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 12 months",
+          "start": "2025-09",
+          "end": "2026-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "previous 12 months",
+          "start": "2024-09",
+          "end": "2025-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "12 months ending 3 years earlier",
+          "start": "2022-09",
+          "end": "2023-08",
+          "months": 12,
+          "complete": true
+        },
+        {
+          "label": "last 36 months",
+          "start": "2023-09",
+          "end": "2026-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "previous 36 months",
+          "start": "2020-09",
+          "end": "2023-08",
+          "months": 36,
+          "complete": true
+        },
+        {
+          "label": "last 3 months",
+          "start": "2026-06",
+          "end": "2026-08",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "previous 3 months",
+          "start": "2026-03",
+          "end": "2026-05",
+          "months": 3,
+          "complete": true
+        },
+        {
+          "label": "3 months before that",
+          "start": "2025-12",
+          "end": "2026-02",
+          "months": 3,
+          "complete": true
+        }
+      ],
+      "demand": {
+        "annual_views": 17203,
+        "monthly_average": 1433.5833333333333,
+        "daily_average": 47.131506849315066,
+        "requested_period_views": 78114,
+        "unique_devices": null,
+        "views_per_unique_device": null
+      },
+      "growth": {
+        "yoy": -0.20547755403657864,
+        "three_year_cagr": -0.3135991825722223,
+        "last_three_month_growth": 0.07943578322197475,
+        "previous_three_month_growth": -0.07507438773174635,
+        "acceleration": 0.1545101709537211,
+        "momentum": "accelerating",
+        "period_over_period": -0.6272030925621017
+      },
+      "seasonality": {
+        "peak_month": "January",
+        "trough_month": "June",
+        "peak_to_average": 1.3570934787618094,
+        "trough_to_average": 0.6642599277978338,
+        "volatility": 0.4585936622607539,
+        "basis": "calendar-month means over 2023-09..2026-08 (3 observations per month)",
+        "observations_per_month": 3
+      },
+      "localization": {
+        "topic_share": 0.03886524245874677,
+        "topic_affinity": 0.9123595515583637,
+        "topic_penetration": 3.7462696084292864e-6,
+        "country_distribution": []
+      },
+      "anomalies": [],
+      "ecosystem": {
+        "related_topics": []
+      },
+      "quality": {
+        "coverage": 1.0,
+        "missing_data": [],
+        "missing_metrics": [
+          {
+            "metric": "demand.unique_devices",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "demand.views_per_unique_device",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes unique devices per project (whole language edition) only, never per article."
+          },
+          {
+            "metric": "localization.country_distribution",
+            "status": "unsupported",
+            "reason": "Wikimedia publishes country-level pageviews per project (top-by-country), not per article, so a topic's country distribution cannot be measured."
+          },
+          {
+            "metric": "anomalies",
+            "status": "not_implemented",
+            "reason": "Anomaly detection is planned for a later milestone."
+          },
+          {
+            "metric": "ecosystem.related_topics",
+            "status": "not_implemented",
+            "reason": "Topic ecosystem analysis is planned for a later milestone."
+          },
+          {
+            "metric": "signals",
+            "status": "not_implemented",
+            "reason": "Decision signals are planned for a later milestone."
+          }
+        ],
+        "api_errors": [],
+        "topic_resolution_confidence": 0.98,
+        "language_mapping_confidence": 1.0,
+        "anomaly_count": null,
+        "country_data_available": false,
+        "unique_devices_available": false,
+        "project_denominator_available": true,
+        "quality_level": "HIGH",
+        "quality_reasons": [
+          "full coverage, confident topic match, at least two years of data"
+        ]
+      },
+      "signals": {
+        "market_size": null,
+        "growth": null,
+        "momentum": null,
+        "localization": null,
+        "stability": null
+      },
+      "observations": [
+        "Annual pageviews (2025-09..2026-08) were 17.2K (about 1.4K a month).",
+        "Pageviews decreased 20.5% year over year (2025-09..2026-08 vs 2024-09..2025-08).",
+        "Three-year CAGR was -31.4% (vs 2022-09..2023-08).",
+        "The last 3 months were +7.9% against the previous 3 months; momentum accelerating.",
+        "January had the highest average monthly traffic (1.36x the average) and June the lowest (0.66x)."
+      ],
+      "monthly": [
+        {
+          "month": "2020-09",
+          "views": 6137
+        },
+        {
+          "month": "2020-10",
+          "views": 6143
+        },
+        {
+          "month": "2020-11",
+          "views": 7746
+        },
+        {
+          "month": "2020-12",
+          "views": 7264
+        },
+        {
+          "month": "2021-01",
+          "views": 10094
+        },
+        {
+          "month": "2021-02",
+          "views": 8234
+        },
+        {
+          "month": "2021-03",
+          "views": 8782
+        },
+        {
+          "month": "2021-04",
+          "views": 7935
+        },
+        {
+          "month": "2021-05",
+          "views": 8128
+        },
+        {
+          "month": "2021-06",
+          "views": 6055
+        },
+        {
+          "month": "2021-07",
+          "views": 5885
+        },
+        {
+          "month": "2021-08",
+          "views": 6105
+        },
+        {
+          "month": "2021-09",
+          "views": 6165
+        },
+        {
+          "month": "2021-10",
+          "views": 6039
+        },
+        {
+          "month": "2021-11",
+          "views": 6150
+        },
+        {
+          "month": "2021-12",
+          "views": 5672
+        },
+        {
+          "month": "2022-01",
+          "views": 7259
+        },
+        {
+          "month": "2022-02",
+          "views": 5692
+        },
+        {
+          "month": "2022-03",
+          "views": 5559
+        },
+        {
+          "month": "2022-04",
+          "views": 5344
+        },
+        {
+          "month": "2022-05",
+          "views": 5640
+        },
+        {
+          "month": "2022-06",
+          "views": 4460
+        },
+        {
+          "month": "2022-07",
+          "views": 4533
+        },
+        {
+          "month": "2022-08",
+          "views": 5319
+        },
+        {
+          "month": "2022-09",
+          "views": 4652
+        },
+        {
+          "month": "2022-10",
+          "views": 4979
+        },
+        {
+          "month": "2022-11",
+          "views": 4849
+        },
+        {
+          "month": "2022-12",
+          "views": 4214
+        },
+        {
+          "month": "2023-01",
+          "views": 5545
+        },
+        {
+          "month": "2023-02",
+          "views": 4288
+        },
+        {
+          "month": "2023-03",
+          "views": 4471
+        },
+        {
+          "month": "2023-04",
+          "views": 3944
+        },
+        {
+          "month": "2023-05",
+          "views": 4107
+        },
+        {
+          "month": "2023-06",
+          "views": 4173
+        },
+        {
+          "month": "2023-07",
+          "views": 3781
+        },
+        {
+          "month": "2023-08",
+          "views": 4192
+        },
+        {
+          "month": "2023-09",
+          "views": 3960
+        },
+        {
+          "month": "2023-10",
+          "views": 4406
+        },
+        {
+          "month": "2023-11",
+          "views": 3820
+        },
+        {
+          "month": "2023-12",
+          "views": 3706
+        },
+        {
+          "month": "2024-01",
+          "views": 4818
+        },
+        {
+          "month": "2024-02",
+          "views": 3877
+        },
+        {
+          "month": "2024-03",
+          "views": 3378
+        },
+        {
+          "month": "2024-04",
+          "views": 2484
+        },
+        {
+          "month": "2024-05",
+          "views": 2434
+        },
+        {
+          "month": "2024-06",
+          "views": 2124
+        },
+        {
+          "month": "2024-07",
+          "views": 1920
+        },
+        {
+          "month": "2024-08",
+          "views": 2332
+        },
+        {
+          "month": "2024-09",
+          "views": 2147
+        },
+        {
+          "month": "2024-10",
+          "views": 2094
+        },
+        {
+          "month": "2024-11",
+          "views": 2099
+        },
+        {
+          "month": "2024-12",
+          "views": 1920
+        },
+        {
+          "month": "2025-01",
+          "views": 2362
+        },
+        {
+          "month": "2025-02",
+          "views": 1998
+        },
+        {
+          "month": "2025-03",
+          "views": 1991
+        },
+        {
+          "month": "2025-04",
+          "views": 1483
+        },
+        {
+          "month": "2025-05",
+          "views": 1460
+        },
+        {
+          "month": "2025-06",
+          "views": 1116
+        },
+        {
+          "month": "2025-07",
+          "views": 1416
+        },
+        {
+          "month": "2025-08",
+          "views": 1566
+        },
+        {
+          "month": "2025-09",
+          "views": 1358
+        },
+        {
+          "month": "2025-10",
+          "views": 1439
+        },
+        {
+          "month": "2025-11",
+          "views": 1634
+        },
+        {
+          "month": "2025-12",
+          "views": 1321
+        },
+        {
+          "month": "2026-01",
+          "views": 1654
+        },
+        {
+          "month": "2026-02",
+          "views": 1394
+        },
+        {
+          "month": "2026-03",
+          "views": 1493
+        },
+        {
+          "month": "2026-04",
+          "views": 1222
+        },
+        {
+          "month": "2026-05",
+          "views": 1326
+        },
+        {
+          "month": "2026-06",
+          "views": 1084
+        },
+        {
+          "month": "2026-07",
+          "views": 1073
+        },
+        {
+          "month": "2026-08",
+          "views": 2205
+        }
+      ],
+      "edition_monthly": [
+        {
+          "month": "2020-09",
+          "views": 470323540
+        },
+        {
+          "month": "2020-10",
+          "views": 502233170
+        },
+        {
+          "month": "2020-11",
+          "views": 603193332
+        },
+        {
+          "month": "2020-12",
+          "views": 588072561
+        },
+        {
+          "month": "2021-01",
+          "views": 674170774
+        },
+        {
+          "month": "2021-02",
+          "views": 552224409
+        },
+        {
+          "month": "2021-03",
+          "views": 658406787
+        },
+        {
+          "month": "2021-04",
+          "views": 597556179
+        },
+        {
+          "month": "2021-05",
+          "views": 580257410
+        },
+        {
+          "month": "2021-06",
+          "views": 484295332
+        },
+        {
+          "month": "2021-07",
+          "views": 487315290
+        },
+        {
+          "month": "2021-08",
+          "views": 516129678
+        },
+        {
+          "month": "2021-09",
+          "views": 484127943
+        },
+        {
+          "month": "2021-10",
+          "views": 487678381
+        },
+        {
+          "month": "2021-11",
+          "views": 490871682
+        },
+        {
+          "month": "2021-12",
+          "views": 486323265
+        },
+        {
+          "month": "2022-01",
+          "views": 599534588
+        },
+        {
+          "month": "2022-02",
+          "views": 490621777
+        },
+        {
+          "month": "2022-03",
+          "views": 500840568
+        },
+        {
+          "month": "2022-04",
+          "views": 460149149
+        },
+        {
+          "month": "2022-05",
+          "views": 465416694
+        },
+        {
+          "month": "2022-06",
+          "views": 414741108
+        },
+        {
+          "month": "2022-07",
+          "views": 421383979
+        },
+        {
+          "month": "2022-08",
+          "views": 465213497
+        },
+        {
+          "month": "2022-09",
+          "views": 468008034
+        },
+        {
+          "month": "2022-10",
+          "views": 471145205
+        },
+        {
+          "month": "2022-11",
+          "views": 471376365
+        },
+        {
+          "month": "2022-12",
+          "views": 467960529
+        },
+        {
+          "month": "2023-01",
+          "views": 537424442
+        },
+        {
+          "month": "2023-02",
+          "views": 467125648
+        },
+        {
+          "month": "2023-03",
+          "views": 491077568
+        },
+        {
+          "month": "2023-04",
+          "views": 471208769
+        },
+        {
+          "month": "2023-05",
+          "views": 511444472
+        },
+        {
+          "month": "2023-06",
+          "views": 458658574
+        },
+        {
+          "month": "2023-07",
+          "views": 449523473
+        },
+        {
+          "month": "2023-08",
+          "views": 493588102
+        },
+        {
+          "month": "2023-09",
+          "views": 449025518
+        },
+        {
+          "month": "2023-10",
+          "views": 458360978
+        },
+        {
+          "month": "2023-11",
+          "views": 446127452
+        },
+        {
+          "month": "2023-12",
+          "views": 450968923
+        },
+        {
+          "month": "2024-01",
+          "views": 554740704
+        },
+        {
+          "month": "2024-02",
+          "views": 485971315
+        },
+        {
+          "month": "2024-03",
+          "views": 493011055
+        },
+        {
+          "month": "2024-04",
+          "views": 462044083
+        },
+        {
+          "month": "2024-05",
+          "views": 479960194
+        },
+        {
+          "month": "2024-06",
+          "views": 423372953
+        },
+        {
+          "month": "2024-07",
+          "views": 421766058
+        },
+        {
+          "month": "2024-08",
+          "views": 464908675
+        },
+        {
+          "month": "2024-09",
+          "views": 427404409
+        },
+        {
+          "month": "2024-10",
+          "views": 438877355
+        },
+        {
+          "month": "2024-11",
+          "views": 430129719
+        },
+        {
+          "month": "2024-12",
+          "views": 436696348
+        },
+        {
+          "month": "2025-01",
+          "views": 532282816
+        },
+        {
+          "month": "2025-02",
+          "views": 453825165
+        },
+        {
+          "month": "2025-03",
+          "views": 461071395
+        },
+        {
+          "month": "2025-04",
+          "views": 422396184
+        },
+        {
+          "month": "2025-05",
+          "views": 446094885
+        },
+        {
+          "month": "2025-06",
+          "views": 386497590
+        },
+        {
+          "month": "2025-07",
+          "views": 406909437
+        },
+        {
+          "month": "2025-08",
+          "views": 435878187
+        },
+        {
+          "month": "2025-09",
+          "views": 396855930
+        },
+        {
+          "month": "2025-10",
+          "views": 390117697
+        },
+        {
+          "month": "2025-11",
+          "views": 416780093
+        },
+        {
+          "month": "2025-12",
+          "views": 379158163
+        },
+        {
+          "month": "2026-01",
+          "views": 431850684
+        },
+        {
+          "month": "2026-02",
+          "views": 371015253
+        },
+        {
+          "month": "2026-03",
+          "views": 376069846
+        },
+        {
+          "month": "2026-04",
+          "views": 351104507
+        },
+        {
+          "month": "2026-05",
+          "views": 372066404
+        },
+        {
+          "month": "2026-06",
+          "views": 350473875
+        },
+        {
+          "month": "2026-07",
+          "views": 362793737
+        },
+        {
+          "month": "2026-08",
+          "views": 393748501
+        }
+      ],
+      "formulas": [
+        {
+          "name": "annual_views",
+          "definition": "sum(monthly pageviews) over the last 12 complete months",
+          "edge_cases": "null if any of the 12 months is missing"
+        },
+        {
+          "name": "monthly_average",
+          "definition": "annual_views / 12",
+          "edge_cases": ""
+        },
+        {
+          "name": "daily_average",
+          "definition": "annual_views / number of days in those 12 months",
+          "edge_cases": ""
+        },
+        {
+          "name": "yoy",
+          "definition": "(last 12M / previous 12M) - 1",
+          "edge_cases": "null if previous 12M <= 0 or incomplete"
+        },
+        {
+          "name": "three_year_cagr",
+          "definition": "(last 12M / the 12M ending 36 months earlier) ** (1/3) - 1",
+          "edge_cases": "null if the earlier 12M is incomplete or zero"
+        },
+        {
+          "name": "last_three_month_growth",
+          "definition": "(last 3M / previous 3M) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "previous_three_month_growth",
+          "definition": "(previous 3M / the 3M before that) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "acceleration",
+          "definition": "last_three_month_growth - previous_three_month_growth",
+          "edge_cases": "momentum: accelerating > +5 pp, decelerating < -5 pp, otherwise stable"
+        },
+        {
+          "name": "period_over_period",
+          "definition": "(requested period total / previous equivalent period total) - 1",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_month / trough_month",
+          "definition": "calendar month with the highest / lowest mean views across the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "peak_to_average",
+          "definition": "max(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "trough_to_average",
+          "definition": "min(calendar-month means) / mean(calendar-month means)",
+          "edge_cases": ""
+        },
+        {
+          "name": "volatility",
+          "definition": "pstdev(monthly views) / mean(monthly views) over the requested period",
+          "edge_cases": "null with fewer than 3 months"
+        },
+        {
+          "name": "views_per_unique_device",
+          "definition": "pageviews / unique devices",
+          "edge_cases": "unique devices are published per project only, so this is null for articles"
+        },
+        {
+          "name": "coverage",
+          "definition": "months with data / months in the requested period",
+          "edge_cases": ""
+        },
+        {
+          "name": "topic_penetration",
+          "definition": "topic views / all views of that language edition, both over the last 12 months",
+          "edge_cases": "same traffic class (access, agent) for both; 'Wikipedia topic penetration', not market penetration"
+        },
+        {
+          "name": "topic_share",
+          "definition": "topic views in one edition / topic views across all compared editions (last 12 months)",
+          "edge_cases": "relative to the compared set; editions without data are excluded and listed"
+        },
+        {
+          "name": "topic_affinity",
+          "definition": "(topic views / edition views) / (compared topic views / compared edition views)",
+          "edge_cases": "location quotient relative to the compared editions; not an official Wikimedia metric"
+        },
+        {
+          "name": "quadrant",
+          "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
+          "edge_cases": ""
+        }
+      ],
+      "sources": [
+        {
+          "endpoint": "pageviews/per-article",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/it.wikipedia/all-access/user/Meditazione/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T10:22:07+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-per-article/20260927T102207_af414b80c12b.json"
+        },
+        {
+          "endpoint": "pageviews/aggregate",
+          "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/it.wikipedia/all-access/user/monthly/2020090100/2026083100",
+          "retrieved_at": "2026-09-27T10:22:08+00:00",
+          "raw_path": "/private/tmp/claude-502/wmi/data/raw/wikimedia/pageviews-aggregate/20260927T102208_a7e558859bee.json"
+        }
+      ]
+    }
+  },
+  "demand_threshold": 31017.0,
+  "growth_threshold": 0.0,
+  "observations": [
+    "en.wikipedia had the most pageviews: 311.9K in the last 12 months (70.5% of the topic's views across the compared editions).",
+    "The topic took the largest share of its edition's traffic in de.wikipedia: 6.7 views per million.",
+    "The highest topic affinity was in de.wikipedia: 1.64× the compared average.",
+    "Year-over-year change ranged from -57.1% (es.wikipedia) to -17.2% (de.wikipedia)."
+  ],
+  "notes": [],
+  "formulas": [
+    {
+      "name": "annual_views",
+      "definition": "sum(monthly pageviews) over the last 12 complete months",
+      "edge_cases": "null if any of the 12 months is missing"
+    },
+    {
+      "name": "monthly_average",
+      "definition": "annual_views / 12",
+      "edge_cases": ""
+    },
+    {
+      "name": "daily_average",
+      "definition": "annual_views / number of days in those 12 months",
+      "edge_cases": ""
+    },
+    {
+      "name": "yoy",
+      "definition": "(last 12M / previous 12M) - 1",
+      "edge_cases": "null if previous 12M <= 0 or incomplete"
+    },
+    {
+      "name": "three_year_cagr",
+      "definition": "(last 12M / the 12M ending 36 months earlier) ** (1/3) - 1",
+      "edge_cases": "null if the earlier 12M is incomplete or zero"
+    },
+    {
+      "name": "last_three_month_growth",
+      "definition": "(last 3M / previous 3M) - 1",
+      "edge_cases": ""
+    },
+    {
+      "name": "previous_three_month_growth",
+      "definition": "(previous 3M / the 3M before that) - 1",
+      "edge_cases": ""
+    },
+    {
+      "name": "acceleration",
+      "definition": "last_three_month_growth - previous_three_month_growth",
+      "edge_cases": "momentum: accelerating > +5 pp, decelerating < -5 pp, otherwise stable"
+    },
+    {
+      "name": "period_over_period",
+      "definition": "(requested period total / previous equivalent period total) - 1",
+      "edge_cases": ""
+    },
+    {
+      "name": "peak_month / trough_month",
+      "definition": "calendar month with the highest / lowest mean views across the requested period",
+      "edge_cases": ""
+    },
+    {
+      "name": "peak_to_average",
+      "definition": "max(calendar-month means) / mean(calendar-month means)",
+      "edge_cases": ""
+    },
+    {
+      "name": "trough_to_average",
+      "definition": "min(calendar-month means) / mean(calendar-month means)",
+      "edge_cases": ""
+    },
+    {
+      "name": "volatility",
+      "definition": "pstdev(monthly views) / mean(monthly views) over the requested period",
+      "edge_cases": "null with fewer than 3 months"
+    },
+    {
+      "name": "views_per_unique_device",
+      "definition": "pageviews / unique devices",
+      "edge_cases": "unique devices are published per project only, so this is null for articles"
+    },
+    {
+      "name": "coverage",
+      "definition": "months with data / months in the requested period",
+      "edge_cases": ""
+    },
+    {
+      "name": "topic_penetration",
+      "definition": "topic views / all views of that language edition, both over the last 12 months",
+      "edge_cases": "same traffic class (access, agent) for both; 'Wikipedia topic penetration', not market penetration"
+    },
+    {
+      "name": "topic_share",
+      "definition": "topic views in one edition / topic views across all compared editions (last 12 months)",
+      "edge_cases": "relative to the compared set; editions without data are excluded and listed"
+    },
+    {
+      "name": "topic_affinity",
+      "definition": "(topic views / edition views) / (compared topic views / compared edition views)",
+      "edge_cases": "location quotient relative to the compared editions; not an official Wikimedia metric"
+    },
+    {
+      "name": "quadrant",
+      "definition": "growth: YoY > 0; demand: annual views >= median of compared editions; labels investigate / explore / established / watch are descriptive, not recommendations",
+      "edge_cases": ""
+    }
+  ]
+}
