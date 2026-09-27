@@ -1,12 +1,12 @@
 #!/bin/sh
 # Tag this commit and publish wiki-market-intel-skill.zip on GitHub Releases.
-#   sh scripts/release.sh 0.3.0
+#   sh scripts/release.sh 0.3.1
 # Run from a commit that contains the skill you want users to download (not from
 # an unrelated default-branch snapshot). Push access and `gh` are required.
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 REPO="$(cd "$ROOT/.." && pwd)"
-VERSION="${1:?usage: sh scripts/release.sh 0.3.0}"
+VERSION="${1:?usage: sh scripts/release.sh 0.3.1}"
 VERSION="${VERSION#v}"
 TAG="v$VERSION"
 ZIP="${TMPDIR:-/tmp}/wiki-market-intel-skill.zip"

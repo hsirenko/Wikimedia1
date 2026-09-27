@@ -47,7 +47,7 @@ def _acceptable(version: tuple[int, int] | None) -> bool:
 
 
 def _newer_python() -> str | None:
-    """A 3.10+ interpreter when `python3` is the macOS / Xcode 3.9 stub."""
+    """A 3.13 interpreter when `python3` is the macOS / Xcode stub or another minor."""
     names = ("python3.13", "python3.12", "python3.11", "python3.10", "python3")
     candidates: list[Path] = [SKILL_DIR / ".venv" / "bin" / "python"]
     for folder in (Path("/opt/homebrew/bin"), Path("/usr/local/bin")):
@@ -115,8 +115,9 @@ def ensure_dependencies() -> None:
         sys.exit(f"wiki-market-intel is missing {LOCK.name}; the skill zip is incomplete.")
     if environment_matches_lock():
         return
-    print(f"Installing missing libraries (first run only): {', '.join(missing)}", file=sys.stderr)
-    base = [sys.executable, "-m", "pip", "install", "--quiet", *missing]
+    print(f"Installing locked dependencies from {LOCK.name} (hashed, first run or version mismatch).",
+          file=sys.stderr)
+    base = [sys.executable, "-m", "pip", "install", "--quiet", "--require-hashes", "-r", str(LOCK)]
     for extra in ([], ["--user"], ["--break-system-packages"]):
         if subprocess.run(base + extra, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE).returncode == 0:
             importlib_invalidate()
